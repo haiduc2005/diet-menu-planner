@@ -1,92 +1,82 @@
-# AI Diet Menu Planner (智能减脂一日三餐计划助手)
+# AI Diet Menu Planner (AIダイエット献立プランナー)
 
-AI Diet Menu Planner 是一个运行在本地的 AI 助手。它每天自动或手动根据您冰箱中已有的食材，生成科学合理的减脂菜单，并提供详细的烹饪步骤，同时还会针对缺少的关键食材提供智能购买建议。
+AI Diet Menu Planner は、ローカル環境で動作する個人向け AI アシスタントです。冷蔵庫にある食材をベースに、科学的で健康的なダイエット・減量メニュー（朝食・昼食・夕食）を自動または手動で作成します。詳細な調理手順を提供するとともに、不足している必須食材のスマートな買い物提案も行います。
 
-## 🌟 主要功能
+## 🌟 主な機能
 
-- **每日食谱定制**：一键生成低碳水、低脂肪、高蛋白的一日三餐（早餐、午餐、晚餐）方案。
-- **食材库管理**：轻松记录和管理目前已有的食材，AI 会最大化利用现有材料进行菜品规划。
-- **忌口/避开食材**：支持设置不喜欢或过敏的食物，AI 在配餐时将绝不使用这些材料。
-- **历史记录追踪**：保存近 30 次的菜单生成记录，AI 会分析历史并主动避免连续几天推荐相同菜品。
-- **双重运行模式**：
-  - **Web 管理界面**：提供精心设计的极简现代 Web UI（采用玻璃摩登感、自适应布局和微动画）。
-  - **自动定时任务**：内置 Scheduler 脚本，可每天早上 `07:00` 自动生成今日菜单并输出为 Markdown 报表。
+- **デイリー献立のカスタマイズ**：低炭水化物・低脂肪・高タンパク質のダイエット原則に沿った、一日三食（朝食・昼食・夕食）のメニュープランを一クリックで作成。
+- **食材庫管理**：冷蔵庫にある食材を簡単に記録・管理。AI は既存の食材を最大限活用するように献立を計画します。
+- **苦手・アレルギー食材の除外**：避けたい食材を設定可能。AI はその食材を一切使用せずにメニューを作成します。
+- **履歴トラッキング**：過去 30 回の献立生成ログを保存。AI は履歴を分析し、同じ料理が連日重なるのを防ぎます。
+- **マルチリンガル（日英中）対応**：UIとAIの回答言語（日本語、英語、中国語）をシームレスに切り替えることができます。
+- **ワンインワン起動設計**：
+  - **Web 管理インターフェース**：ガラスモーフィズム、レスポンシブデザイン、マイクロアニメーションを採用した美しいモダン UI。
+  - **自動バックグラウンド実行**：Web サーバーを立ち上げるだけで、毎朝 `07:00` に今日のメニューを自動生成し、Markdown 形式で保存します。
 
-## 🛠️ 技术栈
+## 🛠️ 技術スタック
 
-- **后端**: FastAPI, Uvicorn, Python 3
-- **前端**: Jinja2 (HTML5 / CSS3 / Vanilla JS)
-- **AI 引擎**: Google Gemini API (`gemini-1.5-flash` 或 `gemini-1.5-pro`)
-- **本地存储**: JSON 格式本地化持久存储
+- **バックエンド**: FastAPI, Uvicorn, Python 3
+- **フロントエンド**: Jinja2 (HTML5 / CSS3 / Vanilla JS)
+- **AI エンジン**: Google Gemini API (`gemini-3.5-flash-lite`, `gemini-3.6-flash` など)
+- **ローカルストレージ**: JSON フォーマットによるローカルデータ永続化
 
 ---
 
-## 🚀 快速上手
+## 🚀 クイックスタート
 
-### 1. 克隆/下载项目并进入目录
+### 1. リポジトリをクローンしてディレクトリに移動
 ```bash
 git clone https://github.com/haiduc2005/diet-menu-planner.git
 cd diet-menu-planner
 ```
 
-### 2. 创建虚拟环境并安装依赖
+### 2. 仮想環境を作成して依存関係をインストール
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. 配置环境变量
-在项目根目录复制或创建 `.env` 文件：
+### 3. 環境変数の設定
+プロジェクトのルートディレクトリに `.env` ファイルを作成します：
 ```env
-# 在下方填入您的 Gemini API 密钥
+# Google Gemini API キーを以下に入力してください
 GEMINI_API_KEY=AIzaSy...
 
-GEMINI_MODEL=gemini-1.5-flash
+GEMINI_MODEL=gemini-3.5-flash-lite
 PORT=8000
-HOST=127.0.0.1
+HOST=0.0.0.0
 ```
-*(注意：即使未配置 `GEMINI_API_KEY`，系统也将默认进入 **Demo 演示模式** 以允许完整操作与 UI 体验。)*
 
-### 4. 运行应用
-
-#### 运行 Web 界面：
+### 4. アプリケーションの起動
+以下のコマンドで Web サーバーと内蔵の定期スケジューラの両方が同時に起動します：
 ```bash
 python3 app.py
 ```
-启动后在浏览器打开：👉 **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
 
-#### 运行后台定时任务（默认每日 07:00 触发）：
-```bash
-python3 scheduler.py
-```
-
-#### 命令行即时生成今日菜单：
-```bash
-python3 scheduler.py --now
-```
-生成的 Markdown 食谱将保存在 `output/today.md`。
+起動後、ブラウザで以下を開いてください：
+👉 **[http://localhost:8000](http://localhost:8000)**  （ローカルアクセス）
+👉 **`http://mini26.local:8000`** （同じWi-Fiルーター内のスマートフォンからアクセスする場合）
 
 ---
 
-## 📂 目录结构说明
+## 📂 ディレクトリ構成
 
 ```
 diet-menu-planner/
-├── README.md              # 项目说明文档
-├── requirements.txt       # Python 依赖包
-├── .env                   # 环境变量配置文件
-├── app.py                 # FastAPI Web 服务器入口
-├── scheduler.py           # 自动化定时生成脚本
+├── README.md              # プロジェクト説明書 (日本語)
+├── requirements.txt       # Python 依存パッケージ
+├── .env                   # 環境変数設定ファイル
+├── app.py                 # FastAPI Web サーバー兼スケジューラ起動スクリプト
 ├── ai/
-│   ├── gemini.py          # Gemini API 接口通信类
-│   ├── prompts.py         # AI 系统/用户提示词模板
-│   └── parser.py          # 菜单 JSON 格式化至 MD 解析器
+│   ├── gemini.py          # Gemini API 通信クライアント
+│   ├── prompts.py         # AI システム/ユーザープロンプトテンプレート
+│   └── parser.py          # JSON 献立を Markdown 形式へパースするモジュール
 ├── manager/
-│   ├── foods.py           # 食材库数据管理器
-│   ├── history.py         # 历史记录及设置管理器
-│   └── planner.py         # 菜单定制核心工作流
+│   ├── foods.py           # 食材データマネージャー
+│   ├── history.py         # 履歴・設定データマネージャー
+│   └── planner.py         # 献立作成ワークフローのコントロール
 ├── templates/
-│   └── index.html         # 精美交互式 Web 网页模板
-└── DOC/                   # 原设计方案文档
+│   └── index.html         # 多言語対応の美しい Web UI テンプレート
+└── DOC/                   # 仕様設計・要件定義ドキュメント
 ```
