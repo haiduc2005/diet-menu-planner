@@ -371,7 +371,7 @@
         /* FOODS PANTRY VIEW */
         .pantry-layout {
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 1fr 320px;
             gap: 1.5rem;
         }
 
@@ -742,17 +742,6 @@
         <!-- Kids Menu TAB -->
         <section id="kids-menu" class="tab-content">
             <div class="pantry-layout">
-                <!-- Left panel: Child's Preferences -->
-                <div class="glass-card" style="height: fit-content; display: flex; flex-direction: column; gap: 1.5rem;">
-                    <h3 data-i18n="kidsPrefTitle">儿童偏好设置</h3>
-                    <p class="subtitle" data-i18n="kidsPrefDesc">你可以输入你孩子的饮食喜好，AI 会根据这些偏好为他量身定制营养餐。</p>
-                    <div class="input-group">
-                        <label for="kids-pref-input" data-i18n="kidsPrefLabel">孩子特点与饮食喜好</label>
-                        <textarea id="kids-pref-input" class="form-input" rows="6" data-i18n-placeholder="kidsPrefPlaceholder" style="resize: vertical; line-height: 1.5; font-family: var(--font-sans);"></textarea>
-                    </div>
-                    <button class="btn btn-primary" onclick="saveKidsPreferences()" data-i18n="kidsSavePref">💾 保存偏好设置</button>
-                </div>
-                
                 <!-- Right panel: Kids Menu Display -->
                 <div class="pantry-tags-area">
                     <div class="menu-header-bar">
@@ -788,6 +777,17 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Left panel: Child's Preferences -->
+                <div class="glass-card" style="height: fit-content; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 data-i18n="kidsPrefTitle">儿童偏好设置</h3>
+                    <p class="subtitle" data-i18n="kidsPrefDesc">你可以输入你孩子的饮食喜好，AI 会根据这些偏好为他量身定制营养餐。</p>
+                    <div class="input-group">
+                        <label for="kids-pref-input" data-i18n="kidsPrefLabel">孩子特点与饮食喜好</label>
+                        <textarea id="kids-pref-input" class="form-input" rows="6" data-i18n-placeholder="kidsPrefPlaceholder" style="resize: vertical; line-height: 1.5; font-family: var(--font-sans);"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveKidsPreferences()" data-i18n="kidsSavePref">💾 保存偏好设置</button>
+                </div>
             </div>
             
             <!-- Kids Recommended Recipes Section -->
@@ -814,8 +814,27 @@
 
         <!-- 2. PANTRY TAB -->
         <section id="pantry" class="tab-content">
-            <div class="pantry-layout">
+            <div class="pantry-layout" style="grid-template-columns: 1fr 350px;">
                 
+                <!-- Main Tags area -->
+                <div class="glass-card pantry-tags-area">
+                    <div class="search-row">
+                        <input type="text" id="pantry-search" class="form-input" data-i18n-placeholder="pantrySearchPlaceholder" placeholder="🔍 搜索食材库..." oninput="renderPantryTags()">
+                    </div>
+                    
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span data-i18n="myPantry">我的食材库</span>
+                            <span id="pantry-count" style="font-size: 0.9rem; color: var(--text-secondary); font-weight: normal;">共 0 种</span>
+                        </h3>
+                        <p class="subtitle" style="margin-bottom: 1rem;" data-i18n="pantryTip">点击食材卡片右上角的 × 即可将其移除</p>
+                        
+                        <div class="pantry-tags-grid" id="pantry-tags-container">
+                            <!-- Tags loaded here -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Quick add side-pane -->
                 <div class="glass-card" style="height: fit-content; display: flex; flex-direction: column; gap: 1.5rem;">
                     <h3 data-i18n="addFoodTitle">添加新食材</h3>
@@ -862,6 +881,7 @@
                                     <span class="quick-add-tag" onclick="quickAddFood('糙米')">糙米</span>
                                     <span class="quick-add-tag" onclick="quickAddFood('南瓜')">南瓜</span>
                                 </div>
+                            </div>
                             <div class="category-box">
                                 <div class="category-name" data-i18n="catRefinedStaple">🍚 普通主食 / 精制碳水</div>
                                 <div class="quick-tags">
@@ -875,26 +895,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Main Tags area -->
-                <div class="glass-card pantry-tags-area">
-                    <div class="search-row">
-                        <input type="text" id="pantry-search" class="form-input" data-i18n-placeholder="pantrySearchPlaceholder" placeholder="🔍 搜索食材库..." oninput="renderPantryTags()">
-                    </div>
-                    
-                    <div>
-                        <h3 style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
-                            <span data-i18n="myPantry">我的食材库</span>
-                            <span id="pantry-count" style="font-size: 0.9rem; color: var(--text-secondary); font-weight: normal;">共 0 种</span>
-                        </h3>
-                        <p class="subtitle" style="margin-bottom: 1rem;" data-i18n="pantryTip">点击食材卡片右上角的 × 即可将其移除</p>
-                        
-                        <div class="pantry-tags-grid" id="pantry-tags-container">
-                            <!-- Tags loaded here -->
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </section>
 
