@@ -20,11 +20,19 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 def scheduled_menu_job():
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Triggering daily menu generation...")
+    # 1. Generate Adult Diet Menu
     try:
         generate_and_save_today_menu()
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily menu successfully generated.")
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily adult menu successfully generated.")
     except Exception as e:
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR: {e}")
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Adult Menu): {e}")
+
+    # 2. Generate Kids Nutrition Menu
+    try:
+        generate_and_save_kids_menu()
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily kids menu successfully generated.")
+    except Exception as e:
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Kids Menu): {e}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
