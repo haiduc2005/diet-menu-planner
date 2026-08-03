@@ -900,6 +900,12 @@
 
         <!-- 3. HISTORY TAB -->
         <section id="history" class="tab-content">
+            <!-- Sub-tabs for Adult vs Kids History -->
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <button class="btn btn-primary" id="btn-hist-adult" onclick="switchHistorySubTab('adult')">👨 大人减脂餐历史</button>
+                <button class="btn btn-secondary" id="btn-hist-kids" onclick="switchHistorySubTab('kids')">👦 儿童营养餐历史</button>
+            </div>
+
             <div class="glass-card">
                 <h3 style="margin-bottom: 1.5rem;" data-i18n="historyTitle">📅 菜单历史记录 (近30次生成)</h3>
                 <div class="history-timeline" id="history-timeline-container">
@@ -990,6 +996,8 @@
         let foodsList = [];
         let settingsData = {};
         let historyData = [];
+        let kidsHistoryData = [];
+        let activeHistoryTab = 'adult';
         let currentMenu = null;
         let currentLang = 'zh';
 
@@ -1579,11 +1587,15 @@
         // GET History
         async function fetchHistory() {
             try {
-                const res = await fetch('/api/history');
-                historyData = await res.json();
+                const [adultRes, kidsRes] = await Promise.all([
+                    fetch('/api/history'),
+                    fetch('/api/kids-history')
+                ]);
+                historyData = await adultRes.json();
+                kidsHistoryData = await kidsRes.json();
                 renderHistoryTimeline();
             } catch (err) {
-                console.error("Failed to load history list:", err);
+                console.error("Failed to load history lists:", err);
             }
         }
 
@@ -1714,6 +1726,7 @@
                 if (data.status === "success") {
                     currentKidsMenu = data.menu;
                     renderKidsMenu(currentKidsMenu);
+                    await fetchHistory(); // Refresh history log immediately
                     const msg = i18n[currentLang].toastKidsGenerateSuccess || "儿童营养餐生成成功！";
                     showToast(msg);
                 } else {
@@ -1897,7 +1910,7 @@
                 card.innerHTML = `
                     <div class="meal-title-row" style="justify-content: space-between;">
                         <span style="font-weight: 700; color: white;">${r.title}</span>
-                        <span style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--text-secondary);">${r.source}</span>
+                        <a href="${(r.source || '').includes('抖音') || (r.source || '').includes('Douyin') || (r.source || '').includes('TikTok') ? 'https://www.douyin.com/search/' + encodeURIComponent(r.title) : 'https://www.xiaohongshu.com/search_result?keyword=' + encodeURIComponent(r.title)}" target="_blank" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: ${(r.source || '').includes('抖音') || (r.source || '').includes('Douyin') || (r.source || '').includes('TikTok') ? '#face15' : '#ff2442'}; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">${r.source} 🔗</a>
                     </div>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         ${tagsHTML}
@@ -2007,7 +2020,7 @@
                 card.innerHTML = `
                     <div class="meal-title-row" style="justify-content: space-between;">
                         <span style="font-weight: 700; color: white;">${r.title}</span>
-                        <span style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--text-secondary);">${r.source}</span>
+                        <a href="${(r.source || '').includes('抖音') || (r.source || '').includes('Douyin') || (r.source || '').includes('TikTok') ? 'https://www.douyin.com/search/' + encodeURIComponent(r.title) : 'https://www.xiaohongshu.com/search_result?keyword=' + encodeURIComponent(r.title)}" target="_blank" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: ${(r.source || '').includes('抖音') || (r.source || '').includes('Douyin') || (r.source || '').includes('TikTok') ? '#face15' : '#ff2442'}; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">${r.source} 🔗</a>
                     </div>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         ${tagsHTML}
@@ -2208,12 +2221,30 @@
             });
         }
 
+        function switchHistorySubTab(type) {
+            activeHistoryTab = type;
+            const btnAdult = document.getElementById('btn-hist-adult');
+            const btnKids = document.getElementById('btn-hist-kids');
+            
+            if (type === 'adult') {
+                btnAdult.className = 'btn btn-primary';
+                btnKids.className = 'btn btn-secondary';
+            } else {
+                btnAdult.className = 'btn btn-secondary';
+                btnKids.className = 'btn btn-primary';
+            }
+            
+            renderHistoryTimeline();
+        }
+
         // Render History Timeline list
         function renderHistoryTimeline() {
             const container = document.getElementById('history-timeline-container');
             container.innerHTML = '';
 
-            if (historyData.length === 0) {
+            const data = activeHistoryTab === 'adult' ? historyData : kidsHistoryData;
+
+            if (data.length === 0) {
                 const emptyLabel = i18n[currentLang].historyEmpty || "暂无历史记录";
                 container.innerHTML = `
                     <div style="text-align: center; color: var(--text-secondary); padding: 3rem;">
@@ -2228,10 +2259,10 @@
             const lLabel = i18n[currentLang].lunch || "昼食";
             const dLabel = i18n[currentLang].dinner || "夕食";
 
-            historyData.forEach(item => {
+            data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'glass-card history-card';
-                card.onclick = () => showHistoryDetail(item.date);
+                card.onclick = () => showHistoryDetail(item.date, activeHistoryTab);
                 
                 // Extract dishes
                 const b_name = item.breakfast?.dish_name || '...';
@@ -2374,13 +2405,15 @@
             }
         }
 
-        async function showHistoryDetail(date) {
+        async function showHistoryDetail(date, type = 'adult') {
             try {
-                const res = await fetch(`/api/menu/history-md/${date}`);
+                const endpoint = type === 'kids' ? `/api/menu/kids-history-md/${date}` : `/api/menu/history-md/${date}`;
+                const res = await fetch(endpoint);
                 const text = await res.text();
                 
                 const titleLabel = i18n[currentLang].modalMdTitle || "原始 Markdown 文件";
-                document.getElementById('modal-title').innerText = `${titleLabel} (${date}.md)`;
+                const filename = type === 'kids' ? `kids_${date}.md` : `${date}.md`;
+                document.getElementById('modal-title').innerText = `${titleLabel} (${filename})`;
                 document.getElementById('modal-body').innerText = text;
                 document.getElementById('md-modal').style.display = 'flex';
             } catch (err) {
