@@ -902,9 +902,9 @@
         <section id="history" class="tab-content">
             <!-- Sub-tabs for Adult vs Kids History -->
             <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-                <button class="btn btn-primary" id="btn-hist-adult" onclick="switchHistorySubTab('adult')">👨 大人减脂餐历史</button>
-                <button class="btn btn-secondary" id="btn-hist-kids" onclick="switchHistorySubTab('kids')">👦 儿童营养餐历史</button>
-                <button class="btn btn-secondary" id="btn-hist-trending" onclick="switchHistorySubTab('trending')">🫒 地中海推荐历史</button>
+                <button class="btn btn-primary" id="btn-hist-adult" onclick="switchHistorySubTab('adult')" data-i18n="histTabAdult">👨 大人减脂餐历史</button>
+                <button class="btn btn-secondary" id="btn-hist-kids" onclick="switchHistorySubTab('kids')" data-i18n="histTabKids">👦 儿童营养餐历史</button>
+                <button class="btn btn-secondary" id="btn-hist-trending" onclick="switchHistorySubTab('trending')" data-i18n="histTabTrending">🫒 地中海饮食推荐历史</button>
             </div>
 
             <div class="glass-card">
@@ -1086,7 +1086,20 @@
                 kidsTrendingTitle: "👦 儿童流行营养膳食推荐",
                 kidsTrendingDesc: "根据小学生的饮食特点（汉堡排、咖喱、寿司等）精选健康少油的流行营养餐做法。",
                 btnImportIngredients: "📥 一键导入食材",
-                toastImportSuccess: "成功将食材导入你的食材库！"
+                toastImportSuccess: "成功将食材导入你的食材库！",
+                // History sub-tab labels
+                histTabAdult: "👨 大人减脂餐历史",
+                histTabKids: "👦 儿童营养餐历史",
+                histTabTrending: "🫒 地中海饮食推荐历史",
+                trendingHistoryEmpty: "暂无地中海饮食推荐历史记录，待每日7点自动入库",
+                trendingHistBadge: "地中海饮食推荐",
+                trendingHistAdultLabel: "👨 减脂推荐",
+                trendingHistKidsLabel: "👦 儿童推荐",
+                // Updated trending titles (Mediterranean)
+                trendingTitle: "🫒 地中海饮食每日推荐减脂餐",
+                trendingDesc: "每天精选 3 款地中海饮食减脂餐，低糖少油、富含膳食纤维与健康脂肪，助你烧脂又美味。",
+                kidsTrendingTitle: "👦 地中海小小美食家每日推荐",
+                kidsTrendingDesc: "地中海食材配合小学生口味，每天精选 3 款健康少油的儿童营养餐做法。"
             },
             en: {
                 title: "Slim Eating Time",
@@ -1169,7 +1182,20 @@
                 kidsTrendingTitle: "👦 Kids Healthy Meal Recommendations",
                 kidsTrendingDesc: "Healthy kid-friendly recipes recommended daily, tailored to children's food habits.",
                 btnImportIngredients: "📥 Import All Ingredients",
-                toastImportSuccess: "Successfully imported ingredients to pantry!"
+                toastImportSuccess: "Successfully imported ingredients to pantry!",
+                // History sub-tab labels
+                histTabAdult: "👨 Adult Fat-loss History",
+                histTabKids: "👦 Kids Menu History",
+                histTabTrending: "🫒 Mediterranean History",
+                trendingHistoryEmpty: "No Mediterranean recipe history yet. Auto-saved daily at 7am.",
+                trendingHistBadge: "Mediterranean Diet",
+                trendingHistAdultLabel: "👨 Fat-loss Picks",
+                trendingHistKidsLabel: "👦 Kids Picks",
+                // Updated trending titles (Mediterranean)
+                trendingTitle: "🫒 Daily Mediterranean Diet Recommendations",
+                trendingDesc: "3 curated Mediterranean fat-loss meals recommended daily — low sugar, high fiber, healthy fats.",
+                kidsTrendingTitle: "👦 Kids Mediterranean Meal Picks",
+                kidsTrendingDesc: "Healthy kid-friendly Mediterranean meals tailored to your child's preferences, recommended daily."
             },
             ja: {
                 title: "スリム食卓",
@@ -1252,7 +1278,20 @@
                 kidsTrendingTitle: "👦 お子様向けトレンド栄養レシピ",
                 kidsTrendingDesc: "ハンバーグやカレー、寿司など、お子様の好みに合わせたヘルシーなトレンドレシピを毎日厳選してご紹介。",
                 btnImportIngredients: "📥 食材を一括インポート",
-                toastImportSuccess: "食材を食材庫にインポートしました！"
+                toastImportSuccess: "食材を食材庫にインポートしました！",
+                // History sub-tab labels
+                histTabAdult: "👨 大人ダイエット履歴",
+                histTabKids: "👦 キッズ献立履歴",
+                histTabTrending: "🫒 地中海レシピ履歴",
+                trendingHistoryEmpty: "地中海レシピ履歴はまだありません。毎朝7時に自動保存されます。",
+                trendingHistBadge: "地中海食",
+                trendingHistAdultLabel: "👨 ダイエット推奨",
+                trendingHistKidsLabel: "👦 キッズ推奨",
+                // Updated trending titles (Mediterranean)
+                trendingTitle: "🫒 地中海食本日のおすすめレシピ",
+                trendingDesc: "毎日厚選３レシピの地中海食ダイエット献立をご紹介。低糖質・高繊維質・健康的な脂質で織り細た食事。",
+                kidsTrendingTitle: "👦 地中海食 キッズメニューおすすめ",
+                kidsTrendingDesc: "お子様の好みに合わせた地中海食のキッズ向けヘルシーレシピを毎日おすすめ。"
             }
         };
 
@@ -2246,8 +2285,9 @@
 
             // --- Trending History Tab ---
             if (activeHistoryTab === 'trending') {
+                const t = i18n[currentLang];
                 if (trendingHistoryData.length === 0) {
-                    container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 3rem;">暂无地中海推荐食谱历史记录</div>`;
+                    container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 3rem;">${t.trendingHistoryEmpty || '暂无地中海饮食推荐历史记录'}</div>`;
                     return;
                 }
                 trendingHistoryData.forEach(entry => {
@@ -2258,11 +2298,11 @@
                     card.innerHTML = `
                         <div class="history-card-header">
                             <span class="history-date">🫒 ${entry.date}</span>
-                            <span style="font-size:0.8rem; background:rgba(99,102,241,0.15); padding:0.2rem 0.6rem; border-radius:4px; color:var(--accent); font-weight:600;">地中海饮食推荐</span>
+                            <span style="font-size:0.8rem; background:rgba(99,102,241,0.15); padding:0.2rem 0.6rem; border-radius:4px; color:var(--accent); font-weight:600;">${t.trendingHistBadge || '地中海饮食推荐'}</span>
                         </div>
                         <div class="history-meals-preview">
-                            <span class="history-meal-preview-item">👨 减脂推荐: <strong>${adultNames}</strong></span>
-                            <span class="history-meal-preview-item">👦 儿童推荐: <strong>${kidsNames}</strong></span>
+                            <span class="history-meal-preview-item">${t.trendingHistAdultLabel || '👨 减脂推荐'}: <strong>${adultNames}</strong></span>
+                            <span class="history-meal-preview-item">${t.trendingHistKidsLabel || '👦 儿童推荐'}: <strong>${kidsNames}</strong></span>
                         </div>
                     `;
                     container.appendChild(card);
