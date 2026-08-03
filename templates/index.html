@@ -467,14 +467,9 @@
 
         .pantry-tags-grid {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            align-content: flex-start;
+            flex-direction: column;
+            gap: 1.25rem;
             min-height: 200px;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 12px;
-            border: 1px dashed var(--border-color);
         }
 
         .food-tag {
@@ -1041,7 +1036,8 @@
                 kidsGenLoading: "AI 正在定制儿童营养餐...",
                 kidsNutriHighlight: "💡 儿童成长亮点：",
                 toastKidsSavePrefSuccess: "儿童饮食喜好已保存！",
-                toastKidsGenerateSuccess: "儿童营养餐生成成功！"
+                toastKidsGenerateSuccess: "儿童营养餐生成成功！",
+                other: "🧂 其他 / 配料"
             },
             en: {
                 title: "Slim Eating Time",
@@ -1115,7 +1111,8 @@
                 kidsGenLoading: "AI is planning kids meals...",
                 kidsNutriHighlight: "💡 Kids Growth Highlight: ",
                 toastKidsSavePrefSuccess: "Kids preferences saved successfully!",
-                toastKidsGenerateSuccess: "Kids menu generated successfully!"
+                toastKidsGenerateSuccess: "Kids menu generated successfully!",
+                other: "🧂 Others / Seasonings"
             },
             ja: {
                 title: "スリム食卓",
@@ -1189,7 +1186,8 @@
                 kidsGenLoading: "AIがお子様の献立を計画中...",
                 kidsNutriHighlight: "💡 キッズ栄養ポイント：",
                 toastKidsSavePrefSuccess: "お子様の好み設定が保存されました！",
-                toastKidsGenerateSuccess: "キッズ献立の生成に成功しました！"
+                toastKidsGenerateSuccess: "キッズ献立の生成に成功しました！",
+                other: "🧂 その他・調味料"
             }
         };
 
@@ -1787,21 +1785,104 @@
             
             const filtered = foodsList.filter(food => food.toLowerCase().includes(searchVal));
             
-            if (filtered.length === 0) {
-                container.innerHTML = `<div style="color: var(--text-secondary); width: 100%; text-align: center; padding: 2rem 0;">No matching items</div>`;
-            } else {
-                filtered.forEach(food => {
-                    const tag = document.createElement('span');
-                    tag.className = 'food-tag';
-                    tag.innerHTML = `
-                        <span>${food}</span>
-                        <span class="remove-btn" onclick="deleteFood('${food}')">&times;</span>
+            const lang = currentLang;
+            const categoryNames = {
+                meat: i18n[lang].catMeat || "🥩 蛋白质",
+                veg: i18n[lang].catVeg || "🥦 蔬菜水果",
+                staple: i18n[lang].catStaple || "🍠 优质碳水",
+                other: i18n[lang].other || "🧂 其他 / 配料"
+            };
+
+            const categorized = {
+                meat: [],
+                veg: [],
+                staple: [],
+                other: []
+            };
+
+            // Categorization lists
+            const stapleKeywords = ["土豆", "红薯", "紫薯", "南瓜", "燕麦", "糙米", "藜麦", "全麦", "面包", "意面", "米饭", "玉米", "面条", "粉", "芋头", "山药", "potato", "sweet potato", "pumpkin", "oat", "brown rice", "quinoa", "wheat", "bread", "pasta", "rice", "corn", "noodle", "taro", "yam", "じゃがいも", "さつまいも", "かぼちゃ", "オートミール", "玄米", "キヌア", "全粒粉", "パン", "パスタ", "ライス", "米", "トウモロコシ", "麺", "芋"];
+            const meatKeywords = ["鸡", "肉", "蛋", "牛", "猪", "羊", "鱼", "虾", "豆腐", "蟹", "贝", "蛤", "蚝", "蚌", "螺", "鲑", "卵", "鮭", "いくら", "salmon", "chicken", "beef", "pork", "mutton", "fish", "shrimp", "egg", "tofu", "tuna", "turkey", "鶏", "豚", "牛", "羊", "魚", "エビ", "卵", "サーモン"];
+            const vegKeywords = ["西兰花", "西蓝花", "黄瓜", "生菜", "番茄", "西红柿", "茄子", "胡萝卜", "白菜", "油麦菜", "菠菜", "芹菜", "洋葱", "大蒜", "生姜", "辣椒", "甜椒", "苹果", "香蕉", "橙子", "草莓", "葡萄", "柠檬", "蓝莓", "牛油果", "梨", "桃", "瓜", "菇", "木耳", "笋", "葱", "蒜", "姜", "broccoli", "cucumber", "lettuce", "tomato", "eggplant", "carrot", "cabbage", "spinach", "celery", "onion", "garlic", "ginger", "pepper", "apple", "banana", "orange", "strawberry", "grape", "lemon", "blueberry", "avocado", "pear", "peach", "melon", "mushroom", "ブロッコリー", "きゅうり", "レタス", "トマト", "なす", "キャベツ", "にんじん", "ほうれん草", "セロリ", "玉ねぎ", "ニンニク", "生姜", "ピーマン", "リンゴ", "バナナ", "オレンジ", "イチゴ", "ブドウ", "レモン", "ブルーベリー", "アボカド", "ナシ", "モモ", "メロン", "マッシュルーム", "野菜", "果物"];
+
+            filtered.forEach(food => {
+                const lowerFood = food.toLowerCase();
+                
+                // Staple check
+                const isStaple = stapleKeywords.some(kw => lowerFood.includes(kw));
+                if (isStaple) {
+                    categorized.staple.push(food);
+                    return;
+                }
+
+                // Meat/Protein check
+                const isMeat = meatKeywords.some(kw => lowerFood.includes(kw));
+                if (isMeat) {
+                    categorized.meat.push(food);
+                    return;
+                }
+
+                // Veg/Fruit check
+                const isVeg = vegKeywords.some(kw => lowerFood.includes(kw));
+                if (isVeg) {
+                    categorized.veg.push(food);
+                    return;
+                }
+
+                // Default
+                categorized.other.push(food);
+            });
+
+            // Render categories
+            let totalRendered = 0;
+            const categoriesToRender = ['meat', 'veg', 'staple', 'other'];
+            
+            categoriesToRender.forEach(catKey => {
+                const list = categorized[catKey];
+                if (list.length > 0) {
+                    totalRendered += list.length;
+                    
+                    const catBox = document.createElement('div');
+                    catBox.className = 'category-box';
+                    catBox.style.width = '100%';
+                    catBox.style.background = 'rgba(0, 0, 0, 0.15)';
+                    catBox.style.border = '1px solid var(--border-color)';
+                    catBox.style.padding = '1.25rem';
+                    catBox.style.borderRadius = '12px';
+                    catBox.style.marginBottom = '1rem';
+                    
+                    const countLabel = i18n[lang].countUnit || "共 {count} 种";
+                    const formattedCount = countLabel.replace('{count}', list.length);
+                    
+                    catBox.innerHTML = `
+                        <div class="category-name" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>${categoryNames[catKey]}</span>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;">${formattedCount}</span>
+                        </div>
+                        <div class="quick-tags" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                        </div>
                     `;
-                    container.appendChild(tag);
-                });
+                    
+                    const tagsContainer = catBox.querySelector('.quick-tags');
+                    list.forEach(food => {
+                        const tag = document.createElement('span');
+                        tag.className = 'food-tag';
+                        tag.innerHTML = `
+                            <span>${food}</span>
+                            <span class="remove-btn" onclick="deleteFood('${food}')">&times;</span>
+                        `;
+                        tagsContainer.appendChild(tag);
+                    });
+                    
+                    container.appendChild(catBox);
+                }
+            });
+
+            if (totalRendered === 0) {
+                container.innerHTML = `<div style="color: var(--text-secondary); width: 100%; text-align: center; padding: 3rem 0;">No matching items</div>`;
             }
             
-            const countLabel = i18n[currentLang].countUnit || "共 {count} 种";
+            const countLabel = i18n[lang].countUnit || "共 {count} 种";
             countEl.innerText = countLabel.replace('{count}', foodsList.length);
         }
 
