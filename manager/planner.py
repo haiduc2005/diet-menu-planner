@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from manager.foods import load_foods
-from manager.history import load_history, add_to_history, load_settings, load_kids_history, add_to_kids_history
+from manager.history import load_history, add_to_history, load_settings, load_kids_history, add_to_kids_history, load_trending_history, add_to_trending_history
 from ai.gemini import GeminiClient
 from ai.parser import parse_menu_to_markdown
 
@@ -168,3 +168,23 @@ def get_daily_kids_trending_recipes() -> list:
     except Exception as e:
         print(f"Error loading kids trending recipes: {e}")
         return []
+
+def generate_and_save_daily_trending(date_str: str = None) -> dict:
+    """Pick today's trending recipes (if not already done) and persist them to trending history."""
+    if not date_str:
+        date_str = datetime.now().strftime('%Y-%m-%d')
+
+    # Check if today's entry already exists
+    history = load_trending_history()
+    already_exists = any(item.get('date') == date_str for item in history)
+    if already_exists:
+        existing = next(item for item in history if item.get('date') == date_str)
+        return existing
+
+    # Pick today's adult & kids recipes
+    adult_recipes = get_daily_trending_recipes()
+    kids_recipes = get_daily_kids_trending_recipes()
+
+    # Save to history
+    add_to_trending_history(date_str, adult_recipes, kids_recipes)
+    return {"date": date_str, "adult": adult_recipes, "kids": kids_recipes}

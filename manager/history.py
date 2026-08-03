@@ -155,3 +155,52 @@ def add_to_kids_history(menu_data: dict):
     if len(history) > 30:
         history = history[:30]
     return save_kids_history(history)
+
+
+# --- Trending Recipes History Manager ---
+
+TRENDING_HISTORY_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'trending_history.json')
+
+def load_trending_history():
+    """Load the list of daily trending recipe selections from trending_history.json."""
+    if not os.path.exists(TRENDING_HISTORY_FILE):
+        os.makedirs(os.path.dirname(TRENDING_HISTORY_FILE), exist_ok=True)
+        with open(TRENDING_HISTORY_FILE, 'w', encoding='utf-8') as f:
+            json.dump([], f, ensure_ascii=False, indent=2)
+        return []
+    try:
+        with open(TRENDING_HISTORY_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Error loading trending history: {e}")
+        return []
+
+def save_trending_history(history_list):
+    """Save the trending history list to trending_history.json."""
+    os.makedirs(os.path.dirname(TRENDING_HISTORY_FILE), exist_ok=True)
+    try:
+        with open(TRENDING_HISTORY_FILE, 'w', encoding='utf-8') as f:
+            json.dump(history_list, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        print(f"Error saving trending history: {e}")
+        return False
+
+def add_to_trending_history(date_str: str, adult_recipes: list, kids_recipes: list):
+    """Add today's trending recipe selection to history."""
+    history = load_trending_history()
+    entry = {
+        "date": date_str,
+        "adult": adult_recipes,
+        "kids": kids_recipes,
+    }
+    # Replace existing entry for same date
+    history = [item for item in history if item.get('date') != date_str]
+    history.append(entry)
+    try:
+        history.sort(key=lambda x: x.get('date', ''), reverse=True)
+    except Exception:
+        pass
+    if len(history) > 30:
+        history = history[:30]
+    return save_trending_history(history)

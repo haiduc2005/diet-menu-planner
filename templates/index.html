@@ -901,9 +901,10 @@
         <!-- 3. HISTORY TAB -->
         <section id="history" class="tab-content">
             <!-- Sub-tabs for Adult vs Kids History -->
-            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
                 <button class="btn btn-primary" id="btn-hist-adult" onclick="switchHistorySubTab('adult')">👨 大人减脂餐历史</button>
                 <button class="btn btn-secondary" id="btn-hist-kids" onclick="switchHistorySubTab('kids')">👦 儿童营养餐历史</button>
+                <button class="btn btn-secondary" id="btn-hist-trending" onclick="switchHistorySubTab('trending')">🫒 地中海推荐历史</button>
             </div>
 
             <div class="glass-card">
@@ -997,6 +998,7 @@
         let settingsData = {};
         let historyData = [];
         let kidsHistoryData = [];
+        let trendingHistoryData = [];
         let activeHistoryTab = 'adult';
         let currentMenu = null;
         let currentLang = 'zh';
@@ -1587,12 +1589,14 @@
         // GET History
         async function fetchHistory() {
             try {
-                const [adultRes, kidsRes] = await Promise.all([
+                const [adultRes, kidsRes, trendingRes] = await Promise.all([
                     fetch('/api/history'),
-                    fetch('/api/kids-history')
+                    fetch('/api/kids-history'),
+                    fetch('/api/trending-history')
                 ]);
                 historyData = await adultRes.json();
                 kidsHistoryData = await kidsRes.json();
+                trendingHistoryData = await trendingRes.json();
                 renderHistoryTimeline();
             } catch (err) {
                 console.error("Failed to load history lists:", err);
@@ -1852,22 +1856,6 @@
             }
         }
 
-        function getRecipeSearchUrl(title, source) {
-            const isDouyin = (source || '').includes('抖音') || (source || '').includes('Douyin') || (source || '').includes('TikTok');
-            if (isDouyin) {
-                return {
-                    url: `https://www.baidu.com/s?wd=${encodeURIComponent(title + ' 做法')}`,
-                    color: '#00afc7',
-                    label: `${source} (网页搜索)`
-                };
-            } else {
-                return {
-                    url: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(title)}`,
-                    color: '#ff2442',
-                    label: `${source}`
-                };
-            }
-        }
 
         let trendingRecipesList = [];
 
@@ -1924,11 +1912,10 @@
                     stepHTML += '</ol>';
                 }
 
-                const linkData = getRecipeSearchUrl(r.title, r.source);
                 card.innerHTML = `
                     <div class="meal-title-row" style="justify-content: space-between;">
                         <span style="font-weight: 700; color: white;">${r.title}</span>
-                        <a href="${linkData.url}" target="_blank" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: ${linkData.color}; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">${linkData.label} 🔗</a>
+                        <span style="font-size: 0.8rem; background: rgba(99,102,241,0.15); padding: 0.2rem 0.6rem; border-radius: 4px; color: var(--accent); font-weight: 600;">🫒 ${r.source}</span>
                     </div>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         ${tagsHTML}
@@ -2035,11 +2022,10 @@
                     stepHTML += '</ol>';
                 }
 
-                const linkData = getRecipeSearchUrl(r.title, r.source);
                 card.innerHTML = `
                     <div class="meal-title-row" style="justify-content: space-between;">
                         <span style="font-weight: 700; color: white;">${r.title}</span>
-                        <a href="${linkData.url}" target="_blank" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: ${linkData.color}; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">${linkData.label} 🔗</a>
+                        <span style="font-size: 0.8rem; background: rgba(16,185,129,0.15); padding: 0.2rem 0.6rem; border-radius: 4px; color: var(--primary); font-weight: 600;">🫒 ${r.source}</span>
                     </div>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         ${tagsHTML}
@@ -2244,15 +2230,12 @@
             activeHistoryTab = type;
             const btnAdult = document.getElementById('btn-hist-adult');
             const btnKids = document.getElementById('btn-hist-kids');
-            
-            if (type === 'adult') {
-                btnAdult.className = 'btn btn-primary';
-                btnKids.className = 'btn btn-secondary';
-            } else {
-                btnAdult.className = 'btn btn-secondary';
-                btnKids.className = 'btn btn-primary';
-            }
-            
+            const btnTrending = document.getElementById('btn-hist-trending');
+
+            btnAdult.className = type === 'adult' ? 'btn btn-primary' : 'btn btn-secondary';
+            btnKids.className = type === 'kids' ? 'btn btn-primary' : 'btn btn-secondary';
+            btnTrending.className = type === 'trending' ? 'btn btn-primary' : 'btn btn-secondary';
+
             renderHistoryTimeline();
         }
 
@@ -2261,6 +2244,33 @@
             const container = document.getElementById('history-timeline-container');
             container.innerHTML = '';
 
+            // --- Trending History Tab ---
+            if (activeHistoryTab === 'trending') {
+                if (trendingHistoryData.length === 0) {
+                    container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 3rem;">暂无地中海推荐食谱历史记录</div>`;
+                    return;
+                }
+                trendingHistoryData.forEach(entry => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-card history-card';
+                    const adultNames = (entry.adult || []).map(r => r.title).join('、') || '—';
+                    const kidsNames = (entry.kids || []).map(r => r.title).join('、') || '—';
+                    card.innerHTML = `
+                        <div class="history-card-header">
+                            <span class="history-date">🫒 ${entry.date}</span>
+                            <span style="font-size:0.8rem; background:rgba(99,102,241,0.15); padding:0.2rem 0.6rem; border-radius:4px; color:var(--accent); font-weight:600;">地中海饮食推荐</span>
+                        </div>
+                        <div class="history-meals-preview">
+                            <span class="history-meal-preview-item">👨 减脂推荐: <strong>${adultNames}</strong></span>
+                            <span class="history-meal-preview-item">👦 儿童推荐: <strong>${kidsNames}</strong></span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                return;
+            }
+
+            // --- Adult / Kids Menu History Tabs ---
             const data = activeHistoryTab === 'adult' ? historyData : kidsHistoryData;
 
             if (data.length === 0) {
@@ -2282,7 +2292,7 @@
                 const card = document.createElement('div');
                 card.className = 'glass-card history-card';
                 card.onclick = () => showHistoryDetail(item.date, activeHistoryTab);
-                
+
                 // Extract dishes
                 const b_name = item.breakfast?.dish_name || '...';
                 const l_name = item.lunch?.dish_name || '...';
