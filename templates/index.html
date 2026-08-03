@@ -62,6 +62,8 @@
             margin-bottom: 2.5rem;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo-area {
@@ -166,12 +168,6 @@
             border-radius: 12px;
             margin-bottom: 1.5rem;
             font-size: 0.9rem;
-        }
-
-        .banner.warning {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            color: #fbbf24;
         }
 
         .banner.info {
@@ -685,21 +681,27 @@
             <div class="logo-area">
                 <span class="logo-icon">🥗</span>
                 <div>
-                    <h1>AI Diet Menu Planner</h1>
-                    <p class="subtitle">根据冰箱已有食材，智能规划每日健康减脂餐</p>
+                    <h1 data-i18n="title">AI Diet Menu Planner</h1>
+                    <p class="subtitle" data-i18n="subtitle">根据冰箱已有食材，智能规划每日健康减脂餐</p>
                 </div>
             </div>
-            <div class="header-actions">
-                <button class="btn btn-secondary" onclick="viewTodayMarkdown()">查看原始 Markdown (today.md)</button>
+            <div class="header-actions" style="display: flex; align-items: center; gap: 0.75rem;">
+                <!-- UI Language Switcher -->
+                <select id="ui-language-select" class="form-input" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem; background: rgba(15, 23, 42, 0.8);" onchange="changeUILanguage(this.value)">
+                    <option value="zh">🇨🇳 中文</option>
+                    <option value="en">🇺🇸 English</option>
+                    <option value="ja">🇯🇵 日本語</option>
+                </select>
+                <button class="btn btn-secondary" onclick="viewTodayMarkdown()" id="btn-view-md" data-i18n="viewMd">查看原始 Markdown (today.md)</button>
             </div>
         </header>
 
         <!-- Navigation Tabs -->
         <nav class="tabs">
-            <button class="tab-btn active" onclick="switchTab('today-menu')">🍳 今日食谱</button>
-            <button class="tab-btn" onclick="switchTab('pantry')">🥕 食材库</button>
-            <button class="tab-btn" onclick="switchTab('history')">📜 历史食谱</button>
-            <button class="tab-btn" onclick="switchTab('settings')">⚙️ 设置中心</button>
+            <button class="tab-btn active" onclick="switchTab('today-menu')" id="tab-btn-today" data-i18n="tabToday">🍳 今日食谱</button>
+            <button class="tab-btn" onclick="switchTab('pantry')" id="tab-btn-pantry" data-i18n="tabPantry">🥕 食材库</button>
+            <button class="tab-btn" onclick="switchTab('history')" id="tab-btn-history" data-i18n="tabHistory">📜 历史食谱</button>
+            <button class="tab-btn" onclick="switchTab('settings')" id="tab-btn-settings" data-i18n="tabSettings">⚙️ 设置中心</button>
         </nav>
 
         <!-- Toast Notifications -->
@@ -708,39 +710,31 @@
         <!-- 1. TODAY MENU TAB -->
         <section id="today-menu" class="tab-content active">
             
-            <!-- Warnings / Notice banners -->
-            <div id="demo-banner" class="banner warning" style="display: none;">
-                <div>
-                    <strong>Demo 演示模式中：</strong> <span id="demo-banner-text"></span>
-                </div>
-            </div>
-
             <div class="menu-header-bar">
                 <div class="date-display" id="menu-date-label">载入中...</div>
                 <button class="btn btn-primary" id="btn-generate" onclick="generateMenu()">
                     <span class="spinner" id="gen-spinner"></span>
-                    <span id="gen-btn-text">🪄 智能生成一日食谱</span>
+                    <span id="gen-btn-text" data-i18n="btnGenStart">🪄 智能生成一日食谱</span>
                 </button>
             </div>
 
             <!-- Health Summary -->
             <div class="banner info" id="nutritional-banner" style="display: none;">
                 <div>
-                    <strong>💡 今日减脂亮点：</strong> <span id="nutritional-text"></span>
+                    <strong data-i18n="nutriHighlight">💡 今日减脂亮点：</strong> <span id="nutritional-text"></span>
                 </div>
             </div>
 
             <!-- Meals Grid -->
             <div class="meals-grid" id="meals-container">
-                <!-- Meal Cards loaded dynamically -->
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);" data-i18n="menuNotGen">
                     正在读取当前食谱或请点击生成...
                 </div>
             </div>
 
             <!-- Shopping List -->
             <div class="glass-card shopping-summary-card" id="shopping-card" style="display: none;">
-                <h3 class="section-title">🛒 建议采购清单 (按需购买)</h3>
+                <h3 class="section-title" data-i18n="shoppingTitle">🛒 建议采购清单 (按需购买)</h3>
                 <div class="shopping-items-grid" id="shopping-items-list">
                     <!-- Items -->
                 </div>
@@ -754,21 +748,21 @@
                 
                 <!-- Quick add side-pane -->
                 <div class="glass-card" style="height: fit-content; display: flex; flex-direction: column; gap: 1.5rem;">
-                    <h3>添加新食材</h3>
+                    <h3 data-i18n="addFoodTitle">添加新食材</h3>
                     
                     <div class="input-group">
-                        <label for="food-input">食材名称</label>
+                        <label for="food-input" data-i18n="foodLabel">食材名称</label>
                         <div style="display: flex; gap: 0.5rem;">
-                            <input type="text" id="food-input" class="form-input" placeholder="例如：西蓝花, 鸡腿肉" onkeydown="if(event.key === 'Enter') handleAddFood()">
+                            <input type="text" id="food-input" class="form-input" data-i18n-placeholder="placeholderFoodInput" placeholder="例如：西蓝花, 鸡腿肉" onkeydown="if(event.key === 'Enter') handleAddFood()">
                             <button class="btn btn-primary" onclick="handleAddFood()" style="padding: 0.7rem 1rem;">＋</button>
                         </div>
                     </div>
 
                     <div>
-                        <h4 class="section-title" style="margin-bottom: 0.75rem;">快捷添加常用减脂食材</h4>
+                        <h4 class="section-title" style="margin-bottom: 0.75rem;" data-i18n="quickAddTitle">快捷添加常用减脂食材</h4>
                         <div class="quick-categories">
                             <div class="category-box">
-                                <div class="category-name">🥩 蛋白质</div>
+                                <div class="category-name" data-i18n="catMeat">🥩 蛋白质</div>
                                 <div class="quick-tags">
                                     <span class="quick-add-tag" onclick="quickAddFood('鸡胸肉')">鸡胸肉</span>
                                     <span class="quick-add-tag" onclick="quickAddFood('鸡蛋')">鸡蛋</span>
@@ -779,7 +773,7 @@
                                 </div>
                             </div>
                             <div class="category-box">
-                                <div class="category-name">🥦 蔬菜水果</div>
+                                <div class="category-name" data-i18n="catVeg">🥦 蔬菜水果</div>
                                 <div class="quick-tags">
                                     <span class="quick-add-tag" onclick="quickAddFood('西兰花')">西兰花</span>
                                     <span class="quick-add-tag" onclick="quickAddFood('黄瓜')">黄瓜</span>
@@ -790,7 +784,7 @@
                                 </div>
                             </div>
                             <div class="category-box">
-                                <div class="category-name">🍠 优质碳水</div>
+                                <div class="category-name" data-i18n="catStaple">🍠 优质碳水</div>
                                 <div class="quick-tags">
                                     <span class="quick-add-tag" onclick="quickAddFood('土豆')">土豆</span>
                                     <span class="quick-add-tag" onclick="quickAddFood('燕麦')">燕麦</span>
@@ -806,15 +800,15 @@
                 <!-- Main Tags area -->
                 <div class="glass-card pantry-tags-area">
                     <div class="search-row">
-                        <input type="text" id="pantry-search" class="form-input" placeholder="🔍 搜索食材库..." oninput="renderPantryTags()">
+                        <input type="text" id="pantry-search" class="form-input" data-i18n-placeholder="pantrySearchPlaceholder" placeholder="🔍 搜索食材库..." oninput="renderPantryTags()">
                     </div>
                     
                     <div>
                         <h3 style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
-                            <span>我的食材库</span>
+                            <span data-i18n="myPantry">我的食材库</span>
                             <span id="pantry-count" style="font-size: 0.9rem; color: var(--text-secondary); font-weight: normal;">共 0 种</span>
                         </h3>
-                        <p class="subtitle" style="margin-bottom: 1rem;">点击食材卡片右上角的 × 即可将其移除</p>
+                        <p class="subtitle" style="margin-bottom: 1rem;" data-i18n="pantryTip">点击食材卡片右上角的 × 即可将其移除</p>
                         
                         <div class="pantry-tags-grid" id="pantry-tags-container">
                             <!-- Tags loaded here -->
@@ -828,10 +822,10 @@
         <!-- 3. HISTORY TAB -->
         <section id="history" class="tab-content">
             <div class="glass-card">
-                <h3 style="margin-bottom: 1.5rem;">📅 菜单历史记录 (近30次生成)</h3>
+                <h3 style="margin-bottom: 1.5rem;" data-i18n="historyTitle">📅 菜单历史记录 (近30次生成)</h3>
                 <div class="history-timeline" id="history-timeline-container">
                     <!-- Loaded dynamically -->
-                    <div style="text-align: center; color: var(--text-secondary); padding: 3rem;">
+                    <div style="text-align: center; color: var(--text-secondary); padding: 3rem;" data-i18n="historyEmpty">
                         暂无历史记录
                     </div>
                 </div>
@@ -844,50 +838,54 @@
                 
                 <!-- Main configs -->
                 <div class="glass-card" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                    <h3>AI 配置参数</h3>
+                    <h3 data-i18n="settingsAiTitle">AI 配置参数</h3>
                     
                     <div class="input-group">
-                        <label for="setting-api-key">Google Gemini API Key</label>
-                        <input type="password" id="setting-api-key" class="form-input" placeholder="空 (默认读取系统环境变量/ .env)">
+                        <label for="setting-api-key" data-i18n="apiKeyLabel">Google Gemini API Key</label>
+                        <input type="password" id="setting-api-key" class="form-input" data-i18n-placeholder="apiKeyPlaceholder" placeholder="空 (默认读取系统环境变量/ .env)">
                     </div>
 
                     <div class="input-group">
-                        <label for="setting-model">Gemini 模型型号</label>
+                        <label for="setting-model" data-i18n="modelLabel">Gemini 模型型号</label>
                         <select id="setting-model" class="form-input">
-                            <option value="gemini-1.5-flash">gemini-1.5-flash (推荐: 高速低耗)</option>
-                            <option value="gemini-1.5-pro">gemini-1.5-pro (推荐: 逻辑与长文本强)</option>
+                            <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (极速极简: 答复速度最快 ⚡)</option>
+                            <option value="gemini-3.6-flash">gemini-3.6-flash (最新推荐: 极速平衡)</option>
+                            <option value="gemini-3.5-flash">gemini-3.5-flash (旗舰主力: 智能高效)</option>
+                            <option value="gemini-3.5-pro">gemini-3.5-pro (旗舰推理: 逻辑分析)</option>
                             <option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp (前沿特性测试)</option>
+                            <option value="gemini-1.5-flash">gemini-1.5-flash (经典轻量)</option>
+                            <option value="gemini-1.5-pro">gemini-1.5-pro (经典智能)</option>
                         </select>
                     </div>
 
                     <div class="input-group">
-                        <label for="setting-calories">目标热量上限 (kcal)</label>
+                        <label for="setting-calories" data-i18n="caloriesLabel">目标热量上限 (kcal)</label>
                         <input type="number" id="setting-calories" class="form-input" min="1000" max="4000" step="50">
                     </div>
 
                     <div class="input-group">
-                        <label for="setting-language">AI 语言偏好</label>
+                        <label for="setting-language" data-i18n="langLabel">AI 语言偏好</label>
                         <input type="text" id="setting-language" class="form-input" placeholder="例如：中文, English">
                     </div>
 
-                    <button class="btn btn-primary" onclick="saveSettings()">💾 保存参数配置</button>
+                    <button class="btn btn-primary" onclick="saveSettings()" data-i18n="btnSaveSettings">💾 保存参数配置</button>
                 </div>
 
                 <!-- Disliked ingredients management -->
                 <div class="glass-card" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                    <h3>忌口/避开的食材</h3>
-                    <p class="subtitle">AI 在定制菜单时将绝不使用您在此处列出的食材。</p>
+                    <h3 data-i18n="dislikedTitle">忌口/避开的食材</h3>
+                    <p class="subtitle" data-i18n="dislikedDesc">AI 在定制菜单时将绝不使用您在此处列出的食材。</p>
 
                     <div class="input-group">
-                        <label for="disliked-input">添加避开食材</label>
+                        <label for="disliked-input" data-i18n="addDislikedLabel">添加避开食材</label>
                         <div style="display: flex; gap: 0.5rem;">
-                            <input type="text" id="disliked-input" class="form-input" placeholder="例如：香菜, 芹菜" onkeydown="if(event.key === 'Enter') handleAddDisliked()">
-                            <button class="btn btn-secondary" onclick="handleAddDisliked()">添加</button>
+                            <input type="text" id="disliked-input" class="form-input" data-i18n-placeholder="dislikedPlaceholder" placeholder="例如：香菜, 芹菜" onkeydown="if(event.key === 'Enter') handleAddDisliked()">
+                            <button class="btn btn-secondary" onclick="handleAddDisliked()" data-i18n="addDislikedBtn">添加</button>
                         </div>
                     </div>
 
                     <div>
-                        <label>当前忌口列表</label>
+                        <label data-i18n="currentDisliked">当前忌口列表</label>
                         <div class="disliked-tags-grid" id="disliked-tags-container">
                             <!-- Disliked tags loaded here -->
                         </div>
@@ -903,7 +901,7 @@
     <div id="md-modal" class="modal">
         <div class="glass-card modal-content">
             <button class="close-modal" onclick="closeModal()">×</button>
-            <h2 id="modal-title" style="margin-bottom: 1.5rem; font-family: var(--font-display);">原始 Markdown 文件 (today.md)</h2>
+            <h2 id="modal-title" style="margin-bottom: 1.5rem; font-family: var(--font-display);" data-i18n="modalMdTitle">原始 Markdown 文件</h2>
             <pre id="modal-body" style="white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; color: #e2e8f0; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto; font-size: 0.9rem; line-height: 1.5;"></pre>
         </div>
     </div>
@@ -914,19 +912,283 @@
         let settingsData = {};
         let historyData = [];
         let currentMenu = null;
+        let currentLang = 'zh';
+
+        // --- i18n Translation Tables ---
+        const i18n = {
+            zh: {
+                title: "享瘦食光",
+                subtitle: "智能减脂一日三餐计划助手",
+                viewMd: "查看原始 Markdown (today.md)",
+                tabToday: "🍳 今日食谱",
+                tabPantry: "🥕 食材库",
+                tabHistory: "📜 历史食谱",
+                tabSettings: "⚙️ 设置中心",
+                menuDate: "食谱日期",
+                menuNotGen: "今日食谱尚未生成。请点击生成按钮！",
+                noMenuText: "今天还没有为您定制菜单。",
+                btnGenToday: "✨ 立刻规划今天的三餐",
+                btnGenStart: "智能生成一日食谱",
+                btnGenLoading: "AI 正在分析食材并定制菜单...",
+                nutriHighlight: "💡 今日减脂亮点：",
+                shoppingTitle: "🛒 建议采购清单 (按需购买)",
+                shoppingEmpty: "🎉 今日食材充足，无须额外购买！",
+                addFoodTitle: "添加新食材",
+                foodLabel: "食材名称",
+                placeholderFoodInput: "例如：西蓝花, 鸡腿肉",
+                quickAddTitle: "快捷添加常用减脂食材",
+                catMeat: "🥩 蛋白质",
+                catVeg: "🥦 蔬菜水果",
+                catStaple: "🍠 优质碳水",
+                pantrySearchPlaceholder: "🔍 搜索食材库...",
+                myPantry: "我的食材库",
+                pantryTip: "点击食材卡片右上角的 × 即可将其移除",
+                countUnit: "共 {count} 种",
+                historyTitle: "📅 菜单历史记录 (近30次生成)",
+                historyDetailBtn: "查看详情 Markdown",
+                historyEmpty: "暂无历史记录，开始生成菜单以保存历史",
+                settingsAiTitle: "AI 配置参数",
+                apiKeyLabel: "Google Gemini API Key",
+                apiKeyPlaceholder: "空 (默认读取系统环境变量/ .env)",
+                modelLabel: "Gemini 模型型号",
+                caloriesLabel: "目标热量上限 (kcal)",
+                langLabel: "AI 语言偏好",
+                btnSaveSettings: "💾 保存参数配置",
+                dislikedTitle: "忌口/避开的食材",
+                dislikedDesc: "AI 在定制菜单时将绝不使用您在此处列出的食材。",
+                addDislikedLabel: "添加避开食材",
+                addDislikedBtn: "添加",
+                currentDisliked: "当前忌口列表",
+                dislikedEmpty: "暂无忌口食材",
+                modalMdTitle: "原始 Markdown 文件",
+                toastSuccess: "操作成功",
+                toastSaveSettingsSuccess: "设置已保存！",
+                toastAddFoodSuccess: "成功添加食材",
+                toastDeleteFoodSuccess: "成功移除食材",
+                toastGenerateSuccess: "三餐食谱生成成功！",
+                toastGenerateFail: "生成失败: ",
+                toastAddDislikedSuccess: "已添加忌口食材",
+                toastDeleteDislikedSuccess: "已移除忌口食材",
+                breakfast: "🍳 早餐",
+                lunch: "🍤 午餐",
+                dinner: "🍲 晚餐",
+                reqBuy: "建议购买",
+                errorModalTitle: "Gemini API 后台请求报错日志",
+                instructionsTitle: "烹饪步骤",
+                dislikedPlaceholder: "例如：香菜, 芹菜",
+                toastDislikedExist: "该食材已在忌口列表中"
+            },
+            en: {
+                title: "Slim Eating Time",
+                subtitle: "Smart daily fat-loss meal planner based on your existing ingredients",
+                viewMd: "View Raw Markdown (today.md)",
+                tabToday: "🍳 Today's Menu",
+                tabPantry: "🥕 Pantry",
+                tabHistory: "📜 History",
+                tabSettings: "⚙️ Settings",
+                menuDate: "Menu Date",
+                menuNotGen: "Today's menu not generated yet. Click Generate!",
+                noMenuText: "No menu customized for today.",
+                btnGenToday: "✨ Customize Today's Meals",
+                btnGenStart: "Smart Generate Daily Menu",
+                btnGenLoading: "AI is analyzing ingredients & planning...",
+                nutriHighlight: "💡 Today's Fat-loss Highlight: ",
+                shoppingTitle: "🛒 Suggested Shopping List (As Needed)",
+                shoppingEmpty: "🎉 Plenty of ingredients today, no shopping needed!",
+                addFoodTitle: "Add New Ingredient",
+                foodLabel: "Ingredient Name",
+                placeholderFoodInput: "e.g., Broccoli, Chicken breast",
+                quickAddTitle: "Quick Add Common Ingredients",
+                catMeat: "🥩 Protein",
+                catVeg: "🥦 Veg & Fruits",
+                catStaple: "🍠 Healthy Carbs",
+                pantrySearchPlaceholder: "🔍 Search pantry...",
+                myPantry: "My Pantry",
+                pantryTip: "Click × on any ingredient card to remove it",
+                countUnit: "{count} items",
+                historyTitle: "📅 Menu History Logs (Last 30 generations)",
+                historyDetailBtn: "View Raw MD",
+                historyEmpty: "No history logs found, generate a menu to save history",
+                settingsAiTitle: "AI Configurations",
+                apiKeyLabel: "Google Gemini API Key",
+                apiKeyPlaceholder: "Blank (defaults to system env / .env)",
+                modelLabel: "Gemini Model",
+                caloriesLabel: "Daily Calories Limit (kcal)",
+                langLabel: "AI Response Language",
+                btnSaveSettings: "💾 Save Configurations",
+                dislikedTitle: "Excluded Ingredients",
+                dislikedDesc: "AI will strictly avoid using these ingredients in your menu.",
+                addDislikedLabel: "Add Excluded Ingredient",
+                addDislikedBtn: "Add",
+                currentDisliked: "Current Excluded List",
+                dislikedEmpty: "No excluded ingredients",
+                modalMdTitle: "Raw Markdown File",
+                toastSuccess: "Success",
+                toastSaveSettingsSuccess: "Settings saved!",
+                toastAddFoodSuccess: "Added ingredient successfully",
+                toastDeleteFoodSuccess: "Removed ingredient successfully",
+                toastGenerateSuccess: "Menu generated successfully!",
+                toastGenerateFail: "Generation failed: ",
+                toastAddDislikedSuccess: "Added excluded ingredient",
+                toastDeleteDislikedSuccess: "Removed excluded ingredient",
+                breakfast: "🍳 Breakfast",
+                lunch: "🍤 Lunch",
+                dinner: "🍲 Dinner",
+                reqBuy: "Suggested to buy",
+                errorModalTitle: "Gemini API Error Logs",
+                instructionsTitle: "Cooking Steps",
+                dislikedPlaceholder: "e.g., Cilantro, Celery",
+                toastDislikedExist: "Ingredient already in excluded list"
+            },
+            ja: {
+                title: "スリム食卓",
+                subtitle: "冷蔵庫の食材をもとに、スマートに健康的な減量メニューを提案",
+                viewMd: "生の Markdown を表示 (today.md)",
+                tabToday: "🍳 今日の献立",
+                tabPantry: "🥕 食材庫",
+                tabHistory: "📜 履歴ログ",
+                tabSettings: "⚙️ 設定センター",
+                menuDate: "献立の日付",
+                menuNotGen: "今日の献立は未生成です。生成ボタンを押してください！",
+                noMenuText: "本日の献立はまだカスタマイズされていません。",
+                btnGenToday: "✨ 今日の三食を計画する",
+                btnGenStart: "AI 献立をスマート生成",
+                btnGenLoading: "AIが食材を分析し、献立を計画中...",
+                nutriHighlight: "💡 本日のダイエットポイント：",
+                shoppingTitle: "🛒 おすすめ買い物リスト（必要に応じて）",
+                shoppingEmpty: "🎉 今日は食材が十分あります。買い物は不要です！",
+                addFoodTitle: "新しい食材を追加",
+                foodLabel: "食材名",
+                placeholderFoodInput: "例：ブロッコリー、鶏胸肉",
+                quickAddTitle: "よく使われる減量食材をクイック追加",
+                catMeat: "🥩 タンパク質",
+                catVeg: "🥦 野菜・果物",
+                catStaple: "🍠 良質な炭水化物",
+                pantrySearchPlaceholder: "🔍 食材庫を検索...",
+                myPantry: "マイ食材庫",
+                pantryTip: "食材カードの右上にある × をクリックして削除します",
+                countUnit: "全 {count} 件",
+                historyTitle: "📅 献立履歴（過去30回の生成）",
+                historyDetailBtn: "詳細 Markdown を表示",
+                historyEmpty: "履歴はありません。献立を生成して履歴を保存しましょう",
+                settingsAiTitle: "AI 設定パラメータ",
+                apiKeyLabel: "Google Gemini API キー",
+                apiKeyPlaceholder: "空白（環境変数 / .env からのデフォルト読み込み）",
+                modelLabel: "Gemini モデル",
+                caloriesLabel: "目標カロリー上限 (kcal)",
+                langLabel: "AI 回答言語",
+                btnSaveSettings: "💾 設定パラメータを保存",
+                dislikedTitle: "苦手・避けるべき食材",
+                dislikedDesc: "AIは献立作成時に、ここにリストされた食材を絶対に使用しません。",
+                addDislikedLabel: "避ける食材を追加",
+                addDislikedBtn: "追加",
+                currentDisliked: "現在のリスト",
+                dislikedEmpty: "避ける食材はありません",
+                modalMdTitle: "生の Markdown ファイル",
+                toastSuccess: "操作成功",
+                toastSaveSettingsSuccess: "設定が保存されました！",
+                toastAddFoodSuccess: "食材を追加しました",
+                toastDeleteFoodSuccess: "食材を削除しました",
+                toastGenerateSuccess: "献立の生成に成功しました！",
+                toastGenerateFail: "生成失敗：",
+                toastAddDislikedSuccess: "避ける食材を追加しました",
+                toastDeleteDislikedSuccess: "避ける食材を削除しました",
+                breakfast: "🍳 朝食",
+                lunch: "🍤 昼食",
+                dinner: "🍲 夕食",
+                reqBuy: "購入推奨",
+                errorModalTitle: "Gemini API エラーログ",
+                instructionsTitle: "調理手順",
+                dislikedPlaceholder: "例：パクチー、セロリ",
+                toastDislikedExist: "すでにリストに含まれています"
+            }
+        };
 
         // On Page Load
         window.addEventListener('DOMContentLoaded', () => {
+            // Load saved UI language
+            const savedUiLang = localStorage.getItem('ui_lang') || 'zh';
+            currentLang = savedUiLang;
+            document.getElementById('ui-language-select').value = savedUiLang;
+            
             initApp();
         });
 
         async function initApp() {
+            // Apply language updates first
+            applyLanguage(currentLang);
+            
             await Promise.all([
                 fetchFoods(),
                 fetchSettings(),
                 fetchHistory()
             ]);
             await loadTodayMenu();
+        }
+
+        // Apply translations to all DOM elements
+        function applyLanguage(lang) {
+            const trans = i18n[lang];
+            if (!trans) return;
+            
+            // Text nodes translation
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (trans[key]) {
+                    el.innerText = trans[key];
+                }
+            });
+
+            // Input placeholders translation
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (trans[key]) {
+                    el.placeholder = trans[key];
+                }
+            });
+            
+            // Update page lang attribute
+            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : (lang === 'ja' ? 'ja' : 'en');
+            // Update browser tab title
+            document.title = `${trans.title} - ${trans.subtitle}`;
+        }
+
+        // Handle language select change
+        async function changeUILanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('ui_lang', lang);
+            applyLanguage(lang);
+            
+            // Sync with AI response language input in Settings
+            const langMapper = {
+                zh: "中文",
+                en: "English",
+                ja: "日本語"
+            };
+            const aiLang = langMapper[lang] || "中文";
+            document.getElementById('setting-language').value = aiLang;
+            
+            // Auto update backend settings with new AI language preference
+            settingsData.language = aiLang;
+            try {
+                await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settingsData)
+                });
+            } catch (err) {
+                console.error("Auto language update failed:", err);
+            }
+
+            // Rerender menus & foods to refresh dynamic components
+            renderPantryTags();
+            renderDislikedTags();
+            renderHistoryTimeline();
+            if (currentMenu) {
+                renderMenu(currentMenu);
+            } else {
+                loadTodayMenu();
+            }
         }
 
         // --- Navigation ---
@@ -968,7 +1230,7 @@
         // POST Add Food
         async function handleAddFood() {
             const input = document.getElementById('food-input');
-            const name = input.value.strip ? input.value.strip() : input.value.trim();
+            const name = input.value.trim();
             if (!name) return;
             
             try {
@@ -981,19 +1243,19 @@
                 if (data.status === "success") {
                     input.value = '';
                     await fetchFoods();
-                    showToast(`成功添加食材 "${name}"`);
+                    const msg = i18n[currentLang].toastAddFoodSuccess || "成功添加食材";
+                    showToast(`${msg} "${name}"`);
                 } else {
-                    showToast(data.message || "添加失败", true);
+                    showToast(data.message || "Error", true);
                 }
             } catch (err) {
-                showToast("添加食材出错", true);
+                showToast("Error", true);
             }
         }
 
         // Quick add food from side-pane
         async function quickAddFood(name) {
             if (foodsList.includes(name)) {
-                showToast(`食材 "${name}" 已存在`);
                 return;
             }
             try {
@@ -1005,10 +1267,11 @@
                 const data = await res.json();
                 if (data.status === "success") {
                     await fetchFoods();
-                    showToast(`成功添加食材 "${name}"`);
+                    const msg = i18n[currentLang].toastAddFoodSuccess || "成功添加食材";
+                    showToast(`${msg} "${name}"`);
                 }
             } catch (err) {
-                showToast("添加食材出错", true);
+                showToast("Error", true);
             }
         }
 
@@ -1023,10 +1286,11 @@
                 const data = await res.json();
                 if (data.status === "success") {
                     await fetchFoods();
-                    showToast(`成功移除食材 "${name}"`);
+                    const msg = i18n[currentLang].toastDeleteFoodSuccess || "成功移除食材";
+                    showToast(`${msg} "${name}"`);
                 }
             } catch (err) {
-                showToast("删除食材出错", true);
+                showToast("Error", true);
             }
         }
 
@@ -1038,9 +1302,30 @@
                 
                 // Pop fields
                 document.getElementById('setting-api-key').value = settingsData.gemini_api_key || '';
-                document.getElementById('setting-model').value = settingsData.gemini_model || 'gemini-1.5-flash';
+                
+                const modelSelect = document.getElementById('setting-model');
+                const modelVal = settingsData.gemini_model || 'gemini-3.5-flash-lite';
+                let optionExists = false;
+                for (let i = 0; i < modelSelect.options.length; i++) {
+                    if (modelSelect.options[i].value === modelVal) {
+                        optionExists = true;
+                        break;
+                    }
+                }
+                if (!optionExists) {
+                    const opt = document.createElement('option');
+                    opt.value = modelVal;
+                    opt.text = `${modelVal} (from env)`;
+                    modelSelect.add(opt);
+                }
+                modelSelect.value = modelVal;
+                
                 document.getElementById('setting-calories').value = settingsData.daily_target_calories || '1500';
-                document.getElementById('setting-language').value = settingsData.language || '中文';
+                
+                // Sync AI Response preference language
+                const savedUiLang = localStorage.getItem('ui_lang') || 'zh';
+                const langMapper = { zh: "中文", en: "English", ja: "日本語" };
+                document.getElementById('setting-language').value = settingsData.language || langMapper[savedUiLang];
                 
                 renderDislikedTags();
             } catch (err) {
@@ -1068,14 +1353,14 @@
                 });
                 const data = await res.json();
                 if (data.status === "success") {
-                    showToast("设置已保存！");
-                    // Reload to reflect settings changes
+                    const msg = i18n[currentLang].toastSaveSettingsSuccess || "设置已保存！";
+                    showToast(msg);
                     fetchSettings();
                 } else {
-                    showToast("保存设置失败", true);
+                    showToast("Error", true);
                 }
             } catch (err) {
-                showToast("保存设置出错", true);
+                showToast("Error", true);
             }
         }
 
@@ -1089,7 +1374,6 @@
             
             if (!settingsData.disliked_foods.includes(val)) {
                 settingsData.disliked_foods.push(val);
-                // Save automatically
                 try {
                     await fetch('/api/settings', {
                         method: 'POST',
@@ -1098,12 +1382,14 @@
                     });
                     input.value = '';
                     renderDislikedTags();
-                    showToast(`已添加忌口食材 "${val}"`);
+                    const msg = i18n[currentLang].toastAddDislikedSuccess || "已添加忌口食材";
+                    showToast(`${msg} "${val}"`);
                 } catch (err) {
-                    showToast("添加忌口食材出错", true);
+                    showToast("Error", true);
                 }
             } else {
-                showToast("该食材已在忌口列表中");
+                const msg = i18n[currentLang].toastDislikedExist || "该食材已在忌口列表中";
+                showToast(msg, true);
             }
         }
 
@@ -1117,9 +1403,10 @@
                         body: JSON.stringify(settingsData)
                     });
                     renderDislikedTags();
-                    showToast(`已移除忌口食材 "${name}"`);
+                    const msg = i18n[currentLang].toastDeleteDislikedSuccess || "已移除忌口食材";
+                    showToast(`${msg} "${name}"`);
                 } catch (err) {
-                    showToast("移除忌口食材出错", true);
+                    showToast("Error", true);
                 }
             }
         }
@@ -1144,12 +1431,15 @@
                     currentMenu = data;
                     renderMenu(data);
                 } else {
-                    // No menu exists
-                    document.getElementById('menu-date-label').innerText = "今日食谱尚未生成";
+                    const labelNotGen = i18n[currentLang].menuNotGen || "今日食谱尚未生成";
+                    const noMenuText = i18n[currentLang].noMenuText || "今天还没有为您定制菜单。";
+                    const btnText = i18n[currentLang].btnGenToday || "✨ 立刻规划今天的三餐";
+                    
+                    document.getElementById('menu-date-label').innerText = labelNotGen;
                     document.getElementById('meals-container').innerHTML = `
                         <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary);">
-                            <p style="font-size: 1.1rem; margin-bottom: 1rem;">今天还没有为您定制菜单。</p>
-                            <button class="btn btn-primary" onclick="generateMenu()">✨ 立刻规划今天的三餐</button>
+                            <p style="font-size: 1.1rem; margin-bottom: 1rem;">${noMenuText}</p>
+                            <button class="btn btn-primary" onclick="generateMenu()">${btnText}</button>
                         </div>
                     `;
                 }
@@ -1162,11 +1452,13 @@
         async function generateMenu() {
             const btn = document.getElementById('btn-generate');
             const spinner = document.getElementById('gen-spinner');
-            const btnText = document.getElementById('gen-btn-text');
+            
+            const btnTextLoading = i18n[currentLang].btnGenLoading || "AI 正在分析食材并定制菜单...";
+            const btnTextDefault = i18n[currentLang].btnGenStart || "智能生成一日食谱";
 
             btn.disabled = true;
             spinner.style.display = 'block';
-            btnText.innerText = 'AI 正在分析食材并定制菜单...';
+            document.getElementById('gen-btn-text').innerText = btnTextLoading;
 
             try {
                 const res = await fetch('/api/menu/generate', { method: 'POST' });
@@ -1175,18 +1467,19 @@
                 if (data.status === "success") {
                     currentMenu = data.menu;
                     renderMenu(currentMenu);
-                    showToast("三餐食谱生成成功！");
-                    // Refresh history tab
+                    const msg = i18n[currentLang].toastGenerateSuccess || "三餐食谱生成成功！";
+                    showToast(msg);
                     fetchHistory();
                 } else {
-                    showToast("生成失败: " + (data.message || "未知原因"), true);
+                    const msg = i18n[currentLang].toastGenerateFail || "生成失败: ";
+                    showToast(msg + (data.message || ""), true);
                 }
             } catch (err) {
-                showToast("请求生成菜单超时或失败", true);
+                showToast("Request failed", true);
             } finally {
                 btn.disabled = false;
                 spinner.style.display = 'none';
-                btnText.innerText = '智能生成一日食谱';
+                document.getElementById('gen-btn-text').innerText = btnTextDefault;
             }
         }
 
@@ -1204,7 +1497,7 @@
             const filtered = foodsList.filter(food => food.toLowerCase().includes(searchVal));
             
             if (filtered.length === 0) {
-                container.innerHTML = `<div style="color: var(--text-secondary); width: 100%; text-align: center; padding: 2rem 0;">未找到匹配食材</div>`;
+                container.innerHTML = `<div style="color: var(--text-secondary); width: 100%; text-align: center; padding: 2rem 0;">No matching items</div>`;
             } else {
                 filtered.forEach(food => {
                     const tag = document.createElement('span');
@@ -1217,7 +1510,8 @@
                 });
             }
             
-            countEl.innerText = `共 ${foodsList.length} 种`;
+            const countLabel = i18n[currentLang].countUnit || "共 {count} 种";
+            countEl.innerText = countLabel.replace('{count}', foodsList.length);
         }
 
         // Render Disliked Tags
@@ -1227,7 +1521,8 @@
 
             const list = settingsData.disliked_foods || [];
             if (list.length === 0) {
-                container.innerHTML = `<span style="color: var(--text-secondary); font-size: 0.85rem;">暂无忌口食材</span>`;
+                const emptyLabel = i18n[currentLang].dislikedEmpty || "暂无忌口食材";
+                container.innerHTML = `<span style="color: var(--text-secondary); font-size: 0.85rem;">${emptyLabel}</span>`;
                 return;
             }
 
@@ -1248,13 +1543,19 @@
             container.innerHTML = '';
 
             if (historyData.length === 0) {
+                const emptyLabel = i18n[currentLang].historyEmpty || "暂无历史记录";
                 container.innerHTML = `
                     <div style="text-align: center; color: var(--text-secondary); padding: 3rem;">
-                        暂无历史记录，开始生成菜单以保存历史
+                        ${emptyLabel}
                     </div>
                 `;
                 return;
             }
+
+            const detailBtnLabel = i18n[currentLang].historyDetailBtn || "查看详情 Markdown";
+            const bLabel = i18n[currentLang].breakfast || "朝食";
+            const lLabel = i18n[currentLang].lunch || "昼食";
+            const dLabel = i18n[currentLang].dinner || "夕食";
 
             historyData.forEach(item => {
                 const card = document.createElement('div');
@@ -1262,19 +1563,19 @@
                 card.onclick = () => showHistoryDetail(item.date);
                 
                 // Extract dishes
-                const b_name = item.breakfast?.dish_name || '未指定';
-                const l_name = item.lunch?.dish_name || '未指定';
-                const d_name = item.dinner?.dish_name || '未指定';
+                const b_name = item.breakfast?.dish_name || '...';
+                const l_name = item.lunch?.dish_name || '...';
+                const d_name = item.dinner?.dish_name || '...';
 
                 card.innerHTML = `
                     <div class="history-card-header">
                         <span class="history-date">📅 ${item.date}</span>
-                        <span class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.25rem 0.6rem;">查看详情 Markdown</span>
+                        <span class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.25rem 0.6rem;">${detailBtnLabel}</span>
                     </div>
                     <div class="history-meals-preview">
-                        <span class="history-meal-preview-item">🍳 早餐: <strong>${b_name}</strong></span>
-                        <span class="history-meal-preview-item">🍤 午餐: <strong>${l_name}</strong></span>
-                        <span class="history-meal-preview-item">🍲 晚餐: <strong>${d_name}</strong></span>
+                        <span class="history-meal-preview-item">${bLabel}: <strong>${b_name}</strong></span>
+                        <span class="history-meal-preview-item">${lLabel}: <strong>${l_name}</strong></span>
+                        <span class="history-meal-preview-item">${dLabel}: <strong>${d_name}</strong></span>
                     </div>
                 `;
                 container.appendChild(card);
@@ -1284,16 +1585,8 @@
         // Render Today Menu Dashboard
         function renderMenu(menu) {
             // Update labels
-            document.getElementById('menu-date-label').innerText = `📅 食谱日期: ${menu.date || new Date().toISOString().split('T')[0]}`;
-            
-            // Warnings Banner
-            const demoBanner = document.getElementById('demo-banner');
-            if (menu.demo_mode) {
-                document.getElementById('demo-banner-text').innerText = menu.warning || "正在使用 Demo 模式生成的数据";
-                demoBanner.style.display = 'flex';
-            } else {
-                demoBanner.style.display = 'none';
-            }
+            const dateLabel = i18n[currentLang].menuDate || "食谱日期";
+            document.getElementById('menu-date-label').innerText = `📅 ${dateLabel}: ${menu.date || new Date().toISOString().split('T')[0]}`;
 
             // Nutritional Highlight Banner
             const nutBanner = document.getElementById('nutritional-banner');
@@ -1309,10 +1602,13 @@
             mealsContainer.innerHTML = '';
 
             const mealTypes = [
-                { key: 'breakfast', name: '🍳 早餐', class: 'breakfast' },
-                { key: 'lunch', name: '🍤 午餐', class: 'lunch' },
-                { key: 'dinner', name: '🍲 晚餐', class: 'dinner' }
+                { key: 'breakfast', name: i18n[currentLang].breakfast || '🍳 早餐', class: 'breakfast' },
+                { key: 'lunch', name: i18n[currentLang].lunch || '🍤 午餐', class: 'lunch' },
+                { key: 'dinner', name: i18n[currentLang].dinner || '🍲 晚餐', class: 'dinner' }
             ];
+
+            const ingLabel = i18n[currentLang].foodLabel || "所需食材";
+            const stepLabel = i18n[currentLang].instructionsTitle || "烹饪步骤";
 
             mealTypes.forEach(t => {
                 const meal = menu[t.key] || {};
@@ -1322,7 +1618,7 @@
 
                 // Ingredients block
                 const ingArr = meal.ingredients || [];
-                let ingHTML = '<div style="color: var(--text-secondary); font-size: 0.85rem;">无食材配置</div>';
+                let ingHTML = '<div style="color: var(--text-secondary); font-size: 0.85rem;">-</div>';
                 if (ingArr.length > 0) {
                     ingHTML = '<ul class="ingredients-list">';
                     ingArr.forEach(i => {
@@ -1333,7 +1629,7 @@
 
                 // Steps block
                 const stepArr = meal.instructions || [];
-                let stepHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem;">无步骤配置</p>';
+                let stepHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem;">-</p>';
                 if (stepArr.length > 0) {
                     stepHTML = '<ol class="steps-list">';
                     stepArr.forEach(s => {
@@ -1347,7 +1643,8 @@
                 const filteredBuy = buyArr.filter(b => b);
                 let buyHTML = '';
                 if (filteredBuy.length > 0) {
-                    buyHTML = `<div class="buy-indicator">⚠️ 建议购买: ${filteredBuy.join(', ')}</div>`;
+                    const buyLabel = i18n[currentLang].reqBuy || "建议购买";
+                    buyHTML = `<div class="buy-indicator">⚠️ ${buyLabel}: ${filteredBuy.join(', ')}</div>`;
                 }
 
                 card.innerHTML = `
@@ -1355,14 +1652,14 @@
                         <span>${t.name}</span>
                     </div>
                     <div>
-                        <div class="dish-name">${meal.dish_name || '未定制菜品'}</div>
+                        <div class="dish-name">${meal.dish_name || '未定制'}</div>
                     </div>
                     <div>
-                        <h4 class="section-title">所需食材</h4>
+                        <h4 class="section-title">${ingLabel}</h4>
                         ${ingHTML}
                     </div>
                     <div>
-                        <h4 class="section-title">烹饪步骤</h4>
+                        <h4 class="section-title">${stepLabel}</h4>
                         ${stepHTML}
                     </div>
                     ${buyHTML}
@@ -1397,11 +1694,12 @@
                 const res = await fetch('/api/menu/today-md');
                 const text = await res.text();
                 
-                document.getElementById('modal-title').innerText = "今日菜单 (today.md) 原始 Markdown 文件";
+                const titleLabel = i18n[currentLang].modalMdTitle || "原始 Markdown 文件";
+                document.getElementById('modal-title').innerText = `${titleLabel} (today.md)`;
                 document.getElementById('modal-body').innerText = text;
                 document.getElementById('md-modal').style.display = 'flex';
             } catch (err) {
-                showToast("载入 Markdown 失败", true);
+                showToast("Error", true);
             }
         }
 
@@ -1410,12 +1708,20 @@
                 const res = await fetch(`/api/menu/history-md/${date}`);
                 const text = await res.text();
                 
-                document.getElementById('modal-title').innerText = `历史菜单 (${date}.md) 原始 Markdown 文件`;
+                const titleLabel = i18n[currentLang].modalMdTitle || "原始 Markdown 文件";
+                document.getElementById('modal-title').innerText = `${titleLabel} (${date}.md)`;
                 document.getElementById('modal-body').innerText = text;
                 document.getElementById('md-modal').style.display = 'flex';
             } catch (err) {
-                showToast("载入历史 Markdown 失败", true);
+                showToast("Error", true);
             }
+        }
+
+        function showErrorLogModal(errorMsg) {
+            const titleLabel = i18n[currentLang].errorModalTitle || "Gemini API 后台请求报错日志";
+            document.getElementById('modal-title').innerText = titleLabel;
+            document.getElementById('modal-body').innerText = errorMsg;
+            document.getElementById('md-modal').style.display = 'flex';
         }
 
         function closeModal() {

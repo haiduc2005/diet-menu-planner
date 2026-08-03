@@ -63,11 +63,15 @@ def add_to_history(menu_data: dict):
 
 def load_settings():
     """Load user settings from settings.json."""
+    env_model = os.getenv("GEMINI_MODEL")
+    env_key = os.getenv("GEMINI_API_KEY")
+    
     default_settings = {
         "disliked_foods": [],
         "language": "中文",
         "daily_target_calories": "1500",
-        "gemini_model": "gemini-1.5-flash"
+        "gemini_model": env_model if env_model else "gemini-1.5-flash",
+        "gemini_api_key": env_key if env_key else ""
     }
     
     if not os.path.exists(SETTINGS_FILE):
@@ -79,6 +83,13 @@ def load_settings():
     try:
         with open(SETTINGS_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
+            
+            # Sync environment configurations
+            if env_model:
+                data["gemini_model"] = env_model
+            if env_key:
+                data["gemini_api_key"] = env_key
+                
             # Ensure all keys exist
             for k, v in default_settings.items():
                 if k not in data:

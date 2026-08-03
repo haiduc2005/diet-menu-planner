@@ -10,11 +10,33 @@ from manager.foods import load_foods, add_food, remove_food
 from manager.history import load_history, load_settings, save_settings
 from manager.planner import generate_and_save_today_menu, get_today_markdown
 
+from datetime import datetime
+from contextlib import asynccontextmanager
+from apscheduler.schedulers.background import BackgroundScheduler
+
 # Load .env configurations
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-app = FastAPI(title="AI Diet Menu Planner")
+def scheduled_menu_job():
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Triggering daily menu generation...")
+    try:
+        generate_and_save_today_menu()
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily menu successfully generated.")
+    except Exception as e:
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR: {e}")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Start Background Scheduler
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(scheduled_menu_job, 'cron', hour=7, minute=0, id='daily_menu_job')
+    scheduler.start()
+    yield
+    # Shutdown: Stop Scheduler
+    scheduler.shutdown()
+
+app = FastAPI(title="AI Diet Menu Planner", lifespan=lifespan)
 
 # Setup templates
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
@@ -105,7 +127,32 @@ async def generate_menu_api():
 
 # --- Start Uvicorn Server ---
 if __name__ == '__main__':
+    import socket
     port = int(os.getenv("PORT", 8000))
     host = os.getenv("HOST", "127.0.0.1")
-    print(f"Starting AI Diet Menu Planner at http://{host}:{port}")
+    
+    # Get local IP address for LAN access
+    local_ip = "127.0.0.1"
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+    except Exception:
+        pass
+
+    print("\n" + "="*50)
+    print("AI Diet Menu Planner 服务已成功启动！")
+    print(f" - 本地访问：   http://localhost:{port}")
+    if host == "0.0.0.0":
+        try:
+            raw_hostname = socket.gethostname().split('.')[0]
+            print(f" - 域名访问：   http://{raw_hostname}.local:{port}")
+        except Exception:
+            pass
+        print(f" - IP 访问：    http://{local_ip}:{port}")
+    else:
+        print(" - 提示：当前仅允许本机访问。若想让手机访问，请在 .env 中设置 HOST=0.0.0.0")
+    print("="*50 + "\n")
+    
     uvicorn.run("app:app", host=host, port=port, reload=True)
