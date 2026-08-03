@@ -1852,6 +1852,23 @@
             }
         }
 
+        function getRecipeSearchUrl(title, source) {
+            const isDouyin = (source || '').includes('抖音') || (source || '').includes('Douyin') || (source || '').includes('TikTok');
+            if (isDouyin) {
+                return {
+                    url: `https://www.baidu.com/s?wd=${encodeURIComponent(title + ' 做法')}`,
+                    color: '#00afc7',
+                    label: `${source} (网页搜索)`
+                };
+            } else {
+                return {
+                    url: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(title)}`,
+                    color: '#ff2442',
+                    label: `${source}`
+                };
+            }
+        }
+
         let trendingRecipesList = [];
 
         async function loadTrendingRecipes() {
@@ -1907,10 +1924,11 @@
                     stepHTML += '</ol>';
                 }
 
+                const linkData = getRecipeSearchUrl(r.title, r.source);
                 card.innerHTML = `
                     <div class="meal-title-row" style="justify-content: space-between;">
                         <span style="font-weight: 700; color: white;">${r.title}</span>
-                        <a href="${(r.source || '').includes('抖音') || (r.source || '').includes('Douyin') || (r.source || '').includes('TikTok') ? 'https://www.douyin.com/search/' + encodeURIComponent(r.title) : 'https://www.xiaohongshu.com/search_result?keyword=' + encodeURIComponent(r.title)}" target="_blank" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: ${(r.source || '').includes('抖音') || (r.source || '').includes('Douyin') || (r.source || '').includes('TikTok') ? '#face15' : '#ff2442'}; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">${r.source} 🔗</a>
+                        <a href="${linkData.url}" target="_blank" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: ${linkData.color}; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">${linkData.label} 🔗</a>
                     </div>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         ${tagsHTML}
@@ -2017,10 +2035,11 @@
                     stepHTML += '</ol>';
                 }
 
+                const linkData = getRecipeSearchUrl(r.title, r.source);
                 card.innerHTML = `
                     <div class="meal-title-row" style="justify-content: space-between;">
                         <span style="font-weight: 700; color: white;">${r.title}</span>
-                        <a href="${(r.source || '').includes('抖音') || (r.source || '').includes('Douyin') || (r.source || '').includes('TikTok') ? 'https://www.douyin.com/search/' + encodeURIComponent(r.title) : 'https://www.xiaohongshu.com/search_result?keyword=' + encodeURIComponent(r.title)}" target="_blank" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: ${(r.source || '').includes('抖音') || (r.source || '').includes('Douyin') || (r.source || '').includes('TikTok') ? '#face15' : '#ff2442'}; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">${r.source} 🔗</a>
+                        <a href="${linkData.url}" target="_blank" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: ${linkData.color}; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.25rem;">${linkData.label} 🔗</a>
                     </div>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         ${tagsHTML}
