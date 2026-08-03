@@ -19,7 +19,7 @@ class GeminiClient:
         api_key = self.api_key or settings.get("gemini_api_key")
         if not api_key:
             # If no API key, return a mock menu with a notice so the app remains interactive in Demo Mode
-            return self._generate_mock_menu(available_foods, "请在 .env 文件或设置中配置您的 GEMINI_API_KEY 以启用真实的 AI 生成。当前展示的是 Demo 模式生成的数据。")
+            return self._generate_mock_menu(available_foods, "当前未配置 API 密钥。已进入演示模式，请在设置中更新。", "未配置 GEMINI_API_KEY。请检查您的 .env 配置文件或在设置中心填入有效 Key。")
             
         try:
             genai.configure(api_key=api_key)
@@ -47,9 +47,9 @@ class GeminiClient:
         except Exception as e:
             print(f"Gemini API call failed: {e}")
             # Fallback to mock data with error message
-            return self._generate_mock_menu(available_foods, f"AI 生成失败: {str(e)}。已临时切换到本地 Demo 模式。")
+            return self._generate_mock_menu(available_foods, "AI 配餐生成失败，已临时切换到本地 Demo 模式。", f"API 请求报错:\n{str(e)}")
 
-    def _generate_mock_menu(self, available_foods: list, warning_msg: str) -> dict:
+    def _generate_mock_menu(self, available_foods: list, warning_msg: str, error_details: str = "") -> dict:
         """Generates structured dummy data for visual testing when API is unavailable."""
         foods_set = set(available_foods)
         
@@ -62,6 +62,7 @@ class GeminiClient:
         return {
             "demo_mode": True,
             "warning": warning_msg,
+            "error_details": error_details,
             "breakfast": {
                 "dish_name": "燕麦牛奶粥配水煮蛋",
                 "ingredients": [
@@ -83,7 +84,7 @@ class GeminiClient:
                     {"name": "橄榄油", "amount": "5毫升"}
                 ],
                 "instructions": [
-                    "鸡胸肉横切薄片，加入少许盐和黑胡椒腌制10分钟。",
+                    "鸡胸肉横切薄片，加入少许盐 and 黑胡椒腌制10分钟。",
                     "平底锅刷少许橄榄油，放入鸡胸肉煎至两面金黄熟透。",
                     "黄瓜洗净拍碎，加蒜泥、醋、生抽和少量盐拌匀。"
                 ],
@@ -104,5 +105,5 @@ class GeminiClient:
                 "suggested_to_buy": []
             },
             "shopping_list": [item for item in (["牛奶"] if "牛奶" not in foods_set else []) + (["橄榄油"] if "橄榄油" not in foods_set else [])],
-            "nutritional_summary": f"高蛋白减脂一日食谱，预估热量1350kcal。{warning_msg}"
+            "nutritional_summary": "高蛋白低碳水配餐，营养结构科学，预估今日总热量约 1350 kcal。推荐多饮水并搭配适度运动。"
         }

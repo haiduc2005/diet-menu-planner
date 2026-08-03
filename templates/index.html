@@ -1307,8 +1307,20 @@
             // Warnings Banner
             const demoBanner = document.getElementById('demo-banner');
             if (menu.demo_mode) {
-                document.getElementById('demo-banner-text').innerText = menu.warning || "正在使用 Demo 模式生成的数据";
+                let html = menu.warning || "正在使用 Demo 模式生成的数据";
+                if (menu.error_details) {
+                    html += ` <a href="#" id="view-error-details-link" style="color: #fbbf24; text-decoration: underline; margin-left: 0.5rem; font-weight: 500;">[查看错误日志详情]</a>`;
+                }
+                document.getElementById('demo-banner-text').innerHTML = html;
                 demoBanner.style.display = 'flex';
+                
+                const errorLink = document.getElementById('view-error-details-link');
+                if (errorLink) {
+                    errorLink.onclick = (e) => {
+                        e.preventDefault();
+                        showErrorLogModal(menu.error_details);
+                    };
+                }
             } else {
                 demoBanner.style.display = 'none';
             }
@@ -1434,6 +1446,12 @@
             } catch (err) {
                 showToast("载入历史 Markdown 失败", true);
             }
+        }
+
+        function showErrorLogModal(errorMsg) {
+            document.getElementById('modal-title').innerText = "Gemini API 后台请求报错日志";
+            document.getElementById('modal-body').innerText = errorMsg;
+            document.getElementById('md-modal').style.display = 'flex';
         }
 
         function closeModal() {

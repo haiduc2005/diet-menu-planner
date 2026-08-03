@@ -66,4 +66,9 @@ def parse_menu_to_markdown(menu_data: dict, date_str: str = None) -> str:
     else:
         md.append("- 🎉 今日食材充足，无须额外购买！")
         
+    # Append raw error logs at the very bottom under diagnostics
+    if menu_data.get("error_details"):
+        md.append("\n---\n\n### 🔍 开发者后台诊断日志")
+        md.append(f"```\n{menu_data['error_details']}\n```")
+        
     return "\n".join(md)
