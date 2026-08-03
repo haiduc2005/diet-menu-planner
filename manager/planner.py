@@ -143,3 +143,28 @@ def get_daily_trending_recipes() -> list:
     except Exception as e:
         print(f"Error loading trending recipes: {e}")
         return []
+
+def get_daily_kids_trending_recipes() -> list:
+    """Load, seed by date, and pick 3 kids trending recipes from data/kids_trending_recipes.json."""
+    import json
+    import random
+    trending_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'kids_trending_recipes.json')
+    if not os.path.exists(trending_file):
+        return []
+    try:
+        with open(trending_file, 'r', encoding='utf-8') as f:
+            all_recipes = json.load(f)
+        if not all_recipes:
+            return []
+        
+        # Use date string to seed random so it stays the same throughout today
+        date_str = datetime.now().strftime('%Y-%m-%d')
+        seed_val = sum(ord(c) for c in date_str)
+        
+        local_random = random.Random(seed_val)
+        num_to_pick = min(3, len(all_recipes))
+        picked = local_random.sample(all_recipes, num_to_pick)
+        return picked
+    except Exception as e:
+        print(f"Error loading kids trending recipes: {e}")
+        return []

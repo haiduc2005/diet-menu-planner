@@ -789,6 +789,15 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Kids Recommended Recipes Section -->
+            <div class="glass-card" style="margin-top: 2rem; margin-bottom: 1.5rem;">
+                <h3 data-i18n="kidsTrendingTitle" style="font-family: var(--font-display); margin-bottom: 0.5rem;">👦 儿童流行营养膳食推荐</h3>
+                <p class="subtitle" data-i18n="kidsTrendingDesc">每天根据高年级小学生的喜好精选 3 款健康的流行儿童餐做法。</p>
+            </div>
+            <div class="meals-grid" id="kids-trending-meals-container" style="margin-bottom: 2rem;">
+                <!-- Kids trending recipes will be loaded here dynamically -->
+            </div>
         </section>
 
         <!-- Trending Menu TAB -->
@@ -1054,6 +1063,8 @@
                 tabTrending: "💡 每日推荐",
                 trendingTitle: "小红书 & 抖音 每日流行减脂餐推荐",
                 trendingDesc: "每天为你精选 3 款全网爆火的网红瘦身食谱，可直接作为参考或一键导入食材。",
+                kidsTrendingTitle: "👦 儿童流行营养膳食推荐",
+                kidsTrendingDesc: "根据小学生的饮食特点（汉堡排、咖喱、寿司等）精选健康少油的流行营养餐做法。",
                 btnImportIngredients: "📥 一键导入食材",
                 toastImportSuccess: "成功将食材导入你的食材库！"
             },
@@ -1134,6 +1145,8 @@
                 tabTrending: "💡 Daily Trending",
                 trendingTitle: "Xiaohongshu & Douyin Daily Trending Fat-loss Meals",
                 trendingDesc: "3 viral healthy slimming recipes recommended daily. Use as reference or import ingredients.",
+                kidsTrendingTitle: "👦 Kids Healthy Meal Recommendations",
+                kidsTrendingDesc: "Healthy kid-friendly recipes recommended daily, tailored to children's food habits.",
                 btnImportIngredients: "📥 Import All Ingredients",
                 toastImportSuccess: "Successfully imported ingredients to pantry!"
             },
@@ -1214,6 +1227,8 @@
                 tabTrending: "💡 本日のおすすめ",
                 trendingTitle: "小紅書＆TikTok 本日のトレンド減量レシピ",
                 trendingDesc: "ネットで大人気のダイエットレシピを毎日3つ厳選してご紹介。食材のインポートも可能です。",
+                kidsTrendingTitle: "👦 お子様向けトレンド栄養レシピ",
+                kidsTrendingDesc: "ハンバーグやカレー、寿司など、お子様の好みに合わせたヘルシーなトレンドレシピを毎日厳選してご紹介。",
                 btnImportIngredients: "📥 食材を一括インポート",
                 toastImportSuccess: "食材を食材庫にインポートしました！"
             }
@@ -1241,7 +1256,8 @@
             await Promise.all([
                 loadTodayMenu(),
                 loadKidsMenu(),
-                loadTrendingRecipes()
+                loadTrendingRecipes(),
+                loadKidsTrendingRecipes()
             ]);
         }
 
@@ -1317,6 +1333,11 @@
                 renderTrendingRecipes(trendingRecipesList);
             } else {
                 loadTrendingRecipes();
+            }
+            if (kidsTrendingRecipesList.length > 0) {
+                renderKidsTrendingRecipes(kidsTrendingRecipesList);
+            } else {
+                loadKidsTrendingRecipes();
             }
         }
 
@@ -1908,6 +1929,115 @@
                 }
                 
                 await fetchFoods(); // Reload pantry view
+                
+                const successMsg = i18n[currentLang].toastImportSuccess || "成功将食材导入你的食材库！";
+                showToast(successMsg);
+            } catch (err) {
+                showToast("Import failed", true);
+            } finally {
+                importBtn.disabled = false;
+                importBtn.innerText = originalText;
+            }
+        }
+
+        let kidsTrendingRecipesList = [];
+
+        async function loadKidsTrendingRecipes() {
+            try {
+                const res = await fetch('/api/menu/kids-trending');
+                kidsTrendingRecipesList = await res.json();
+                renderKidsTrendingRecipes(kidsTrendingRecipesList);
+            } catch (err) {
+                console.error("Failed to load kids trending recipes:", err);
+            }
+        }
+
+        function renderKidsTrendingRecipes(recipes) {
+            const container = document.getElementById('kids-trending-meals-container');
+            container.innerHTML = '';
+            
+            if (recipes.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);">No recipes found</div>`;
+                return;
+            }
+            
+            const ingLabel = i18n[currentLang].foodLabel || "所需食材";
+            const stepLabel = i18n[currentLang].instructionsTitle || "烹饪步骤";
+            const importBtnLabel = i18n[currentLang].btnImportIngredients || "一键导入食材";
+
+            recipes.forEach((r, idx) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card meal-card';
+                card.style.borderTop = '4px solid var(--primary)';
+                
+                const tagsHTML = (r.tags || []).map(t => `<span class="quick-add-tag" style="background: var(--primary-glow); color: var(--primary); border-color: rgba(16,185,129,0.2); pointer-events: none;">${t}</span>`).join(' ');
+                
+                const ingArr = r.ingredients || [];
+                let ingHTML = '';
+                if (ingArr.length > 0) {
+                    ingHTML = '<ul class="ingredients-list">';
+                    ingArr.forEach(i => {
+                        ingHTML += `<li><span>${i.name}</span><span class="qty">${i.amount || ''}</span></li>`;
+                    });
+                    ingHTML += '</ul>';
+                }
+                
+                const stepArr = r.instructions || [];
+                let stepHTML = '';
+                if (stepArr.length > 0) {
+                    stepHTML = '<ol class="steps-list">';
+                    stepArr.forEach(s => {
+                        stepHTML += `<li>${s}</li>`;
+                    });
+                    stepHTML += '</ol>';
+                }
+
+                card.innerHTML = `
+                    <div class="meal-title-row" style="justify-content: space-between;">
+                        <span style="font-weight: 700; color: white;">${r.title}</span>
+                        <span style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--text-secondary);">${r.source}</span>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                        ${tagsHTML}
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">${r.description}</p>
+                    <div>
+                        <h4 class="section-title">${ingLabel}</h4>
+                        ${ingHTML}
+                    </div>
+                    <div>
+                        <h4 class="section-title">${stepLabel}</h4>
+                        ${stepHTML}
+                    </div>
+                    <button class="btn btn-secondary" onclick="importKidsRecipeIngredients(${idx})" style="width: 100%; margin-top: auto; font-size: 0.85rem;">
+                        ${importBtnLabel}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function importKidsRecipeIngredients(idx) {
+            const recipe = kidsTrendingRecipesList[idx];
+            if (!recipe || !recipe.ingredients) return;
+            
+            const importBtn = document.querySelectorAll('#kids-trending-meals-container .meal-card')[idx].querySelector('button');
+            const originalText = importBtn.innerText;
+            importBtn.disabled = true;
+            importBtn.innerText = "Importing...";
+            
+            try {
+                for (const ing of recipe.ingredients) {
+                    if (ing.name) {
+                        await fetch('/api/foods/add', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ food: ing.name })
+                        });
+                    }
+                }
+                
+                await fetchFoods();
                 
                 const successMsg = i18n[currentLang].toastImportSuccess || "成功将食材导入你的食材库！";
                 showToast(successMsg);
