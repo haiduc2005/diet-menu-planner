@@ -80,3 +80,72 @@ def generate_user_prompt(available_foods: list, history: list, settings: dict) -
 }}
 """
     return prompt
+
+SYSTEM_PROMPT_KIDS = """
+你是一位专业的儿童营养专家和儿童料理厨师。你的目标是针对高年级小学生，根据用户现有的食材，设计一天（早餐、午餐、晚餐）的健康成长营养食谱。
+
+请遵循以下指导原则：
+1. **符合儿童偏好**：多结合孩子喜欢的食物特点。在保证营养均衡的前提下，将他最爱的料理融入一天的配餐中，使其更有食欲。
+2. **营养均衡成长**：小学生处于身体发育的黄金时期，配餐应富含优质蛋白质、钙、维生素和膳食纤维。热量要充足，但要避免过度使用垃圾食品。
+3. **食材利用**：主要使用用户现有的食材。如果某顿饭必不可少地需要用户没有的食材，可以在“建议购买”列表中列出。
+4. **详细做法**：每餐都要有明确的烹饪步骤，适合家庭简单操作，可以适当设计一些适合“亲子共同参与”的趣味步骤。
+"""
+
+def generate_user_prompt_kids(available_foods: list, settings: dict) -> str:
+    foods_str = ", ".join(available_foods) if available_foods else "无（请推荐基础儿童食材）"
+    kids_pref = settings.get("kids_preferences", "最喜欢吃汉堡肉饼，炸鸡，咖喱，炒牛肉，寿司尤其是鱼卵寿司（いくら）。其次是烤鲑鱼，涮羊肉，鲑鱼饭团，牛肉盖浇饭。")
+    disliked_str = ", ".join(settings.get("disliked_foods", [])) if settings.get("disliked_foods") else "无"
+    
+    prompt = f"""
+请为我的孩子（高年级小学生）生成今天的营养餐。以下是当前食材状态和孩子的口味配置：
+
+- **现有食材**：{foods_str}
+- **我不喜欢的食材/忌口**：{disliked_str}
+- **孩子的饮食喜好与特点**：{kids_pref}
+- **首选语言**：{settings.get("language", "中文")}
+
+输出必须是符合以下结构的 JSON 对象：
+{{
+  "breakfast": {{
+    "dish_name": "早餐料理名称",
+    "ingredients": [
+      {{"name": "食材名称1", "amount": "用量（例如：50g）"}},
+      {{"name": "食材名称2", "amount": "用量"}}
+    ],
+    "instructions": [
+      "步骤1...",
+      "步骤2..."
+    ],
+    "suggested_to_buy": ["如果缺少必须的食材，在这里列出；如果没有，则留空"]
+  }},
+  "lunch": {{
+    "dish_name": "午餐料理名称",
+    "ingredients": [
+      {{"name": "食材名称1", "amount": "用量"}},
+      ...
+    ],
+    "instructions": [
+      "步骤1...",
+      ...
+    ],
+    "suggested_to_buy": [...]
+  }},
+  "dinner": {{
+    "dish_name": "晚餐料理名称",
+    "ingredients": [
+      {{"name": "食材名称1", "amount": "用量"}},
+      ...
+    ],
+    "instructions": [
+      "步骤1...",
+      ...
+    ],
+    "suggested_to_buy": [...]
+  }},
+  "shopping_list": [
+    "今日建议购买的所有食材汇总（去重后的列表），如果没有则留空"
+  ],
+  "nutritional_summary": "简短的今日菜单儿童营养亮点分析（如补钙、高蛋白等，100字以内）"
+}}
+"""
+    return prompt

@@ -699,6 +699,7 @@
         <!-- Navigation Tabs -->
         <nav class="tabs">
             <button class="tab-btn active" onclick="switchTab('today-menu')" id="tab-btn-today" data-i18n="tabToday">🍳 今日食谱</button>
+            <button class="tab-btn" onclick="switchTab('kids-menu')" id="tab-btn-kids" data-i18n="tabKids">👦 儿童配餐</button>
             <button class="tab-btn" onclick="switchTab('pantry')" id="tab-btn-pantry" data-i18n="tabPantry">🥕 食材库</button>
             <button class="tab-btn" onclick="switchTab('history')" id="tab-btn-history" data-i18n="tabHistory">📜 历史食谱</button>
             <button class="tab-btn" onclick="switchTab('settings')" id="tab-btn-settings" data-i18n="tabSettings">⚙️ 设置中心</button>
@@ -740,6 +741,58 @@
                 </div>
             </div>
 
+        </section>
+
+        <!-- Kids Menu TAB -->
+        <section id="kids-menu" class="tab-content">
+            <div class="pantry-layout">
+                <!-- Left panel: Child's Preferences -->
+                <div class="glass-card" style="height: fit-content; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 data-i18n="kidsPrefTitle">儿童偏好设置</h3>
+                    <p class="subtitle" data-i18n="kidsPrefDesc">你可以输入你孩子的饮食喜好，AI 会根据这些偏好为他量身定制营养餐。</p>
+                    <div class="input-group">
+                        <label for="kids-pref-input" data-i18n="kidsPrefLabel">孩子特点与饮食喜好</label>
+                        <textarea id="kids-pref-input" class="form-input" rows="6" data-i18n-placeholder="kidsPrefPlaceholder" style="resize: vertical; line-height: 1.5; font-family: var(--font-sans);"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveKidsPreferences()" data-i18n="kidsSavePref">💾 保存偏好设置</button>
+                </div>
+                
+                <!-- Right panel: Kids Menu Display -->
+                <div class="pantry-tags-area">
+                    <div class="menu-header-bar">
+                        <div class="date-display" id="kids-menu-date-label">载入中...</div>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" onclick="viewKidsMarkdown()" id="btn-view-kids-md" data-i18n="kidsViewMd">查看原始 Markdown</button>
+                            <button class="btn btn-primary" id="btn-generate-kids" onclick="generateKidsMenu()">
+                                <span class="spinner" id="gen-kids-spinner"></span>
+                                <span id="gen-kids-btn-text" data-i18n="kidsGenBtn">🪄 生成儿童营养餐</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Health Summary -->
+                    <div class="banner info" id="kids-nutritional-banner" style="display: none;">
+                        <div>
+                            <strong data-i18n="kidsNutriHighlight">💡 儿童成长亮点：</strong> <span id="kids-nutritional-text"></span>
+                        </div>
+                    </div>
+
+                    <!-- Meals Grid -->
+                    <div class="meals-grid" id="kids-meals-container">
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);" data-i18n="menuNotGen">
+                            正在读取当前儿童食谱或请点击生成...
+                        </div>
+                    </div>
+
+                    <!-- Shopping List -->
+                    <div class="glass-card shopping-summary-card" id="kids-shopping-card" style="display: none;">
+                        <h3 class="section-title" data-i18n="shoppingTitle">🛒 建议采购清单 (按需购买)</h3>
+                        <div class="shopping-items-grid" id="kids-shopping-items-list">
+                            <!-- Items -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- 2. PANTRY TAB -->
@@ -976,7 +1029,19 @@
                 errorModalTitle: "Gemini API 后台请求报错日志",
                 instructionsTitle: "烹饪步骤",
                 dislikedPlaceholder: "例如：香菜, 芹菜",
-                toastDislikedExist: "该食材已在忌口列表中"
+                toastDislikedExist: "该食材已在忌口列表中",
+                tabKids: "👦 儿童配餐",
+                kidsPrefTitle: "儿童偏好设置",
+                kidsPrefDesc: "您可以自定义高年级小学生的饮食偏好，AI 会据此量身定制营养餐。",
+                kidsPrefLabel: "孩子特点与饮食喜好",
+                kidsPrefPlaceholder: "例如：最喜欢吃汉堡肉饼，炸鸡，咖喱...",
+                kidsSavePref: "💾 保存偏好设置",
+                kidsViewMd: "查看原始 Markdown (kids_today.md)",
+                kidsGenBtn: "🪄 生成儿童营养餐",
+                kidsGenLoading: "AI 正在定制儿童营养餐...",
+                kidsNutriHighlight: "💡 儿童成长亮点：",
+                toastKidsSavePrefSuccess: "儿童饮食喜好已保存！",
+                toastKidsGenerateSuccess: "儿童营养餐生成成功！"
             },
             en: {
                 title: "Slim Eating Time",
@@ -1038,7 +1103,19 @@
                 errorModalTitle: "Gemini API Error Logs",
                 instructionsTitle: "Cooking Steps",
                 dislikedPlaceholder: "e.g., Cilantro, Celery",
-                toastDislikedExist: "Ingredient already in excluded list"
+                toastDislikedExist: "Ingredient already in excluded list",
+                tabKids: "👦 Kids Menu",
+                kidsPrefTitle: "Kids Preferences",
+                kidsPrefDesc: "Customize your primary school child's food habits. AI will plan nutritious growth meals.",
+                kidsPrefLabel: "Child's Habits & Preferences",
+                kidsPrefPlaceholder: "e.g., Loves burger steak, curry...",
+                kidsSavePref: "💾 Save Preferences",
+                kidsViewMd: "View Raw Markdown (kids_today.md)",
+                kidsGenBtn: "🪄 Generate Kids Menu",
+                kidsGenLoading: "AI is planning kids meals...",
+                kidsNutriHighlight: "💡 Kids Growth Highlight: ",
+                toastKidsSavePrefSuccess: "Kids preferences saved successfully!",
+                toastKidsGenerateSuccess: "Kids menu generated successfully!"
             },
             ja: {
                 title: "スリム食卓",
@@ -1100,7 +1177,19 @@
                 errorModalTitle: "Gemini API エラーログ",
                 instructionsTitle: "調理手順",
                 dislikedPlaceholder: "例：パクチー、セロリ",
-                toastDislikedExist: "すでにリストに含まれています"
+                toastDislikedExist: "すでにリストに含まれています",
+                tabKids: "👦 キッズ献立",
+                kidsPrefTitle: "お子様の好み設定",
+                kidsPrefDesc: "高学年小学生の食事の好みをカスタマイズしてください。AIがそれに基づいて栄養満点の成長メニューを提案します。",
+                kidsPrefLabel: "お子様の特徴・好み",
+                kidsPrefPlaceholder: "例：ハンバーグ、唐揚げ、カレーが大好き...",
+                kidsSavePref: "💾 設定を保存",
+                kidsViewMd: "生の Markdown を表示 (kids_today.md)",
+                kidsGenBtn: "🪄 キッズ献立を生成",
+                kidsGenLoading: "AIがお子様の献立を計画中...",
+                kidsNutriHighlight: "💡 キッズ栄養ポイント：",
+                toastKidsSavePrefSuccess: "お子様の好み設定が保存されました！",
+                toastKidsGenerateSuccess: "キッズ献立の生成に成功しました！"
             }
         };
 
@@ -1123,7 +1212,10 @@
                 fetchSettings(),
                 fetchHistory()
             ]);
-            await loadTodayMenu();
+            await Promise.all([
+                loadTodayMenu(),
+                loadKidsMenu()
+            ]);
         }
 
         // Apply translations to all DOM elements
@@ -1188,6 +1280,11 @@
                 renderMenu(currentMenu);
             } else {
                 loadTodayMenu();
+            }
+            if (currentKidsMenu) {
+                renderKidsMenu(currentKidsMenu);
+            } else {
+                loadKidsMenu();
             }
         }
 
@@ -1326,6 +1423,9 @@
                 const savedUiLang = localStorage.getItem('ui_lang') || 'zh';
                 const langMapper = { zh: "中文", en: "English", ja: "日本語" };
                 document.getElementById('setting-language').value = settingsData.language || langMapper[savedUiLang];
+                
+                // Populate kids preferences field
+                document.getElementById('kids-pref-input').value = settingsData.kids_preferences || '';
                 
                 renderDislikedTags();
             } catch (err) {
@@ -1480,6 +1580,197 @@
                 btn.disabled = false;
                 spinner.style.display = 'none';
                 document.getElementById('gen-btn-text').innerText = btnTextDefault;
+            }
+        }
+
+        let currentKidsMenu = null;
+
+        async function saveKidsPreferences() {
+            const val = document.getElementById('kids-pref-input').value.trim();
+            settingsData.kids_preferences = val;
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settingsData)
+                });
+                const data = await res.json();
+                if (data.status === "success") {
+                    const msg = i18n[currentLang].toastKidsSavePrefSuccess || "儿童偏好设置已保存！";
+                    showToast(msg);
+                } else {
+                    showToast("Error", true);
+                }
+            } catch (err) {
+                showToast("Error", true);
+            }
+        }
+
+        async function loadKidsMenu() {
+            try {
+                const res = await fetch('/api/menu/kids-json');
+                const data = await res.json();
+                if (data && data.breakfast) {
+                    currentKidsMenu = data;
+                    renderKidsMenu(data);
+                } else {
+                    const labelNotGen = i18n[currentLang].menuNotGen || "今日儿童食谱尚未生成";
+                    const noMenuText = i18n[currentLang].noMenuText || "今天还没有为孩子定制菜单。";
+                    const btnText = i18n[currentLang].kidsGenBtn || "🪄 生成儿童营养餐";
+                    
+                    document.getElementById('kids-menu-date-label').innerText = labelNotGen;
+                    document.getElementById('kids-meals-container').innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary);">
+                            <p style="font-size: 1.1rem; margin-bottom: 1rem;">${noMenuText}</p>
+                            <button class="btn btn-primary" onclick="generateKidsMenu()">${btnText}</button>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error("Failed to load kids menu:", err);
+            }
+        }
+
+        async function generateKidsMenu() {
+            const btn = document.getElementById('btn-generate-kids');
+            const spinner = document.getElementById('gen-kids-spinner');
+            
+            const btnTextLoading = i18n[currentLang].kidsGenLoading || "AI 正在定制儿童营养餐...";
+            const btnTextDefault = i18n[currentLang].kidsGenBtn || "🪄 生成儿童营养餐";
+
+            btn.disabled = true;
+            spinner.style.display = 'block';
+            document.getElementById('gen-kids-btn-text').innerText = btnTextLoading;
+
+            try {
+                const res = await fetch('/api/menu/generate/kids', { method: 'POST' });
+                const data = await res.json();
+                
+                if (data.status === "success") {
+                    currentKidsMenu = data.menu;
+                    renderKidsMenu(currentKidsMenu);
+                    const msg = i18n[currentLang].toastKidsGenerateSuccess || "儿童营养餐生成成功！";
+                    showToast(msg);
+                } else {
+                    const msg = i18n[currentLang].toastGenerateFail || "生成失败: ";
+                    showToast(msg + (data.message || ""), true);
+                }
+            } catch (err) {
+                showToast("Request failed", true);
+            } finally {
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                document.getElementById('gen-kids-btn-text').innerText = btnTextDefault;
+            }
+        }
+
+        function renderKidsMenu(menu) {
+            const dateLabel = i18n[currentLang].menuDate || "食谱日期";
+            document.getElementById('kids-menu-date-label').innerText = `📅 ${dateLabel}: ${menu.date || new Date().toISOString().split('T')[0]}`;
+
+            const nutBanner = document.getElementById('kids-nutritional-banner');
+            if (menu.nutritional_summary) {
+                document.getElementById('kids-nutritional-text').innerText = menu.nutritional_summary;
+                nutBanner.style.display = 'flex';
+            } else {
+                nutBanner.style.display = 'none';
+            }
+
+            const mealsContainer = document.getElementById('kids-meals-container');
+            mealsContainer.innerHTML = '';
+
+            const mealTypes = [
+                { key: 'breakfast', name: i18n[currentLang].breakfast || '🍳 早餐', class: 'breakfast' },
+                { key: 'lunch', name: i18n[currentLang].lunch || '🍤 午餐', class: 'lunch' },
+                { key: 'dinner', name: i18n[currentLang].dinner || '🍲 晚餐', class: 'dinner' }
+            ];
+
+            const ingLabel = i18n[currentLang].foodLabel || "所需食材";
+            const stepLabel = i18n[currentLang].instructionsTitle || "烹饪步骤";
+
+            mealTypes.forEach(t => {
+                const meal = menu[t.key] || {};
+                const card = document.createElement('div');
+                card.className = `glass-card meal-card ${t.class}`;
+
+                const ingArr = meal.ingredients || [];
+                let ingHTML = '<div style="color: var(--text-secondary); font-size: 0.85rem;">-</div>';
+                if (ingArr.length > 0) {
+                    ingHTML = '<ul class="ingredients-list">';
+                    ingArr.forEach(i => {
+                        ingHTML += `<li><span>${i.name}</span><span class="qty">${i.amount || ''}</span></li>`;
+                    });
+                    ingHTML += '</ul>';
+                }
+
+                const stepArr = meal.instructions || [];
+                let stepHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem;">-</p>';
+                if (stepArr.length > 0) {
+                    stepHTML = '<ol class="steps-list">';
+                    stepArr.forEach(s => {
+                        stepHTML += `<li>${s}</li>`;
+                    });
+                    stepHTML += '</ol>';
+                }
+
+                const buyArr = meal.suggested_to_buy || [];
+                const filteredBuy = buyArr.filter(b => b);
+                let buyHTML = '';
+                if (filteredBuy.length > 0) {
+                    const buyLabel = i18n[currentLang].reqBuy || "建议购买";
+                    buyHTML = `<div class="buy-indicator">⚠️ ${buyLabel}: ${filteredBuy.join(', ')}</div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="meal-title-row">
+                        <span>${t.name}</span>
+                    </div>
+                    <div>
+                        <div class="dish-name">${meal.dish_name || '未定制'}</div>
+                    </div>
+                    <div>
+                        <h4 class="section-title">${ingLabel}</h4>
+                        ${ingHTML}
+                    </div>
+                    <div>
+                        <h4 class="section-title">${stepLabel}</h4>
+                        ${stepHTML}
+                    </div>
+                    ${buyHTML}
+                `;
+                mealsContainer.appendChild(card);
+            });
+
+            const shoppingCard = document.getElementById('kids-shopping-card');
+            const shoppingList = document.getElementById('kids-shopping-items-list');
+            shoppingList.innerHTML = '';
+            
+            const list = menu.shopping_list || [];
+            const filteredList = list.filter(item => item);
+            if (filteredList.length > 0) {
+                shoppingCard.style.display = 'block';
+                filteredList.forEach(item => {
+                    const badge = document.createElement('label');
+                    badge.className = 'shopping-badge';
+                    badge.innerHTML = `<input type="checkbox"> <span>${item}</span>`;
+                    shoppingList.appendChild(badge);
+                });
+            } else {
+                shoppingCard.style.display = 'none';
+            }
+        }
+
+        async function viewKidsMarkdown() {
+            try {
+                const res = await fetch('/api/menu/kids-md');
+                const text = await res.text();
+                
+                const titleLabel = i18n[currentLang].modalMdTitle || "原始 Markdown 文件";
+                document.getElementById('modal-title').innerText = `${titleLabel} (kids_today.md)`;
+                document.getElementById('modal-body').innerText = text;
+                document.getElementById('md-modal').style.display = 'flex';
+            } catch (err) {
+                showToast("Error", true);
             }
         }
 

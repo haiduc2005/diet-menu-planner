@@ -7,8 +7,8 @@ import uvicorn
 from dotenv import load_dotenv
 
 from manager.foods import load_foods, add_food, remove_food
-from manager.history import load_history, load_settings, save_settings
-from manager.planner import generate_and_save_today_menu, get_today_markdown
+from manager.history import load_history, load_settings, save_settings, load_kids_history
+from manager.planner import generate_and_save_today_menu, get_today_markdown, generate_and_save_kids_menu, get_kids_markdown
 
 from datetime import datetime
 from contextlib import asynccontextmanager
@@ -121,6 +121,44 @@ async def get_history_menu_md(date_str: str):
 async def generate_menu_api():
     try:
         menu = generate_and_save_today_menu()
+        return {"status": "success", "menu": menu}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+# --- Kids Menu API Routes ---
+@app.get("/api/kids-history")
+async def get_kids_history_api():
+    return load_kids_history()
+
+@app.get("/api/menu/kids-json")
+async def get_kids_menu_json():
+    import datetime
+    today_str = datetime.datetime.now().strftime('%Y-%m-%d')
+    history = load_kids_history()
+    for item in history:
+        if item.get("date") == today_str:
+            return item
+    return None
+
+@app.get("/api/menu/kids-md", response_class=PlainTextResponse)
+async def get_kids_menu_md():
+    return get_kids_markdown()
+
+@app.get("/api/menu/kids-history-md/{date_str}", response_class=PlainTextResponse)
+async def get_kids_history_menu_md(date_str: str):
+    history_md_path = os.path.join(BASE_DIR, 'output', 'history', f"kids_{date_str}.md")
+    if os.path.exists(history_md_path):
+        try:
+            with open(history_md_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"无法读取历史儿童 Markdown: {e}")
+    raise HTTPException(status_code=404, detail="未找到该日期的历史儿童食谱")
+
+@app.post("/api/menu/generate/kids")
+async def generate_kids_menu_api():
+    try:
+        menu = generate_and_save_kids_menu()
         return {"status": "success", "menu": menu}
     except Exception as e:
         return {"status": "error", "message": str(e)}
