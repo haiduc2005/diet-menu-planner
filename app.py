@@ -121,9 +121,14 @@ if __name__ == '__main__':
 
     print("\n" + "="*50)
     print("AI Diet Menu Planner 服务已成功启动！")
-    print(f" - 本地访问：  http://localhost:{port}")
+    print(f" - 本地访问：   http://localhost:{port}")
     if host == "0.0.0.0":
-        print(f" - 手机/局域网：http://{local_ip}:{port}")
+        try:
+            raw_hostname = socket.gethostname().split('.')[0]
+            print(f" - 域名访问：   http://{raw_hostname}.local:{port}")
+        except Exception:
+            pass
+        print(f" - IP 访问：    http://{local_ip}:{port}")
     else:
         print(" - 提示：当前仅允许本机访问。若想让手机访问，请在 .env 中设置 HOST=0.0.0.0")
     print("="*50 + "\n")
