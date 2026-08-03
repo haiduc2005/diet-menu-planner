@@ -22,3 +22,4 @@ data/settings.json
 # OS specific files
 .DS_Store
 Thumbs.db
+data/kids_history.json
