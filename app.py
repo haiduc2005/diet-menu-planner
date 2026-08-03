@@ -105,7 +105,27 @@ async def generate_menu_api():
 
 # --- Start Uvicorn Server ---
 if __name__ == '__main__':
+    import socket
     port = int(os.getenv("PORT", 8000))
     host = os.getenv("HOST", "127.0.0.1")
-    print(f"Starting AI Diet Menu Planner at http://{host}:{port}")
+    
+    # Get local IP address for LAN access
+    local_ip = "127.0.0.1"
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+    except Exception:
+        pass
+
+    print("\n" + "="*50)
+    print("AI Diet Menu Planner 服务已成功启动！")
+    print(f" - 本地访问：  http://localhost:{port}")
+    if host == "0.0.0.0":
+        print(f" - 手机/局域网：http://{local_ip}:{port}")
+    else:
+        print(" - 提示：当前仅允许本机访问。若想让手机访问，请在 .env 中设置 HOST=0.0.0.0")
+    print("="*50 + "\n")
+    
     uvicorn.run("app:app", host=host, port=port, reload=True)
