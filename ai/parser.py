@@ -8,10 +8,6 @@ def parse_menu_to_markdown(menu_data: dict, date_str: str = None) -> str:
     md = []
     md.append(f"# 🥗 AI 每日减脂菜单 ({date_str})")
     
-    # Warning for demo mode
-    if menu_data.get("demo_mode") and "warning" in menu_data:
-        md.append(f"\n> ⚠️ **提示**: {menu_data['warning']}\n")
-        
     if "nutritional_summary" in menu_data:
         md.append(f"\n## 📊 今日健康提示\n{menu_data['nutritional_summary']}\n")
         
@@ -65,10 +61,5 @@ def parse_menu_to_markdown(menu_data: dict, date_str: str = None) -> str:
             md.append(f"- [ ] {item}")
     else:
         md.append("- 🎉 今日食材充足，无须额外购买！")
-        
-    # Append raw error logs at the very bottom under diagnostics
-    if menu_data.get("error_details"):
-        md.append("\n---\n\n### 🔍 开发者后台诊断日志")
-        md.append(f"```\n{menu_data['error_details']}\n```")
         
     return "\n".join(md)

@@ -708,12 +708,7 @@
         <!-- 1. TODAY MENU TAB -->
         <section id="today-menu" class="tab-content active">
             
-            <!-- Warnings / Notice banners -->
-            <div id="demo-banner" class="banner warning" style="display: none;">
-                <div>
-                    <strong>Demo 演示模式中：</strong> <span id="demo-banner-text"></span>
-                </div>
-            </div>
+
 
             <div class="menu-header-bar">
                 <div class="date-display" id="menu-date-label">载入中...</div>
@@ -1304,26 +1299,7 @@
             // Update labels
             document.getElementById('menu-date-label').innerText = `📅 食谱日期: ${menu.date || new Date().toISOString().split('T')[0]}`;
             
-            // Warnings Banner
-            const demoBanner = document.getElementById('demo-banner');
-            if (menu.demo_mode) {
-                let html = menu.warning || "正在使用 Demo 模式生成的数据";
-                if (menu.error_details) {
-                    html += ` <a href="#" id="view-error-details-link" style="color: #fbbf24; text-decoration: underline; margin-left: 0.5rem; font-weight: 500;">[查看错误日志详情]</a>`;
-                }
-                document.getElementById('demo-banner-text').innerHTML = html;
-                demoBanner.style.display = 'flex';
-                
-                const errorLink = document.getElementById('view-error-details-link');
-                if (errorLink) {
-                    errorLink.onclick = (e) => {
-                        e.preventDefault();
-                        showErrorLogModal(menu.error_details);
-                    };
-                }
-            } else {
-                demoBanner.style.display = 'none';
-            }
+
 
             // Nutritional Highlight Banner
             const nutBanner = document.getElementById('nutritional-banner');
