@@ -917,8 +917,8 @@
         // --- i18n Translation Tables ---
         const i18n = {
             zh: {
-                title: "AI Diet Menu Planner",
-                subtitle: "根据冰箱已有食材，智能规划每日健康减脂餐",
+                title: "享瘦食光",
+                subtitle: "智能减脂一日三餐计划助手",
                 viewMd: "查看原始 Markdown (today.md)",
                 tabToday: "🍳 今日食谱",
                 tabPantry: "🥕 食材库",
@@ -979,7 +979,7 @@
                 toastDislikedExist: "该食材已在忌口列表中"
             },
             en: {
-                title: "AI Diet Menu Planner",
+                title: "Slim Eating Time",
                 subtitle: "Smart daily fat-loss meal planner based on your existing ingredients",
                 viewMd: "View Raw Markdown (today.md)",
                 tabToday: "🍳 Today's Menu",
@@ -1041,8 +1041,8 @@
                 toastDislikedExist: "Ingredient already in excluded list"
             },
             ja: {
-                title: "AI ダイエット献立プランナー",
-                subtitle: "冷蔵庫の食材をもとに、スマートに健康的な減脂メニューを提案",
+                title: "スリム食卓",
+                subtitle: "冷蔵庫の食材をもとに、スマートに健康的な減量メニューを提案",
                 viewMd: "生の Markdown を表示 (today.md)",
                 tabToday: "🍳 今日の献立",
                 tabPantry: "🥕 食材庫",
@@ -1149,6 +1149,8 @@
             
             // Update page lang attribute
             document.documentElement.lang = lang === 'zh' ? 'zh-CN' : (lang === 'ja' ? 'ja' : 'en');
+            // Update browser tab title
+            document.title = `${trans.title} - ${trans.subtitle}`;
         }
 
         // Handle language select change
