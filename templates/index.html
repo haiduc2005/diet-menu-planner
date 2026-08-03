@@ -49,7 +49,7 @@
 
         /* Container Layout */
         .container {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
         }
@@ -862,6 +862,15 @@
                                     <span class="quick-add-tag" onclick="quickAddFood('糙米')">糙米</span>
                                     <span class="quick-add-tag" onclick="quickAddFood('南瓜')">南瓜</span>
                                 </div>
+                            <div class="category-box">
+                                <div class="category-name" data-i18n="catRefinedStaple">🍚 普通主食 / 精制碳水</div>
+                                <div class="quick-tags">
+                                    <span class="quick-add-tag" onclick="quickAddFood('大米')">大米</span>
+                                    <span class="quick-add-tag" onclick="quickAddFood('面粉')">面粉</span>
+                                    <span class="quick-add-tag" onclick="quickAddFood('面条')">面条</span>
+                                    <span class="quick-add-tag" onclick="quickAddFood('饺子')">饺子</span>
+                                    <span class="quick-add-tag" onclick="quickAddFood('包子')">包子</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1010,6 +1019,7 @@
                 catMeat: "🥩 蛋白质",
                 catVeg: "🥦 蔬菜水果",
                 catStaple: "🍠 优质碳水",
+                catRefinedStaple: "🍚 普通主食 / 精制碳水",
                 pantrySearchPlaceholder: "🔍 搜索食材库...",
                 myPantry: "我的食材库",
                 pantryTip: "点击食材卡片右上角的 × 即可将其移除",
@@ -1092,6 +1102,7 @@
                 catMeat: "🥩 Protein",
                 catVeg: "🥦 Veg & Fruits",
                 catStaple: "🍠 Healthy Carbs",
+                catRefinedStaple: "🍚 Refined Carbs",
                 pantrySearchPlaceholder: "🔍 Search pantry...",
                 myPantry: "My Pantry",
                 pantryTip: "Click × on any ingredient card to remove it",
@@ -1174,6 +1185,7 @@
                 catMeat: "🥩 タンパク質",
                 catVeg: "🥦 野菜・果物",
                 catStaple: "🍠 良質な炭水化物",
+                catRefinedStaple: "🍚 精製炭水化物",
                 pantrySearchPlaceholder: "🔍 食材庫を検索...",
                 myPantry: "マイ食材庫",
                 pantryTip: "食材カードの右上にある × をクリックして削除します",
@@ -2067,6 +2079,7 @@
                 meat: i18n[lang].catMeat || "🥩 蛋白质",
                 veg: i18n[lang].catVeg || "🥦 蔬菜水果",
                 staple: i18n[lang].catStaple || "🍠 优质碳水",
+                refinedStaple: i18n[lang].catRefinedStaple || "🍚 普通主食 / 精制碳水",
                 other: i18n[lang].other || "🧂 其他 / 配料"
             };
 
@@ -2074,17 +2087,26 @@
                 meat: [],
                 veg: [],
                 staple: [],
+                refinedStaple: [],
                 other: []
             };
 
             // Categorization lists
-            const stapleKeywords = ["土豆", "红薯", "紫薯", "南瓜", "燕麦", "糙米", "藜麦", "全麦", "面包", "意面", "米饭", "玉米", "面条", "粉", "芋头", "山药", "potato", "sweet potato", "pumpkin", "oat", "brown rice", "quinoa", "wheat", "bread", "pasta", "rice", "corn", "noodle", "taro", "yam", "じゃがいも", "さつまいも", "かぼちゃ", "オートミール", "玄米", "キヌア", "全粒粉", "パン", "パスタ", "ライス", "米", "トウモロコシ", "麺", "芋"];
+            const stapleKeywords = ["红薯", "紫薯", "南瓜", "燕麦", "糙米", "藜麦", "全麦", "荞麦", "魔芋", "玉米", "芋头", "山药", "sweet potato", "pumpkin", "oat", "brown rice", "quinoa", "buckwheat", "shirataki", "konjac", "corn", "taro", "yam", "さつまいも", "かぼちゃ", "オートミール", "玄米", "キヌア", "そば", "トウモロコシ", "芋"];
+            const refinedKeywords = ["大米", "米饭", "面粉", "饺子", "包子", "馒头", "面条", "面片", "意面", "通心粉", "白面包", "面包", "粉丝", "米粉", "粉条", "土豆", "洋芋", "薯条", "薯片", "rice", "flour", "dumpling", "bun", "noodle", "pasta", "bread", "vermicelli", "potato", "米", "ライス", "小麦粉", "餃子", "パン", "麺", "うどん", "ラーメン", "パスタ", "ポテト", "じゃがいも"];
             const meatKeywords = ["鸡", "肉", "蛋", "牛", "猪", "羊", "鱼", "虾", "豆腐", "蟹", "贝", "蛤", "蚝", "蚌", "螺", "鲑", "卵", "鮭", "いくら", "salmon", "chicken", "beef", "pork", "mutton", "fish", "shrimp", "egg", "tofu", "tuna", "turkey", "鶏", "豚", "牛", "羊", "魚", "エビ", "卵", "サーモン"];
             const vegKeywords = ["西兰花", "西蓝花", "黄瓜", "生菜", "番茄", "西红柿", "茄子", "胡萝卜", "白菜", "油麦菜", "菠菜", "芹菜", "洋葱", "大蒜", "生姜", "辣椒", "甜椒", "苹果", "香蕉", "橙子", "草莓", "葡萄", "柠檬", "蓝莓", "牛油果", "梨", "桃", "瓜", "菇", "木耳", "笋", "葱", "蒜", "姜", "broccoli", "cucumber", "lettuce", "tomato", "eggplant", "carrot", "cabbage", "spinach", "celery", "onion", "garlic", "ginger", "pepper", "apple", "banana", "orange", "strawberry", "grape", "lemon", "blueberry", "avocado", "pear", "peach", "melon", "mushroom", "ブロッコリー", "きゅうり", "レタス", "トマト", "なす", "キャベツ", "にんじん", "ほうれん草", "セロリ", "玉ねぎ", "ニンニク", "生姜", "ピーマン", "リンゴ", "バナナ", "オレンジ", "イチゴ", "ブドウ", "レモン", "ブルーベリー", "アボカド", "ナシ", "モモ", "メロン", "マッシュルーム", "野菜", "果物"];
 
             filtered.forEach(food => {
                 const lowerFood = food.toLowerCase();
                 
+                // Refined check first
+                const isRefined = refinedKeywords.some(kw => lowerFood.includes(kw));
+                if (isRefined) {
+                    categorized.refinedStaple.push(food);
+                    return;
+                }
+
                 // Staple check
                 const isStaple = stapleKeywords.some(kw => lowerFood.includes(kw));
                 if (isStaple) {
@@ -2112,7 +2134,7 @@
 
             // Render categories
             let totalRendered = 0;
-            const categoriesToRender = ['meat', 'veg', 'staple', 'other'];
+            const categoriesToRender = ['meat', 'veg', 'staple', 'refinedStaple', 'other'];
             
             categoriesToRender.forEach(catKey => {
                 const list = categorized[catKey];
