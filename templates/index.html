@@ -695,6 +695,7 @@
         <nav class="tabs">
             <button class="tab-btn active" onclick="switchTab('today-menu')" id="tab-btn-today" data-i18n="tabToday">🍳 今日食谱</button>
             <button class="tab-btn" onclick="switchTab('kids-menu')" id="tab-btn-kids" data-i18n="tabKids">👦 儿童配餐</button>
+            <button class="tab-btn" onclick="switchTab('trending-menu')" id="tab-btn-trending" data-i18n="tabTrending">💡 每日推荐</button>
             <button class="tab-btn" onclick="switchTab('pantry')" id="tab-btn-pantry" data-i18n="tabPantry">🥕 食材库</button>
             <button class="tab-btn" onclick="switchTab('history')" id="tab-btn-history" data-i18n="tabHistory">📜 历史食谱</button>
             <button class="tab-btn" onclick="switchTab('settings')" id="tab-btn-settings" data-i18n="tabSettings">⚙️ 设置中心</button>
@@ -787,6 +788,18 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Trending Menu TAB -->
+        <section id="trending-menu" class="tab-content">
+            <div class="glass-card" style="margin-bottom: 2rem;">
+                <h2 data-i18n="trendingTitle" style="font-family: var(--font-display); margin-bottom: 0.5rem;">小红书 & 抖音 每日流行减脂餐推荐</h2>
+                <p class="subtitle" data-i18n="trendingDesc">每天从全网精选 3 款流行减脂餐做法，为你提供更多样化的瘦身选择。</p>
+            </div>
+            
+            <div class="meals-grid" id="trending-meals-container">
+                <!-- Trending cards will be dynamically loaded here -->
             </div>
         </section>
 
@@ -1037,7 +1050,12 @@
                 kidsNutriHighlight: "💡 儿童成长亮点：",
                 toastKidsSavePrefSuccess: "儿童饮食喜好已保存！",
                 toastKidsGenerateSuccess: "儿童营养餐生成成功！",
-                other: "🧂 其他 / 配料"
+                other: "🧂 其他 / 配料",
+                tabTrending: "💡 每日推荐",
+                trendingTitle: "小红书 & 抖音 每日流行减脂餐推荐",
+                trendingDesc: "每天为你精选 3 款全网爆火的网红瘦身食谱，可直接作为参考或一键导入食材。",
+                btnImportIngredients: "📥 一键导入食材",
+                toastImportSuccess: "成功将食材导入你的食材库！"
             },
             en: {
                 title: "Slim Eating Time",
@@ -1112,7 +1130,12 @@
                 kidsNutriHighlight: "💡 Kids Growth Highlight: ",
                 toastKidsSavePrefSuccess: "Kids preferences saved successfully!",
                 toastKidsGenerateSuccess: "Kids menu generated successfully!",
-                other: "🧂 Others / Seasonings"
+                other: "🧂 Others / Seasonings",
+                tabTrending: "💡 Daily Trending",
+                trendingTitle: "Xiaohongshu & Douyin Daily Trending Fat-loss Meals",
+                trendingDesc: "3 viral healthy slimming recipes recommended daily. Use as reference or import ingredients.",
+                btnImportIngredients: "📥 Import All Ingredients",
+                toastImportSuccess: "Successfully imported ingredients to pantry!"
             },
             ja: {
                 title: "スリム食卓",
@@ -1187,7 +1210,12 @@
                 kidsNutriHighlight: "💡 キッズ栄養ポイント：",
                 toastKidsSavePrefSuccess: "お子様の好み設定が保存されました！",
                 toastKidsGenerateSuccess: "キッズ献立の生成に成功しました！",
-                other: "🧂 その他・調味料"
+                other: "🧂 その他・調味料",
+                tabTrending: "💡 本日のおすすめ",
+                trendingTitle: "小紅書＆TikTok 本日のトレンド減量レシピ",
+                trendingDesc: "ネットで大人気のダイエットレシピを毎日3つ厳選してご紹介。食材のインポートも可能です。",
+                btnImportIngredients: "📥 食材を一括インポート",
+                toastImportSuccess: "食材を食材庫にインポートしました！"
             }
         };
 
@@ -1212,7 +1240,8 @@
             ]);
             await Promise.all([
                 loadTodayMenu(),
-                loadKidsMenu()
+                loadKidsMenu(),
+                loadTrendingRecipes()
             ]);
         }
 
@@ -1283,6 +1312,11 @@
                 renderKidsMenu(currentKidsMenu);
             } else {
                 loadKidsMenu();
+            }
+            if (trendingRecipesList.length > 0) {
+                renderTrendingRecipes(trendingRecipesList);
+            } else {
+                loadTrendingRecipes();
             }
         }
 
@@ -1769,6 +1803,119 @@
                 document.getElementById('md-modal').style.display = 'flex';
             } catch (err) {
                 showToast("Error", true);
+            }
+        }
+
+        let trendingRecipesList = [];
+
+        async function loadTrendingRecipes() {
+            try {
+                const res = await fetch('/api/menu/trending');
+                trendingRecipesList = await res.json();
+                renderTrendingRecipes(trendingRecipesList);
+            } catch (err) {
+                console.error("Failed to load trending recipes:", err);
+            }
+        }
+
+        function renderTrendingRecipes(recipes) {
+            const container = document.getElementById('trending-meals-container');
+            container.innerHTML = '';
+            
+            if (recipes.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);">No recipes found</div>`;
+                return;
+            }
+            
+            const ingLabel = i18n[currentLang].foodLabel || "所需食材";
+            const stepLabel = i18n[currentLang].instructionsTitle || "烹饪步骤";
+            const importBtnLabel = i18n[currentLang].btnImportIngredients || "一键导入食材";
+
+            recipes.forEach((r, idx) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card meal-card';
+                card.style.borderTop = '4px solid var(--accent)';
+                
+                // Tags HTML
+                const tagsHTML = (r.tags || []).map(t => `<span class="quick-add-tag" style="background: var(--accent-glow); color: var(--accent); border-color: rgba(99,102,241,0.2); pointer-events: none;">${t}</span>`).join(' ');
+                
+                // Ingredients HTML
+                const ingArr = r.ingredients || [];
+                let ingHTML = '';
+                if (ingArr.length > 0) {
+                    ingHTML = '<ul class="ingredients-list">';
+                    ingArr.forEach(i => {
+                        ingHTML += `<li><span>${i.name}</span><span class="qty">${i.amount || ''}</span></li>`;
+                    });
+                    ingHTML += '</ul>';
+                }
+                
+                // Steps HTML
+                const stepArr = r.instructions || [];
+                let stepHTML = '';
+                if (stepArr.length > 0) {
+                    stepHTML = '<ol class="steps-list">';
+                    stepArr.forEach(s => {
+                        stepHTML += `<li>${s}</li>`;
+                    });
+                    stepHTML += '</ol>';
+                }
+
+                card.innerHTML = `
+                    <div class="meal-title-row" style="justify-content: space-between;">
+                        <span style="font-weight: 700; color: white;">${r.title}</span>
+                        <span style="font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--text-secondary);">${r.source}</span>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                        ${tagsHTML}
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">${r.description}</p>
+                    <div>
+                        <h4 class="section-title">${ingLabel}</h4>
+                        ${ingHTML}
+                    </div>
+                    <div>
+                        <h4 class="section-title">${stepLabel}</h4>
+                        ${stepHTML}
+                    </div>
+                    <button class="btn btn-secondary" onclick="importRecipeIngredients(${idx})" style="width: 100%; margin-top: auto; font-size: 0.85rem;">
+                        ${importBtnLabel}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function importRecipeIngredients(idx) {
+            const recipe = trendingRecipesList[idx];
+            if (!recipe || !recipe.ingredients) return;
+            
+            const importBtn = document.querySelectorAll('#trending-meals-container .meal-card')[idx].querySelector('button');
+            const originalText = importBtn.innerText;
+            importBtn.disabled = true;
+            importBtn.innerText = "Importing...";
+            
+            try {
+                // Add all ingredients sequentially
+                for (const ing of recipe.ingredients) {
+                    if (ing.name) {
+                        await fetch('/api/foods/add', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ food: ing.name })
+                        });
+                    }
+                }
+                
+                await fetchFoods(); // Reload pantry view
+                
+                const successMsg = i18n[currentLang].toastImportSuccess || "成功将食材导入你的食材库！";
+                showToast(successMsg);
+            } catch (err) {
+                showToast("Import failed", true);
+            } finally {
+                importBtn.disabled = false;
+                importBtn.innerText = originalText;
             }
         }
 

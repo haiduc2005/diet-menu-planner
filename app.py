@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 from manager.foods import load_foods, add_food, remove_food
 from manager.history import load_history, load_settings, save_settings, load_kids_history
-from manager.planner import generate_and_save_today_menu, get_today_markdown, generate_and_save_kids_menu, get_kids_markdown
+from manager.planner import generate_and_save_today_menu, get_today_markdown, generate_and_save_kids_menu, get_kids_markdown, get_daily_trending_recipes
 
 from datetime import datetime
 from contextlib import asynccontextmanager
@@ -19,18 +19,32 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 def scheduled_menu_job():
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Triggering daily menu generation...")
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Checking daily menu schedule...")
+    
     # 1. Generate Adult Diet Menu
     try:
-        generate_and_save_today_menu()
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily adult menu successfully generated.")
+        history = load_history()
+        already_exists = any(item.get("date") == today_str for item in history)
+        if not already_exists:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Adult menu for today not found. Generating...")
+            generate_and_save_today_menu()
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily adult menu successfully generated.")
+        else:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Adult menu for today already exists. Skipping auto-generation.")
     except Exception as e:
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Adult Menu): {e}")
 
     # 2. Generate Kids Nutrition Menu
     try:
-        generate_and_save_kids_menu()
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily kids menu successfully generated.")
+        kids_history = load_kids_history()
+        already_exists = any(item.get("date") == today_str for item in kids_history)
+        if not already_exists:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Kids menu for today not found. Generating...")
+            generate_and_save_kids_menu()
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily kids menu successfully generated.")
+        else:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Kids menu for today already exists. Skipping auto-generation.")
     except Exception as e:
         print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Kids Menu): {e}")
 
@@ -170,6 +184,11 @@ async def generate_kids_menu_api():
         return {"status": "success", "menu": menu}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+# --- Trending Menu API Routes ---
+@app.get("/api/menu/trending")
+async def get_trending_menu_api():
+    return get_daily_trending_recipes()
 
 # --- Start Uvicorn Server ---
 if __name__ == '__main__':
