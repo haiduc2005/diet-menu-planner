@@ -1,0 +1,24 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment variables (Secrets)
+.env
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Generated output markdown files
+output/
+
+# User data files (optional, but good to keep local data separate)
+data/history.json
+data/foods.json
+data/settings.json
+
+# OS specific files
+.DS_Store
+Thumbs.db
