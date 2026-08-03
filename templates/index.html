@@ -854,9 +854,12 @@
                     <div class="input-group">
                         <label for="setting-model">Gemini 模型型号</label>
                         <select id="setting-model" class="form-input">
-                            <option value="gemini-1.5-flash">gemini-1.5-flash (推荐: 高速低耗)</option>
-                            <option value="gemini-1.5-pro">gemini-1.5-pro (推荐: 逻辑与长文本强)</option>
+                            <option value="gemini-3.6-flash">gemini-3.6-flash (最新推荐: 极速平衡)</option>
+                            <option value="gemini-3.5-flash">gemini-3.5-flash (旗舰主力: 智能高效)</option>
+                            <option value="gemini-3.5-pro">gemini-3.5-pro (旗舰推理: 逻辑分析)</option>
                             <option value="gemini-2.0-flash-exp">gemini-2.0-flash-exp (前沿特性测试)</option>
+                            <option value="gemini-1.5-flash">gemini-1.5-flash (经典轻量)</option>
+                            <option value="gemini-1.5-pro">gemini-1.5-pro (经典智能)</option>
                         </select>
                     </div>
 
@@ -1038,7 +1041,22 @@
                 
                 // Pop fields
                 document.getElementById('setting-api-key').value = settingsData.gemini_api_key || '';
-                document.getElementById('setting-model').value = settingsData.gemini_model || 'gemini-1.5-flash';
+                const modelSelect = document.getElementById('setting-model');
+                const modelVal = settingsData.gemini_model || 'gemini-1.5-flash';
+                let optionExists = false;
+                for (let i = 0; i < modelSelect.options.length; i++) {
+                    if (modelSelect.options[i].value === modelVal) {
+                        optionExists = true;
+                        break;
+                    }
+                }
+                if (!optionExists) {
+                    const opt = document.createElement('option');
+                    opt.value = modelVal;
+                    opt.text = `${modelVal} (来自配置)`;
+                    modelSelect.add(opt);
+                }
+                modelSelect.value = modelVal;
                 document.getElementById('setting-calories').value = settingsData.daily_target_calories || '1500';
                 document.getElementById('setting-language').value = settingsData.language || '中文';
                 
