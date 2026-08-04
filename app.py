@@ -2,6 +2,7 @@ import os
 import logging
 import collections
 import threading
+import json
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
@@ -122,6 +123,18 @@ class FoodRequest(BaseModel):
 @app.get("/", response_class=HTMLResponse)
 async def read_index(request: Request):
     return templates.TemplateResponse(request, "index.html")
+
+@app.get("/api/i18n")
+async def get_i18n_api():
+    i18n_file = os.path.join(os.path.dirname(__file__), 'data', 'i18n.json')
+    if os.path.exists(i18n_file):
+        try:
+            with open(i18n_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            return {"error": f"Failed to load i18n file: {e}"}
+    return {}
+
 
 # --- Food API Routes ---
 @app.get("/api/foods")
