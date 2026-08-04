@@ -779,6 +779,178 @@
         .close-modal:hover {
             color: white;
         }
+        /* ── Diet Wisdom Page ───────────────────────────────────────────── */
+        .wisdom-page {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .wisdom-hero {
+            background: linear-gradient(135deg,
+                rgba(99,102,241,0.18) 0%,
+                rgba(16,185,129,0.12) 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .wisdom-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%,
+                rgba(99,102,241,0.08) 0%, transparent 60%),
+                radial-gradient(circle at 70% 50%,
+                rgba(16,185,129,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .wisdom-hero h2 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a5b4fc, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.6rem;
+        }
+        .wisdom-hero p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .wisdom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .wisdom-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .wisdom-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px -8px rgba(0,0,0,0.55);
+        }
+        .wisdom-card.accent-purple { border-top: 3px solid #818cf8; }
+        .wisdom-card.accent-green  { border-top: 3px solid var(--primary); }
+        .wisdom-card.accent-amber  { border-top: 3px solid #f59e0b; }
+        .wisdom-card.accent-rose   { border-top: 3px solid #fb7185; }
+        .wisdom-card.accent-sky    { border-top: 3px solid #38bdf8; }
+        .wisdom-card.accent-orange { border-top: 3px solid #fb923c; }
+
+        .wisdom-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .wisdom-icon {
+            font-size: 2.2rem;
+            line-height: 1;
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+        }
+        .wisdom-card-header > div { flex: 1; }
+        .wisdom-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.3rem;
+        }
+        .wisdom-card .subtitle {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .wisdom-body {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            line-height: 1.75;
+        }
+
+        .wisdom-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.2rem 0.65rem;
+            border-radius: 20px;
+            width: fit-content;
+        }
+        .badge-science { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+        .badge-tip     { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+        .badge-caution { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+
+        .wisdom-tips {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 0.25rem;
+        }
+        .wisdom-tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            padding: 0.55rem 0.75rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.855rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            transition: background 0.2s;
+        }
+        .wisdom-tip-item:hover { background: rgba(255,255,255,0.06); }
+        .wisdom-tip-num {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #059669);
+            color: white;
+            font-size: 0.68rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+        }
+
+        .wisdom-highlight {
+            background: linear-gradient(90deg,
+                rgba(16,185,129,0.08) 0%,
+                rgba(99,102,241,0.06) 100%);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            padding: 0.75rem 1rem;
+            font-size: 0.87rem;
+            color: #a7f3d0;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .wisdom-full-card {
+            grid-column: 1 / -1;
+        }
+        /* ─────────────────────────────────────────────────────────────────── */
     </style>
 </head>
 <body>
@@ -812,6 +984,7 @@
             <button class="tab-btn" onclick="switchTab('trending-menu')" id="tab-btn-trending" data-i18n="tabTrending">💡 每日推荐</button>
             <button class="tab-btn" onclick="switchTab('pantry')" id="tab-btn-pantry" data-i18n="tabPantry">🥕 食材库</button>
             <button class="tab-btn" onclick="switchTab('history')" id="tab-btn-history" data-i18n="tabHistory">📜 历史食谱</button>
+            <button class="tab-btn" onclick="switchTab('wisdom')" id="tab-btn-wisdom" data-i18n="tabWisdom">🧠 饮食智慧</button>
             <button class="tab-btn" onclick="switchTab('settings')" id="tab-btn-settings" data-i18n="tabSettings">⚙️ 设置中心</button>
         </nav>
 
@@ -1122,7 +1295,149 @@
 
         </section>
 
-    </div>
+        <!-- 6. DIET WISDOM TAB -->
+        <section id="wisdom" class="tab-content">
+            <div class="wisdom-page">
+
+                <!-- Hero Banner -->
+                <div class="wisdom-hero">
+                    <h2 data-i18n="wisdomTitle">🧠 科学减脂 · 饮食智慧</h2>
+                    <p data-i18n="wisdomSubtitle">颠覆误区，回归本质。了解身体运作机制，才能事半功倍地减脂。</p>
+                </div>
+
+                <div class="wisdom-grid">
+
+                    <!-- Card 1: Sleep & Cortisol -->
+                    <div class="wisdom-card accent-purple">
+                        <div class="wisdom-badge badge-science">🔬 科学原理</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">😴</span>
+                            <div>
+                                <h3 data-i18n="wisdomSleepTitle">睡眠是减脂的隐藏开关</h3>
+                                <p class="subtitle" data-i18n="wisdomSleepSub">忽视睡眠，再好的饮食计划都会大打折扣</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomSleepBody">
+                            睡眠不足会刺激肾上腺持续分泌<strong style="color:#c4b5fd;">皮质醇（Cortisol）</strong>——这是一种「压力激素」，会直接促进腹部脂肪的积累，同时降低胰岛素敏感性，让血糖更难控制。即使饮食完全自律，睡眠不足 6 小时也会让减脂效率降低 50% 以上。
+                        </p>
+                        <div class="wisdom-highlight" data-i18n="wisdomSleepHighlight">
+                            💡 建议：保持每晚 7～9 小时高质量睡眠，睡前 1 小时避免强光和手机屏幕，让皮质醇水平自然回落。
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Low GI eating intro -->
+                    <div class="wisdom-card accent-green">
+                        <div class="wisdom-badge badge-tip">🌱 饮食策略</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">📊</span>
+                            <div>
+                                <h3 data-i18n="wisdomGiTitle">优先摄取低升糖碳水</h3>
+                                <p class="subtitle" data-i18n="wisdomGiSub">血糖波动是脂肪囤积的核心驱动力</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomGiBody">
+                            高升糖食物（精制米面、糖）会引发血糖急速飙升，迫使胰岛素大量分泌，将多余能量直接转化并锁进脂肪细胞。低升糖饮食能让血糖平稳，胰岛素保持低位，脂肪才有机会被持续燃烧。
+                        </p>
+                        <div class="wisdom-highlight" data-i18n="wisdomGiHighlight">
+                            💡 同样一碗米饭，通过下面的方法可以将升糖指数降低 20～40%。
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Original state food -->
+                    <div class="wisdom-card accent-amber">
+                        <div class="wisdom-badge badge-tip">🌾 原则 1</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🥦</span>
+                            <div>
+                                <h3 data-i18n="wisdomNaturalTitle">尽量吃原始状态的食物</h3>
+                                <p class="subtitle" data-i18n="wisdomNaturalSub">加工越少，升糖越慢</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomNaturalBody">
+                            食物被加工（研磨、膨化、打浆）后，细胞结构被破坏，淀粉颗粒暴露，消化酶可以极速分解——升糖指数随之大幅攀升。选择粒状糙米而非白米粉，全麦面包而非精制面包，能显著放缓葡萄糖的释放速度。
+                        </p>
+                    </div>
+
+                    <!-- Card 4: Cold food -->
+                    <div class="wisdom-card accent-sky">
+                        <div class="wisdom-badge badge-tip">❄️ 原则 2</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🍱</span>
+                            <div>
+                                <h3 data-i18n="wisdomColdTitle">适当吃温度低一点的食物</h3>
+                                <p class="subtitle" data-i18n="wisdomColdSub">冷却让淀粉结构「老化」，升糖变慢</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomColdBody">
+                            米饭、土豆等富含淀粉的食物在冷却后，淀粉会发生「老化回生」（Retrogradation），形成更难被消化酶分解的<strong style="color:#7dd3fc;">抗性淀粉（Resistant Starch）</strong>，其升糖指数可降低约 20～35%。隔夜饭团、冷藏后的土豆沙拉，都是低升糖的好选择。
+                        </p>
+                    </div>
+
+                    <!-- Card 5: Less water during meal -->
+                    <div class="wisdom-card accent-rose">
+                        <div class="wisdom-badge badge-caution">⚠️ 原则 3</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🚰</span>
+                            <div>
+                                <h3 data-i18n="wisdomWaterTitle">就餐时少喝水</h3>
+                                <p class="subtitle" data-i18n="wisdomWaterSub">避免稀释消化液，影响血糖调控</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomWaterBody">
+                            进餐时大量喝水会稀释胃酸和消化酶，使胃排空速度加快，导致食物（尤其是碳水）在小肠被更快地吸收，血糖上升更加迅速。建议餐前 30 分钟可以喝水，餐中尽量小口少量，餐后 1 小时再正常补水。
+                        </p>
+                    </div>
+
+                    <!-- Card 6: Eating order -->
+                    <div class="wisdom-card accent-green">
+                        <div class="wisdom-badge badge-tip">🥢 原则 4</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🥗</span>
+                            <div>
+                                <h3 data-i18n="wisdomOrderTitle">进食顺序：蔬菜 → 蛋白质 → 主食</h3>
+                                <p class="subtitle" data-i18n="wisdomOrderSub">先打底，再锁糖</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomOrderBody">
+                            先吃蔬菜，其中的膳食纤维会在肠道形成一层「物理屏障」；再吃肉类蛋白质，进一步减缓胃排空；最后吃主食时，碳水的吸收速度已大幅放缓。研究显示这一顺序可将餐后血糖峰值降低 <strong style="color:#34d399;">40% 以上</strong>。
+                        </p>
+                        <div class="wisdom-tips">
+                            <div class="wisdom-tip-item"><span class="wisdom-tip-num">1</span><span data-i18n="wisdomOrderStep1">先吃绿叶蔬菜、沙拉、凉拌菜（约占餐盘一半）</span></div>
+                            <div class="wisdom-tip-item"><span class="wisdom-tip-num">2</span><span data-i18n="wisdomOrderStep2">再吃鱼肉、鸡肉、豆腐等蛋白质来源</span></div>
+                            <div class="wisdom-tip-item"><span class="wisdom-tip-num">3</span><span data-i18n="wisdomOrderStep3">最后吃米饭、面条、面包等主食</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 7: Avoid eating out (full width) -->
+                    <div class="wisdom-card accent-orange wisdom-full-card">
+                        <div class="wisdom-badge badge-caution">🍽️ 原则 5</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🏠</span>
+                            <div>
+                                <h3 data-i18n="wisdomEatOutTitle">尽量减少外食</h3>
+                                <p class="subtitle" data-i18n="wisdomEatOutSub">餐厅的美味背后，藏着你看不见的糖与淀粉</p>
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:0.25rem;">
+                            <div>
+                                <p class="wisdom-body" data-i18n="wisdomEatOutBody">
+                                    餐厅厨师的首要目标是「好吃」，而非「健康」。为了让菜肴更鲜美、口感更好，他们会大量使用：糖（提鲜提色）、生粉/淀粉（勾芡增稠）、大量食用油。这些隐形热量和快速消化的碳水，是外食者难以减肥的核心原因。
+                                </p>
+                            </div>
+                            <div class="wisdom-tips">
+                                <div class="wisdom-tip-item"><span style="font-size:1.1rem;">🧂</span><span data-i18n="wisdomEatOutTip1">炒菜常加 1～3 茶匙糖提鲜，相当于隐形摄取 20～60 kcal</span></div>
+                                <div class="wisdom-tip-item"><span style="font-size:1.1rem;">🥣</span><span data-i18n="wisdomEatOutTip2">勾芡的汤汁中大量淀粉，升糖速度接近白糖</span></div>
+                                <div class="wisdom-tip-item"><span style="font-size:1.1rem;">🏡</span><span data-i18n="wisdomEatOutTip3">在家烹饪可以完全掌控食材和烹调方式，是减脂的最有力武器</span></div>
+                                <div class="wisdom-tip-item"><span style="font-size:1.1rem;">📱</span><span data-i18n="wisdomEatOutTip4">外食时优先选择：清蒸、白灼、水煮类菜肴，避免糖醋、红烧、勾芡</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
 
     <!-- Markdown Modal -->
     <div id="md-modal" class="modal">
@@ -1153,7 +1468,40 @@
                 tabToday: "🍳 今日食谱",
                 tabPantry: "🥕 食材库",
                 tabHistory: "📜 历史食谱",
+                tabWisdom: "🧠 饮食智慧",
                 tabSettings: "⚙️ 设置中心",
+                wisdomTitle: "🧠 科学减脂 · 饮食智慧",
+                wisdomSubtitle: "颠覆误区，回归本质。了解身体运作机制，才能事半力倍地减脂。",
+                wisdomSleepTitle: "睡眠是减脂的隐藏开关",
+                wisdomSleepSub: "忽视睡眠，再好的饮食计划都会大打折扣",
+                wisdomSleepBody: "睡眠不足会刺激肾上腺持续分泌皮质醇（Cortisol）——这是一种「压力激素」，会直接促进腹部脂肪的积累，同时降低胰岛素敏感性，让血糖更难控制。即使饮食完全自律，睡眠不足 6 小时也会让减脂效率降低 50% 以上。",
+                wisdomSleepHighlight: "💡 建议：保持每晚 7～9 小时高质量睡眠，睡前 1 小时避免强光和手机屏幕，让皮质醇水平自然回落。",
+                wisdomGiTitle: "优先摄取低升糖碳水",
+                wisdomGiSub: "血糖波动是脂肪囤积的核心驱动力",
+                wisdomGiBody: "高升糖食物会引发血糖急速飙升，迫使胰岛素大量分泌，将多余能量直接转化并锁进脂肪细胞。低升糖饮食能让血糖平稳，胰岛素保持低位，脂肪才有机会被持续燃烧。",
+                wisdomGiHighlight: "💡 同样一碗米饭，通过下面的方法可以将升糖指数降低 20～40%。",
+                wisdomNaturalTitle: "尽量吃原始状态的食物",
+                wisdomNaturalSub: "加工越少，升糖越慢",
+                wisdomNaturalBody: "食物被加工后，细胞结构被破坏，淀粉颗粒暴露，消化酶可以极速分解——升糖指数随之大幅攀升。选择粒状糙米而非白米粉，全麦面包而非精制面包，能显著放缓葡萄糖的释放速度。",
+                wisdomColdTitle: "适当吃温度低一点的食物",
+                wisdomColdSub: "冷却让淀粉结构「老化」，升糖变慢",
+                wisdomColdBody: "米饭、土豆等富含淀粉的食物在冷却后，淀粉会发生「老化回生」，形成更难被消化酶分解的抗性淀粉，其升糖指数可降低约 20～35%。隔夜饭团、冷藏后的土豆沙拉，都是低升糖的好选择。",
+                wisdomWaterTitle: "就餐时少喝水",
+                wisdomWaterSub: "避免稀释消化液，影响血糖调控",
+                wisdomWaterBody: "进餐时大量喝水会稀释胃酸和消化酶，使胃排空速度加快，导致碳水在小肠被更快地吸收，血糖上升更加迅速。建议餐前 30 分钟可喝水，餐中尽量小口少量，餐后 1 小时再正常补水。",
+                wisdomOrderTitle: "进食顺序：蔬菜 → 蛋白质 → 主食",
+                wisdomOrderSub: "先打底，再锁糖",
+                wisdomOrderBody: "先吃蔬菜，其中的膳食纤维会在肠道形成一层「物理屏障」；再吃肉类蛋白质，进一步减缓胃排空；最后吃主食时，碳水的吸收速度已大幅放缓。研究显示这一顺序可将餐后血糖峰值降低 40% 以上。",
+                wisdomOrderStep1: "先吃绿叶蔬菜、沙拉、凉拌菜（约占餐盘一半）",
+                wisdomOrderStep2: "再吃鱼肉、鸡肉、豆腐等蛋白质来源",
+                wisdomOrderStep3: "最后吃米饭、面条、面包等主食",
+                wisdomEatOutTitle: "尽量减少外食",
+                wisdomEatOutSub: "餐厅的美味背后，藏着你看不见的糖与淀粉",
+                wisdomEatOutBody: "餐厅厨师的首要目标是「好吃」，而非「健康」。为了让菜肴更鲜美、口感更好，厨师会大量使用：糖（提鲜提色）、生粉/淀粉（勾芡增稠）、大量食用油。这些隐形热量和快速消化的碳水，是外食者难以减肥的核心原因。",
+                wisdomEatOutTip1: "炒菜常加 1～3 茶匙糖提鲜，相当于隐形摄取 20～60 kcal",
+                wisdomEatOutTip2: "勾芡的汤汁中大量淀粉，升糖速度接近白糖",
+                wisdomEatOutTip3: "在家烹饪可以完全掌控食材和烹调方式，是减脂的最有力武器",
+                wisdomEatOutTip4: "外食时优先选择：清蒸、白灼、水煮类菜肴，避免糖醋、红烧、勾芡",
                 menuDate: "食谱日期",
                 menuNotGen: "今日食谱尚未生成。请点击生成按钮！",
                 noMenuText: "今天还没有为您定制菜单。",
@@ -1262,7 +1610,40 @@
                 tabToday: "🍳 Today's Menu",
                 tabPantry: "🥕 Pantry",
                 tabHistory: "📜 History",
+                tabWisdom: "🧠 Diet Wisdom",
                 tabSettings: "⚙️ Settings",
+                wisdomTitle: "🧠 Science of Fat Loss · Diet Wisdom",
+                wisdomSubtitle: "Correct misconceptions, return to fundamentals. Understanding how your body works is the key to effortless fat loss.",
+                wisdomSleepTitle: "Sleep is the Hidden Switch for Fat Loss",
+                wisdomSleepSub: "Neglect sleep and even the best diet plan will be undermined",
+                wisdomSleepBody: "Sleep deprivation causes the adrenal glands to keep secreting cortisol—a stress hormone that directly promotes belly fat accumulation and lowers insulin sensitivity, making blood sugar harder to control. Even with perfect diet discipline, less than 6 hours of sleep can reduce fat-loss efficiency by over 50%.",
+                wisdomSleepHighlight: "💡 Tip: Aim for 7–9 hours of quality sleep each night. Avoid bright lights and phone screens 1 hour before bed to let cortisol naturally decrease.",
+                wisdomGiTitle: "Prioritize Low Glycemic Index Carbs",
+                wisdomGiSub: "Blood sugar spikes are the core driver of fat storage",
+                wisdomGiBody: "High-GI foods cause rapid blood sugar spikes, forcing large amounts of insulin to be secreted and locking excess energy directly into fat cells. Low-GI eating stabilizes blood sugar, keeps insulin low, and gives fat a chance to be burned continuously.",
+                wisdomGiHighlight: "💡 The same bowl of rice can have its GI lowered by 20–40% using the methods below.",
+                wisdomNaturalTitle: "Eat Foods in Their Most Natural State",
+                wisdomNaturalSub: "Less processing = slower blood sugar rise",
+                wisdomNaturalBody: "When food is processed (milled, puffed, blended), cellular structures are destroyed and starch granules are exposed, allowing digestive enzymes to break them down extremely fast—sending GI skyrocketing. Choose whole grain brown rice over white flour, whole wheat bread over refined bread to significantly slow glucose release.",
+                wisdomColdTitle: "Eat Food at a Lower Temperature",
+                wisdomColdSub: "Cooling causes starch to \"retrograde\" — slowing blood sugar rise",
+                wisdomColdBody: "When starchy foods like rice and potatoes cool down, starch undergoes \"retrogradation\", forming resistant starch that is harder for digestive enzymes to break down. The GI can drop by approximately 20–35%. Overnight rice balls and chilled potato salad are great low-GI options.",
+                wisdomWaterTitle: "Drink Less Water During Meals",
+                wisdomWaterSub: "Avoid diluting digestive juices and affecting blood sugar control",
+                wisdomWaterBody: "Drinking lots of water during meals dilutes stomach acid and digestive enzymes, speeding up gastric emptying. This causes carbs to be absorbed faster in the small intestine, causing a more rapid blood sugar spike. Drink water 30 minutes before meals, sip minimally during, and hydrate normally 1 hour after.",
+                wisdomOrderTitle: "Eating Order: Veggies → Protein → Carbs",
+                wisdomOrderSub: "Build a foundation first, then slow down sugar absorption",
+                wisdomOrderBody: "Eating vegetables first creates a physical fiber barrier in the gut; protein further slows gastric emptying; by the time you eat carbs, absorption speed has greatly decreased. Studies show this sequence can lower post-meal blood sugar peaks by over 40%.",
+                wisdomOrderStep1: "Start with leafy greens, salads, or cold dishes (∼ half your plate)",
+                wisdomOrderStep2: "Then eat fish, chicken, tofu, or other protein sources",
+                wisdomOrderStep3: "Finally eat rice, noodles, bread and other staple carbs",
+                wisdomEatOutTitle: "Minimize Eating Out",
+                wisdomEatOutSub: "Behind restaurant flavors hides sugar and starch you can't see",
+                wisdomEatOutBody: "A chef's primary goal is \"delicious\", not \"healthy\". To make dishes more flavorful and textured, they use: sugar (for flavor and color), starch (for thickening), and large amounts of oil. These hidden calories and fast-digesting carbs are the core reason why restaurant eaters struggle to lose fat.",
+                wisdomEatOutTip1: "Stir-fries often add 1–3 teaspoons of sugar, equivalent to 20–60 hidden kcal",
+                wisdomEatOutTip2: "Thickened sauces contain large amounts of starch with a GI close to white sugar",
+                wisdomEatOutTip3: "Cooking at home gives you full control over ingredients and methods — your most powerful fat-loss weapon",
+                wisdomEatOutTip4: "When eating out, choose: steamed, poached, or boiled dishes; avoid sweet & sour, braised, or thickened sauces",
                 menuDate: "Menu Date",
                 menuNotGen: "Today's menu not generated yet. Click Generate!",
                 noMenuText: "No menu customized for today.",
@@ -1371,7 +1752,40 @@
                 tabToday: "🍳 今日の献立",
                 tabPantry: "🥕 食材庫",
                 tabHistory: "📜 履歴ログ",
+                tabWisdom: "🧠 食事の知恵",
                 tabSettings: "⚙️ 設定センター",
+                wisdomTitle: "🧠 科学的な脂肪燃焼 · 食事の知恵",
+                wisdomSubtitle: "誤解を解き、本質に戻る。体の仕組みを理解することが、効率的な脂肪燃焼の鍵です。",
+                wisdomSleepTitle: "睡眠は脂肪燃焼の隠れたスイッチ",
+                wisdomSleepSub: "睡眠を疎かにすると、どんな食事計画も大きく損なわれる",
+                wisdomSleepBody: "睡眠不足は副腎のコルチゾール分泌を促進し、腹部脂肪の蓄積を直接促し、インスリン感受性を低下させ、血糖コントロールを困難にします。完全に食事を制御していても6時間未満の睡眠では、脂肪燃焼効率が50%以上低下します。",
+                wisdomSleepHighlight: "💡 毎晩7〜9時間の質の高い睡眠を確保し、就寝1時間前からスマホや強い光を避けましょう。",
+                wisdomGiTitle: "低GI炭水化物を優先的に摂取する",
+                wisdomGiSub: "血糖の波動が脂肪蓄積の主要な原因",
+                wisdomGiBody: "高GI食品は急激な血糖上昇を引き起こし、大量のインスリン分泌を促し、余剰エネルギーを直接脂肪細胞に蓄えます。低GI食事は血糖を安定させ、インスリンを低い水準に保ち、脂肪を等続的に燃焼できるようにします。",
+                wisdomGiHighlight: "💡 同じお茶わん一杯でも、以下の方法でGIを約20〜40%下げられます。",
+                wisdomNaturalTitle: "できるだけ自然な形態の食品を食べる",
+                wisdomNaturalSub: "加工が少ないほどGIが低い",
+                wisdomNaturalBody: "加工された食品は細胞構造が破壊され、澱粉粒子が露出して消化酵素が極めて早く分解できます。糙米や全粒パンを選ぶことで、血糖の上昇を大幅に緩やかにできます。",
+                wisdomColdTitle: "少し温度を下げて食べる",
+                wisdomColdSub: "冷却で澱粉が「老化」—GIが下がる",
+                wisdomColdBody: "お米やイモなど澱粉質の高い食品は冷却後、澱粉が「老化回生」し、消化酵素で分解されにくい耐性澱粉を形成します。GIは約20〜35%低下。作り置きのおにぎりや冷たいポテトサラダは低GIな選択肢です。",
+                wisdomWaterTitle: "食事中は水を飲みすぎない",
+                wisdomWaterSub: "消化液の希薄を避け、血糖調節を促進",
+                wisdomWaterBody: "飲食中に水を大量に飲むと胃液や消化酵素が希薄されて胃からの排出が早まり、炭水化物がより早く吸収されます。食前30分に水を飲み、食中は少量にとどめ、食後1時間から通常通り水分補給するのがおすすめです。",
+                wisdomOrderTitle: "食べる順番：野菜 → タンパク質 → 主食",
+                wisdomOrderSub: "まず底を作り、血糖上昇を抑える",
+                wisdomOrderBody: "野菜を先に食べることで食物繊維が腸にバリアを張り、その後タンパク質を摂取し、最後に主食を食べる頃には炭水化物の吸収速度が大幅にスローダウンします。研究では食後血糖のピークが40%以上低下することが示されています。",
+                wisdomOrderStep1: "まず緑黄色野菜、サラダ、和え物を食べる（お皿の半分目安）",
+                wisdomOrderStep2: "次に魚、鶏肉、豆腐などタンパク質源を食べる",
+                wisdomOrderStep3: "最後にご飯、麺、パンなどの主食を食べる",
+                wisdomEatOutTitle: "外食を減らす",
+                wisdomEatOutSub: "レストランの美味しさの裏には、見えない砂糖と澱粉が隠れている",
+                wisdomEatOutBody: "シェフの第一の目標は「美味しさ」であり、「健康」ではありません。料理をより美味しくするために、砂糖、片栗粉/澱粉、大量の油を使います。これらの隠れたカロリーと消化の速い炭水化物が、外食者が痩せにくい核心的な原因です。",
+                wisdomEatOutTip1: "炒め物に砂糖を1〜3小さじ加えることが多く、隠れた20〜60kcalに相当",
+                wisdomEatOutTip2: "あんかけのスープには大量の澱粉—GIは白砂糖に近い",
+                wisdomEatOutTip3: "家庭料理は食材と調理法を完全にコントロールできる—脂肪燃焼の最強の武器です",
+                wisdomEatOutTip4: "外食時は蒸し、ゆでに、お浸しなどを選び、糖酢、赤焼き、あんかけは避ける",
                 menuDate: "献立の日付",
                 menuNotGen: "今日の献立は未生成です。生成ボタンを押してください！",
                 noMenuText: "本日の献立はまだカスタマイズされていません。",
