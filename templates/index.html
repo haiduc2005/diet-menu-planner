@@ -779,6 +779,178 @@
         .close-modal:hover {
             color: white;
         }
+        /* ── Diet Wisdom Page ───────────────────────────────────────────── */
+        .wisdom-page {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .wisdom-hero {
+            background: linear-gradient(135deg,
+                rgba(99,102,241,0.18) 0%,
+                rgba(16,185,129,0.12) 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .wisdom-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%,
+                rgba(99,102,241,0.08) 0%, transparent 60%),
+                radial-gradient(circle at 70% 50%,
+                rgba(16,185,129,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .wisdom-hero h2 {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a5b4fc, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.6rem;
+        }
+        .wisdom-hero p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .wisdom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .wisdom-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .wisdom-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px -8px rgba(0,0,0,0.55);
+        }
+        .wisdom-card.accent-purple { border-top: 3px solid #818cf8; }
+        .wisdom-card.accent-green  { border-top: 3px solid var(--primary); }
+        .wisdom-card.accent-amber  { border-top: 3px solid #f59e0b; }
+        .wisdom-card.accent-rose   { border-top: 3px solid #fb7185; }
+        .wisdom-card.accent-sky    { border-top: 3px solid #38bdf8; }
+        .wisdom-card.accent-orange { border-top: 3px solid #fb923c; }
+
+        .wisdom-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .wisdom-icon {
+            font-size: 2.2rem;
+            line-height: 1;
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+        }
+        .wisdom-card-header > div { flex: 1; }
+        .wisdom-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.3rem;
+        }
+        .wisdom-card .subtitle {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .wisdom-body {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            line-height: 1.75;
+        }
+
+        .wisdom-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.2rem 0.65rem;
+            border-radius: 20px;
+            width: fit-content;
+        }
+        .badge-science { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+        .badge-tip     { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+        .badge-caution { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+
+        .wisdom-tips {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 0.25rem;
+        }
+        .wisdom-tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            padding: 0.55rem 0.75rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.855rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            transition: background 0.2s;
+        }
+        .wisdom-tip-item:hover { background: rgba(255,255,255,0.06); }
+        .wisdom-tip-num {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #059669);
+            color: white;
+            font-size: 0.68rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+        }
+
+        .wisdom-highlight {
+            background: linear-gradient(90deg,
+                rgba(16,185,129,0.08) 0%,
+                rgba(99,102,241,0.06) 100%);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            padding: 0.75rem 1rem;
+            font-size: 0.87rem;
+            color: #a7f3d0;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .wisdom-full-card {
+            grid-column: 1 / -1;
+        }
+        /* ─────────────────────────────────────────────────────────────────── */
     </style>
 </head>
 <body>
@@ -812,6 +984,7 @@
             <button class="tab-btn" onclick="switchTab('trending-menu')" id="tab-btn-trending" data-i18n="tabTrending">💡 每日推荐</button>
             <button class="tab-btn" onclick="switchTab('pantry')" id="tab-btn-pantry" data-i18n="tabPantry">🥕 食材库</button>
             <button class="tab-btn" onclick="switchTab('history')" id="tab-btn-history" data-i18n="tabHistory">📜 历史食谱</button>
+            <button class="tab-btn" onclick="switchTab('wisdom')" id="tab-btn-wisdom" data-i18n="tabWisdom">🧠 饮食智慧</button>
             <button class="tab-btn" onclick="switchTab('settings')" id="tab-btn-settings" data-i18n="tabSettings">⚙️ 设置中心</button>
         </nav>
 
@@ -1122,7 +1295,199 @@
 
         </section>
 
-    </div>
+        <!-- 6. DIET WISDOM TAB -->
+        <section id="wisdom" class="tab-content">
+            <div class="wisdom-page">
+
+                <!-- Hero Banner -->
+                <div class="wisdom-hero">
+                    <h2 data-i18n="wisdomTitle">🧠 科学减脂 · 饮食智慧</h2>
+                    <p data-i18n="wisdomSubtitle">颠覆误区，回归本质。了解身体运作机制，才能事半功倍地减脂。</p>
+                </div>
+
+                <div class="wisdom-grid">
+
+                    <!-- Card 1: Sleep & Cortisol -->
+                    <div class="wisdom-card accent-purple">
+                        <div class="wisdom-badge badge-science" data-i18n="wisdomBadgeScience">🔬 科学原理</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">😴</span>
+                            <div>
+                                <h3 data-i18n="wisdomSleepTitle">睡眠是减脂的隐藏开关</h3>
+                                <p class="subtitle" data-i18n="wisdomSleepSub">忽视睡眠，再好的饮食计划都会大打折扣</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomSleepBody">
+                            睡眠不足会刺激肾上腺持续分泌<strong style="color:#c4b5fd;">皮质醇（Cortisol）</strong>——这是一种「压力激素」，会直接促进腹部脂肪的积累，同时降低胰岛素敏感性，让血糖更难控制。即使饮食完全自律，睡眠不足 6 小时也会让减脂效率降低 50% 以上。
+                        </p>
+                        <div class="wisdom-highlight" data-i18n="wisdomSleepHighlight">
+                            💡 建议：保持每晚 7～9 小时高质量睡眠，睡前 1 小时避免强光和手机屏幕，让皮质醇水平自然回落。
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Low GI eating intro -->
+                    <div class="wisdom-card accent-green">
+                        <div class="wisdom-badge badge-tip" data-i18n="wisdomBadgeStrategy">🌱 饮食策略</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">📊</span>
+                            <div>
+                                <h3 data-i18n="wisdomGiTitle">优先摄取低升糖碳水</h3>
+                                <p class="subtitle" data-i18n="wisdomGiSub">血糖波动是脂肪囤积的核心驱动力</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomGiBody">
+                            高升糖食物（精制米面、糖）会引发血糖急速飙升，迫使胰岛素大量分泌，将多余能量直接转化并锁进脂肪细胞。低升糖饮食能让血糖平稳，胰岛素保持低位，脂肪才有机会被持续燃烧。
+                        </p>
+                        <div class="wisdom-highlight" data-i18n="wisdomGiHighlight">
+                            💡 同样一碗米饭，通过下面的方法可以将升糖指数降低 20～40%。
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Original state food -->
+                    <div class="wisdom-card accent-amber">
+                        <div class="wisdom-badge badge-tip" data-i18n="wisdomBadgeStrategy">🌱 饮食策略</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🥦</span>
+                            <div>
+                                <h3 data-i18n="wisdomNaturalTitle">尽量吃原始状态的食物</h3>
+                                <p class="subtitle" data-i18n="wisdomNaturalSub">加工越少，升糖越慢</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomNaturalBody">
+                            食物被加工（研磨、膨化、打浆）后，细胞结构被破坏，淀粉颗粒暴露，消化酶可以极速分解——升糖指数随之大幅攀升。选择粒状糙米而非白米粉，全麦面包而非精制面包，能显著放缓葡萄糖的释放速度。
+                        </p>
+                    </div>
+
+                    <!-- Card 4: Cold food -->
+                    <div class="wisdom-card accent-sky">
+                        <div class="wisdom-badge badge-tip" data-i18n="wisdomBadgeStrategy">🌱 饮食策略</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🍱</span>
+                            <div>
+                                <h3 data-i18n="wisdomColdTitle">适当吃温度低一点的食物</h3>
+                                <p class="subtitle" data-i18n="wisdomColdSub">冷却让淀粉结构「老化」，升糖变慢</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomColdBody">
+                            米饭、土豆等富含淀粉的食物在冷却后，淀粉会发生「老化回生」（Retrogradation），形成更难被消化酶分解的<strong style="color:#7dd3fc;">抗性淀粉（Resistant Starch）</strong>，其升糖指数可降低约 20～35%。隔夜饭团、冷藏后的土豆沙拉，都是低升糖的好选择。
+                        </p>
+                    </div>
+
+                    <!-- Card 5: Less water during meal -->
+                    <div class="wisdom-card accent-rose">
+                        <div class="wisdom-badge badge-tip" data-i18n="wisdomBadgeStrategy">🌱 饮食策略</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🚰</span>
+                            <div>
+                                <h3 data-i18n="wisdomWaterTitle">就餐时少喝水</h3>
+                                <p class="subtitle" data-i18n="wisdomWaterSub">避免稀释消化液，影响血糖调控</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomWaterBody">
+                            进餐时大量喝水会稀释胃酸和消化酶，使胃排空速度加快，导致食物（尤其是碳水）在小肠被更快地吸收，血糖上升更加迅速。建议餐前 30 分钟可以喝水，餐中尽量小口少量，餐后 1 小时再正常补水。
+                        </p>
+                    </div>
+
+                    <!-- Card 6: Eating order -->
+                    <div class="wisdom-card accent-green">
+                        <div class="wisdom-badge badge-tip" data-i18n="wisdomBadgeStrategy">🌱 饮食策略</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🥗</span>
+                            <div>
+                                <h3 data-i18n="wisdomOrderTitle">进食顺序：蔬菜 → 蛋白质 → 主食</h3>
+                                <p class="subtitle" data-i18n="wisdomOrderSub">先打底，再锁糖</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomOrderBody">
+                            先吃蔬菜，其中的膳食纤维会在肠道形成一层「物理屏障」；再吃肉类蛋白质，进一步减缓胃排空；最后吃主食时，碳水的吸收速度已大幅放缓。研究显示这一顺序可将餐后血糖峰值降低 <strong style="color:#34d399;">40% 以上</strong>。
+                        </p>
+                        <div class="wisdom-tips">
+                            <div class="wisdom-tip-item"><span class="wisdom-tip-num">1</span><span data-i18n="wisdomOrderStep1">先吃绿叶蔬菜、沙拉、凉拌菜（约占餐盘一半）</span></div>
+                            <div class="wisdom-tip-item"><span class="wisdom-tip-num">2</span><span data-i18n="wisdomOrderStep2">再吃鱼肉、鸡肉、豆腐等蛋白质来源</span></div>
+                            <div class="wisdom-tip-item"><span class="wisdom-tip-num">3</span><span data-i18n="wisdomOrderStep3">最后吃米饭、面条、面包等主食</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Card 8: Starving / Dieting Trap -->
+                    <div class="wisdom-card accent-rose">
+                        <div class="wisdom-badge badge-science" data-i18n="wisdomBadgeScience">🔬 科学原理</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">⚠️</span>
+                            <div>
+                                <h3 data-i18n="wisdomStarveTitle">一味少食并非最佳减脂之法</h3>
+                                <p class="subtitle" data-i18n="wisdomStarveSub">身体会自动降低新陈代谢率来适应饥饿</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomStarveBody">
+                            一味地不吃饭或过度少食，虽然短期内体重可能下降，但会导致身体启动保护机制：大幅降低基础代谢率。这不仅使得减脂的边际效应越来越低，而且一旦恢复正常饮食，由于代谢率已经处于低位，身体会极速囤积热量，从而大大增加反弹的风险。科学的减脂应该是创造合理的温和热量赤字，而不是极端的饥饿。
+                        </p>
+                        <div class="wisdom-highlight" data-i18n="wisdomStarveHighlight">
+                            💡 建议：切忌盲目长期节食。通过合理营养膳食维持基础代谢，结合适量运动，保持身体代谢引擎的活跃运转。
+                        </div>
+                    </div>
+
+                    <!-- Card 9: Insulin Trap -->
+                    <div class="wisdom-card accent-purple">
+                        <div class="wisdom-badge badge-science" data-i18n="wisdomBadgeScience">🔬 科学原理</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">⏳</span>
+                            <div>
+                                <h3 data-i18n="wisdomInsulinTitle">警惕少食多餐的『胰岛素陷阱』</h3>
+                                <p class="subtitle" data-i18n="wisdomInsulinSub">频繁吃零食会让你的身体无法进入燃脂状态</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomInsulinBody">
+                            陈旧观念认为『少食多餐』能加速代谢，但现代内分泌科学证实，每当我们吃进任何食物（即使是一小片水果），血糖都会波动，促使身体分泌胰岛素。胰岛素是『储能荷尔蒙』，只要它在血液中维持高水平，身体就会被锁死在『脂肪储存模式』，此时脂肪根本无法被分解燃烧。相反，保持两餐之间不吃零食，能让胰岛素水平彻底回落，开启高效燃脂通路。
+                        </p>
+                        <div class="wisdom-highlight" data-i18n="wisdomInsulinHighlight">
+                            💡 建议：保证三餐规律，在两餐之间保持完全空腹（除水、茶、无热量黑咖啡外），给身体留下胰岛素处于低水平、开启燃脂的『空白期』。
+                        </div>
+                    </div>
+
+                    <!-- Card 10: Calorie Myth -->
+                    <div class="wisdom-card accent-sky">
+                        <div class="wisdom-badge badge-science" data-i18n="wisdomBadgeScience">🔬 科学原理</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">⚖️</span>
+                            <div>
+                                <h3 data-i18n="wisdomCalorieTitle">打破迷思：卡路里并不等同于卡路里</h3>
+                                <p class="subtitle" data-i18n="wisdomCalorieSub">不同食物在体内引发的荷尔蒙反应和消化消耗天差地别</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomCalorieBody">
+                            很多人遵循『只要卡路里不超标吃什么都行』。但在体内，100 大卡的优质蛋白质/膳食纤维与 100 大卡的精制软糖完全不同。蛋白质拥有极高的食物热效应（TEF），身体需要消耗自身 20-30% 的能量去消化它，且它能激发强烈的饱腹感荷尔蒙。而精制糖则极速吸收并刺激胰岛素，不仅不消耗热量，还会让你快速感到饥饿。减脂的核心是吃能稳定血糖和饱腹感的高营养密度食物，而不是单纯抠数字。
+                        </p>
+                        <div class="wisdom-highlight" data-i18n="wisdomCalorieHighlight">
+                            💡 建议：优先关注食物质量，摄入充足的蛋白质（鱼、肉、豆）和膳食纤维（蔬菜），利用高热效应 and 天然饱腹感实现健康热量赤字。
+                        </div>
+                    </div>
+
+                    <!-- Card 7: Avoid eating out -->
+                    <div class="wisdom-card accent-orange">
+                        <div class="wisdom-badge badge-tip" data-i18n="wisdomBadgeStrategy">🌱 饮食策略</div>
+                        <div class="wisdom-card-header">
+                            <span class="wisdom-icon">🏠</span>
+                            <div>
+                                <h3 data-i18n="wisdomEatOutTitle">尽量减少外食</h3>
+                                <p class="subtitle" data-i18n="wisdomEatOutSub">餐厅的美味背后，藏着你看不见的糖与淀粉</p>
+                            </div>
+                        </div>
+                        <p class="wisdom-body" data-i18n="wisdomEatOutBody">
+                            餐厅厨师的首要目标是「好吃」，而非「健康」。为了让菜肴更鲜美、口感更好，他们会大量使用：糖（提鲜提色）、生粉/淀粉（勾芡增稠）、大量食用油。这些隐形热量和快速消化的碳水，是外食者难以减肥的核心原因。
+                        </p>
+                        <div class="wisdom-tips">
+                            <div class="wisdom-tip-item"><span style="font-size:1.1rem;">🧂</span><span data-i18n="wisdomEatOutTip1">炒菜常加 1～3 茶匙糖提鲜，相当于隐形摄取 20～60 kcal</span></div>
+                            <div class="wisdom-tip-item"><span style="font-size:1.1rem;">🥣</span><span data-i18n="wisdomEatOutTip2">勾芡的汤汁中大量淀粉，升糖速度接近白糖</span></div>
+                            <div class="wisdom-tip-item"><span style="font-size:1.1rem;">🏡</span><span data-i18n="wisdomEatOutTip3">在家烹饪可以完全掌控食材和烹调方式，是减脂的最有力武器</span></div>
+                            <div class="wisdom-tip-item"><span style="font-size:1.1rem;">📱</span><span data-i18n="wisdomEatOutTip4">外食时优先选择：清蒸、白灼、水煮类菜肴，避免糖醋、红烧、勾芡</span></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
 
     <!-- Markdown Modal -->
     <div id="md-modal" class="modal">
@@ -1144,345 +1509,24 @@
         let currentMenu = null;
         let currentLang = 'zh';
 
-        // --- i18n Translation Tables ---
-        const i18n = {
-            zh: {
-                title: "享瘦食光",
-                subtitle: "智能减脂一日三餐计划助手",
-                viewMd: "查看原始 Markdown (today.md)",
-                tabToday: "🍳 今日食谱",
-                tabPantry: "🥕 食材库",
-                tabHistory: "📜 历史食谱",
-                tabSettings: "⚙️ 设置中心",
-                menuDate: "食谱日期",
-                menuNotGen: "今日食谱尚未生成。请点击生成按钮！",
-                noMenuText: "今天还没有为您定制菜单。",
-                btnGenToday: "✨ 立刻规划今天的三餐",
-                btnGenStart: "智能生成一日食谱",
-                btnGenLoading: "AI 正在分析食材并定制菜单...",
-                nutriHighlight: "💡 今日减脂亮点：",
-                shoppingTitle: "🛒 建议采购清单 (按需购买)",
-                shoppingEmpty: "🎉 今日食材充足，无须额外购买！",
-                addFoodTitle: "添加新食材",
-                foodLabel: "食材名称",
-                placeholderFoodInput: "例如：西蓝花, 鸡腿肉",
-                quickAddTitle: "快捷添加常用减脂食材",
-                catMeat: "🥩 蛋白质",
-                catVeg: "🥦 蔬菜水果",
-                catStaple: "🍠 优质碳水",
-                catRefinedStaple: "🍚 普通主食 / 精制碳水",
-                pantrySearchPlaceholder: "🔍 搜索食材库...",
-                myPantry: "我的食材库",
-                pantryTip: "点击食材卡片右上角的 × 即可将其移除",
-                countUnit: "共 {count} 种",
-                historyTitle: "📅 菜单历史记录 (近30次生成)",
-                historyDetailBtn: "查看详情 Markdown",
-                historyEmpty: "暂无历史记录，开始生成菜单以保存历史",
-                settingsAiTitle: "AI 配置参数",
-                apiKeyLabel: "Google Gemini API Key",
-                apiKeyPlaceholder: "空 (默认读取系统环境变量/ .env)",
-                modelLabel: "Gemini 模型型号",
-                caloriesLabel: "目标热量上限 (kcal)",
-                langLabel: "AI 语言偏好",
-                btnSaveSettings: "💾 保存参数配置",
-                dislikedTitle: "忌口/避开的食材",
-                dislikedDesc: "AI 在定制菜单时将绝不使用您在此处列出的食材。",
-                addDislikedLabel: "添加避开食材",
-                addDislikedBtn: "添加",
-                currentDisliked: "当前忌口列表",
-                dislikedEmpty: "暂无忌口食材",
-                modalMdTitle: "原始 Markdown 文件",
-                toastSuccess: "操作成功",
-                toastSaveSettingsSuccess: "设置已保存！",
-                toastAddFoodSuccess: "成功添加食材",
-                toastDeleteFoodSuccess: "成功移除食材",
-                toastGenerateSuccess: "三餐食谱生成成功！",
-                toastGenerateFail: "生成失败: ",
-                toastAddDislikedSuccess: "已添加忌口食材",
-                toastDeleteDislikedSuccess: "已移除忌口食材",
-                breakfast: "🍳 早餐",
-                lunch: "🍤 午餐",
-                dinner: "🍲 晚餐",
-                reqBuy: "建议购买",
-                errorModalTitle: "Gemini API 后台请求报错日志",
-                instructionsTitle: "烹饪步骤",
-                dislikedPlaceholder: "例如：香菜, 芹菜",
-                toastDislikedExist: "该食材已在忌口列表中",
-                tabKids: "👦 儿童配餐",
-                kidsPrefTitle: "儿童偏好设置",
-                kidsPrefDesc: "您可以自定义高年级小学生的饮食偏好，AI 会据此量身定制营养餐。",
-                kidsPrefLabel: "孩子特点与饮食喜好",
-                kidsPrefPlaceholder: "例如：最喜欢吃汉堡肉饼，炸鸡，咖喱...",
-                kidsSavePref: "💾 保存偏好设置",
-                kidsViewMd: "查看原始 Markdown (kids_today.md)",
-                kidsGenBtn: "🪄 生成儿童营养餐",
-                kidsGenLoading: "AI 正在定制儿童营养餐...",
-                kidsNutriHighlight: "💡 儿童成长亮点：",
-                toastKidsSavePrefSuccess: "儿童饮食喜好已保存！",
-                toastKidsGenerateSuccess: "儿童营养餐生成成功！",
-                other: "🧂 其他 / 配料",
-                tabTrending: "💡 每日推荐",
-                trendingTitle: "小红书 & 抖音 每日流行减脂餐推荐",
-                trendingDesc: "每天为你精选 3 款全网爆火的网红瘦身食谱，可直接作为参考或一键导入食材。",
-                kidsTrendingTitle: "👦 儿童流行营养膳食推荐",
-                kidsTrendingDesc: "根据小学生的饮食特点（汉堡排、咖喱、寿司等）精选健康少油的流行营养餐做法。",
-                btnImportIngredients: "📥 一键导入食材",
-                toastImportSuccess: "成功将食材导入你的食材库！",
-                // History sub-tab labels
-                histTabAdult: "👨 大人减脂餐历史",
-                histTabKids: "👦 儿童营养餐历史",
-                histTabTrending: "🫒 地中海饮食推荐历史",
-                trendingHistoryEmpty: "暂无地中海饮食推荐历史记录，待每日7点自动入库",
-                trendingHistBadge: "地中海饮食推荐",
-                trendingHistAdultLabel: "👨 减脂推荐",
-                trendingHistKidsLabel: "👦 儿童推荐",
-                // Updated trending titles (Mediterranean)
-                trendingTitle: "🫒 地中海饮食每日推荐减脂餐",
-                trendingDesc: "每天精选 3 款地中海饮食减脂餐，低糖少油、富含膳食纤维与健康脂肪，助你烧脂又美味。",
-                kidsTrendingTitle: "👦 地中海小小美食家每日推荐",
-                kidsTrendingDesc: "地中海食材配合小学生口味，每天精选 3 款健康少油的儿童营养餐做法。",
-                // Log viewer
-                logTitle: "🖥️ 系统日志",
-                logFilterAll: "全部",
-                logFilterInfo: "INFO",
-                logFilterWarn: "WARNING",
-                logFilterError: "ERROR",
-                logAutoRefresh: "自动刷新",
-                logRefreshBtn: "🔄 刷新",
-                logClearBtn: "🗑 清空",
-                logEmpty: "暂无日志...",
-                logAutoOn: "自动刷新中",
-                logAutoPaused: "已暂停",
-                logCountUnit: "{n} 条"
-            },
-            en: {
-                title: "Slim Eating Time",
-                subtitle: "Smart daily fat-loss meal planner based on your existing ingredients",
-                viewMd: "View Raw Markdown (today.md)",
-                tabToday: "🍳 Today's Menu",
-                tabPantry: "🥕 Pantry",
-                tabHistory: "📜 History",
-                tabSettings: "⚙️ Settings",
-                menuDate: "Menu Date",
-                menuNotGen: "Today's menu not generated yet. Click Generate!",
-                noMenuText: "No menu customized for today.",
-                btnGenToday: "✨ Customize Today's Meals",
-                btnGenStart: "Smart Generate Daily Menu",
-                btnGenLoading: "AI is analyzing ingredients & planning...",
-                nutriHighlight: "💡 Today's Fat-loss Highlight: ",
-                shoppingTitle: "🛒 Suggested Shopping List (As Needed)",
-                shoppingEmpty: "🎉 Plenty of ingredients today, no shopping needed!",
-                addFoodTitle: "Add New Ingredient",
-                foodLabel: "Ingredient Name",
-                placeholderFoodInput: "e.g., Broccoli, Chicken breast",
-                quickAddTitle: "Quick Add Common Ingredients",
-                catMeat: "🥩 Protein",
-                catVeg: "🥦 Veg & Fruits",
-                catStaple: "🍠 Healthy Carbs",
-                catRefinedStaple: "🍚 Refined Carbs",
-                pantrySearchPlaceholder: "🔍 Search pantry...",
-                myPantry: "My Pantry",
-                pantryTip: "Click × on any ingredient card to remove it",
-                countUnit: "{count} items",
-                historyTitle: "📅 Menu History Logs (Last 30 generations)",
-                historyDetailBtn: "View Raw MD",
-                historyEmpty: "No history logs found, generate a menu to save history",
-                settingsAiTitle: "AI Configurations",
-                apiKeyLabel: "Google Gemini API Key",
-                apiKeyPlaceholder: "Blank (defaults to system env / .env)",
-                modelLabel: "Gemini Model",
-                caloriesLabel: "Daily Calories Limit (kcal)",
-                langLabel: "AI Response Language",
-                btnSaveSettings: "💾 Save Configurations",
-                dislikedTitle: "Excluded Ingredients",
-                dislikedDesc: "AI will strictly avoid using these ingredients in your menu.",
-                addDislikedLabel: "Add Excluded Ingredient",
-                addDislikedBtn: "Add",
-                currentDisliked: "Current Excluded List",
-                dislikedEmpty: "No excluded ingredients",
-                modalMdTitle: "Raw Markdown File",
-                toastSuccess: "Success",
-                toastSaveSettingsSuccess: "Settings saved!",
-                toastAddFoodSuccess: "Added ingredient successfully",
-                toastDeleteFoodSuccess: "Removed ingredient successfully",
-                toastGenerateSuccess: "Menu generated successfully!",
-                toastGenerateFail: "Generation failed: ",
-                toastAddDislikedSuccess: "Added excluded ingredient",
-                toastDeleteDislikedSuccess: "Removed excluded ingredient",
-                breakfast: "🍳 Breakfast",
-                lunch: "🍤 Lunch",
-                dinner: "🍲 Dinner",
-                reqBuy: "Suggested to buy",
-                errorModalTitle: "Gemini API Error Logs",
-                instructionsTitle: "Cooking Steps",
-                dislikedPlaceholder: "e.g., Cilantro, Celery",
-                toastDislikedExist: "Ingredient already in excluded list",
-                tabKids: "👦 Kids Menu",
-                kidsPrefTitle: "Kids Preferences",
-                kidsPrefDesc: "Customize your primary school child's food habits. AI will plan nutritious growth meals.",
-                kidsPrefLabel: "Child's Habits & Preferences",
-                kidsPrefPlaceholder: "e.g., Loves burger steak, curry...",
-                kidsSavePref: "💾 Save Preferences",
-                kidsViewMd: "View Raw Markdown (kids_today.md)",
-                kidsGenBtn: "🪄 Generate Kids Menu",
-                kidsGenLoading: "AI is planning kids meals...",
-                kidsNutriHighlight: "💡 Kids Growth Highlight: ",
-                toastKidsSavePrefSuccess: "Kids preferences saved successfully!",
-                toastKidsGenerateSuccess: "Kids menu generated successfully!",
-                other: "🧂 Others / Seasonings",
-                tabTrending: "💡 Daily Trending",
-                trendingTitle: "Xiaohongshu & Douyin Daily Trending Fat-loss Meals",
-                trendingDesc: "3 viral healthy slimming recipes recommended daily. Use as reference or import ingredients.",
-                kidsTrendingTitle: "👦 Kids Healthy Meal Recommendations",
-                kidsTrendingDesc: "Healthy kid-friendly recipes recommended daily, tailored to children's food habits.",
-                btnImportIngredients: "📥 Import All Ingredients",
-                toastImportSuccess: "Successfully imported ingredients to pantry!",
-                // History sub-tab labels
-                histTabAdult: "👨 Adult Fat-loss History",
-                histTabKids: "👦 Kids Menu History",
-                histTabTrending: "🫒 Mediterranean History",
-                trendingHistoryEmpty: "No Mediterranean recipe history yet. Auto-saved daily at 7am.",
-                trendingHistBadge: "Mediterranean Diet",
-                trendingHistAdultLabel: "👨 Fat-loss Picks",
-                trendingHistKidsLabel: "👦 Kids Picks",
-                // Updated trending titles (Mediterranean)
-                trendingTitle: "🫒 Daily Mediterranean Diet Recommendations",
-                trendingDesc: "3 curated Mediterranean fat-loss meals recommended daily — low sugar, high fiber, healthy fats.",
-                kidsTrendingTitle: "👦 Kids Mediterranean Meal Picks",
-                kidsTrendingDesc: "Healthy kid-friendly Mediterranean meals tailored to your child's preferences, recommended daily.",
-                // Log viewer
-                logTitle: "🖥️ System Logs",
-                logFilterAll: "All",
-                logFilterInfo: "INFO",
-                logFilterWarn: "WARNING",
-                logFilterError: "ERROR",
-                logAutoRefresh: "Auto-refresh",
-                logRefreshBtn: "🔄 Refresh",
-                logClearBtn: "🗑 Clear",
-                logEmpty: "No logs yet...",
-                logAutoOn: "Auto-refreshing",
-                logAutoPaused: "Paused",
-                logCountUnit: "{n} entries"
-            },
-            ja: {
-                title: "スリム食卓",
-                subtitle: "冷蔵庫の食材をもとに、スマートに健康的な減量メニューを提案",
-                viewMd: "生の Markdown を表示 (today.md)",
-                tabToday: "🍳 今日の献立",
-                tabPantry: "🥕 食材庫",
-                tabHistory: "📜 履歴ログ",
-                tabSettings: "⚙️ 設定センター",
-                menuDate: "献立の日付",
-                menuNotGen: "今日の献立は未生成です。生成ボタンを押してください！",
-                noMenuText: "本日の献立はまだカスタマイズされていません。",
-                btnGenToday: "✨ 今日の三食を計画する",
-                btnGenStart: "AI 献立をスマート生成",
-                btnGenLoading: "AIが食材を分析し、献立を計画中...",
-                nutriHighlight: "💡 本日のダイエットポイント：",
-                shoppingTitle: "🛒 おすすめ買い物リスト（必要に応じて）",
-                shoppingEmpty: "🎉 今日は食材が十分あります。買い物は不要です！",
-                addFoodTitle: "新しい食材を追加",
-                foodLabel: "食材名",
-                placeholderFoodInput: "例：ブロッコリー、鶏胸肉",
-                quickAddTitle: "よく使われる減量食材をクイック追加",
-                catMeat: "🥩 タンパク質",
-                catVeg: "🥦 野菜・果物",
-                catStaple: "🍠 良質な炭水化物",
-                catRefinedStaple: "🍚 精製炭水化物",
-                pantrySearchPlaceholder: "🔍 食材庫を検索...",
-                myPantry: "マイ食材庫",
-                pantryTip: "食材カードの右上にある × をクリックして削除します",
-                countUnit: "全 {count} 件",
-                historyTitle: "📅 献立履歴（過去30回の生成）",
-                historyDetailBtn: "詳細 Markdown を表示",
-                historyEmpty: "履歴はありません。献立を生成して履歴を保存しましょう",
-                settingsAiTitle: "AI 設定パラメータ",
-                apiKeyLabel: "Google Gemini API キー",
-                apiKeyPlaceholder: "空白（環境変数 / .env からのデフォルト読み込み）",
-                modelLabel: "Gemini モデル",
-                caloriesLabel: "目標カロリー上限 (kcal)",
-                langLabel: "AI 回答言語",
-                btnSaveSettings: "💾 設定パラメータを保存",
-                dislikedTitle: "苦手・避けるべき食材",
-                dislikedDesc: "AIは献立作成時に、ここにリストされた食材を絶対に使用しません。",
-                addDislikedLabel: "避ける食材を追加",
-                addDislikedBtn: "追加",
-                currentDisliked: "現在のリスト",
-                dislikedEmpty: "避ける食材はありません",
-                modalMdTitle: "生の Markdown ファイル",
-                toastSuccess: "操作成功",
-                toastSaveSettingsSuccess: "設定が保存されました！",
-                toastAddFoodSuccess: "食材を追加しました",
-                toastDeleteFoodSuccess: "食材を削除しました",
-                toastGenerateSuccess: "献立の生成に成功しました！",
-                toastGenerateFail: "生成失敗：",
-                toastAddDislikedSuccess: "避ける食材を追加しました",
-                toastDeleteDislikedSuccess: "避ける食材を削除しました",
-                breakfast: "🍳 朝食",
-                lunch: "🍤 昼食",
-                dinner: "🍲 夕食",
-                reqBuy: "購入推奨",
-                errorModalTitle: "Gemini API エラーログ",
-                instructionsTitle: "調理手順",
-                dislikedPlaceholder: "例：パクチー、セロリ",
-                toastDislikedExist: "すでにリストに含まれています",
-                tabKids: "👦 キッズ献立",
-                kidsPrefTitle: "お子様の好み設定",
-                kidsPrefDesc: "高学年小学生の食事の好みをカスタマイズしてください。AIがそれに基づいて栄養満点の成長メニューを提案します。",
-                kidsPrefLabel: "お子様の特徴・好み",
-                kidsPrefPlaceholder: "例：ハンバーグ、唐揚げ、カレーが大好き...",
-                kidsSavePref: "💾 設定を保存",
-                kidsViewMd: "生の Markdown を表示 (kids_today.md)",
-                kidsGenBtn: "🪄 キッズ献立を生成",
-                kidsGenLoading: "AIがお子様の献立を計画中...",
-                kidsNutriHighlight: "💡 キッズ栄養ポイント：",
-                toastKidsSavePrefSuccess: "お子様の好み設定が保存されました！",
-                toastKidsGenerateSuccess: "キッズ献立の生成に成功しました！",
-                other: "🧂 その他・調味料",
-                tabTrending: "💡 本日のおすすめ",
-                trendingTitle: "小紅書＆TikTok 本日のトレンド減量レシピ",
-                trendingDesc: "ネットで大人気のダイエットレシピを毎日3つ厳選してご紹介。食材のインポートも可能です。",
-                kidsTrendingTitle: "👦 お子様向けトレンド栄養レシピ",
-                kidsTrendingDesc: "ハンバーグやカレー、寿司など、お子様の好みに合わせたヘルシーなトレンドレシピを毎日厳選してご紹介。",
-                btnImportIngredients: "📥 食材を一括インポート",
-                toastImportSuccess: "食材を食材庫にインポートしました！",
-                // History sub-tab labels
-                histTabAdult: "👨 大人ダイエット履歴",
-                histTabKids: "👦 キッズ献立履歴",
-                histTabTrending: "🫒 地中海レシピ履歴",
-                trendingHistoryEmpty: "地中海レシピ履歴はまだありません。毎朝7時に自動保存されます。",
-                trendingHistBadge: "地中海食",
-                trendingHistAdultLabel: "👨 ダイエット推奨",
-                trendingHistKidsLabel: "👦 キッズ推奨",
-                // Updated trending titles (Mediterranean)
-                trendingTitle: "🫒 地中海食本日のおすすめレシピ",
-                trendingDesc: "毎日厚選３レシピの地中海食ダイエット献立をご紹介。低糖質・高繊維質・健康的な脂質で織り細た食事。",
-                kidsTrendingTitle: "👦 地中海食 キッズメニューおすすめ",
-                kidsTrendingDesc: "お子様の好みに合わせた地中海食のキッズ向けヘルシーレシピを毎日おすすめ。",
-                // Log viewer
-                logTitle: "🖥️ システムログ",
-                logFilterAll: "すべて",
-                logFilterInfo: "INFO",
-                logFilterWarn: "WARNING",
-                logFilterError: "ERROR",
-                logAutoRefresh: "自動更新",
-                logRefreshBtn: "🔄 更新",
-                logClearBtn: "🗑 クリア",
-                logEmpty: "ログはまだありません...",
-                logAutoOn: "自動更新中",
-                logAutoPaused: "一時停止",
-                logCountUnit: "{n} 件"
-            }
-        };
+        // --- i18n Translation Tables (Loaded from server) ---
+        let i18n = {};
 
         // On Page Load
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/i18n');
+                i18n = await res.json();
+            } catch (err) {
+                console.error("Failed to load translations:", err);
+            }
+
             // Load saved UI language
             const savedUiLang = localStorage.getItem('ui_lang') || 'zh';
             currentLang = savedUiLang;
             document.getElementById('ui-language-select').value = savedUiLang;
             
-            initApp();
+            await initApp();
         });
 
         async function initApp() {
