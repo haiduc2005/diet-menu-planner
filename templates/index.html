@@ -587,6 +587,120 @@
             cursor: pointer;
         }
 
+        /* SYSTEM LOG VIEWER */
+        .log-viewer-card {
+            margin-top: 1.5rem;
+            grid-column: 1 / -1;
+        }
+
+        .log-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .log-filter-btn {
+            padding: 0.3rem 0.75rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font-sans);
+        }
+        .log-filter-btn:hover { background: rgba(255,255,255,0.09); color: #fff; }
+        .log-filter-btn.active { color: #fff; border-color: transparent; }
+        .log-filter-btn.f-all.active  { background: #4f46e5; }
+        .log-filter-btn.f-info.active { background: #059669; }
+        .log-filter-btn.f-warn.active { background: #d97706; }
+        .log-filter-btn.f-error.active{ background: #dc2626; }
+
+        .log-spacer { flex: 1; }
+
+        .log-auto-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+        .log-auto-label input { accent-color: var(--primary); cursor: pointer; }
+
+        .log-terminal {
+            background: #020817;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            height: 420px;
+            overflow-y: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.78rem;
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+        .log-terminal::-webkit-scrollbar { width: 5px; }
+        .log-terminal::-webkit-scrollbar-track { background: transparent; }
+        .log-terminal::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        .log-entry {
+            display: flex;
+            gap: 0.6rem;
+            padding: 0.05rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.025);
+            animation: logFade 0.25s ease;
+        }
+        @keyframes logFade { from { opacity:0; } to { opacity:1; } }
+
+        .log-entry:last-child { border-bottom: none; }
+
+        .log-time  { color: #334155; flex-shrink: 0; min-width: 60px; }
+        .log-badge {
+            flex-shrink: 0;
+            min-width: 62px;
+            font-weight: 700;
+            font-size: 0.72rem;
+            padding: 0.05rem 0.4rem;
+            border-radius: 3px;
+            text-align: center;
+        }
+        .badge-DEBUG    { background: rgba(100,116,139,0.15); color: #64748b; }
+        .badge-INFO     { background: rgba(5,150,105,0.15);   color: #34d399; }
+        .badge-WARNING  { background: rgba(217,119,6,0.15);   color: #fbbf24; }
+        .badge-ERROR    { background: rgba(220,38,38,0.15);   color: #f87171; }
+        .badge-CRITICAL { background: rgba(220,38,38,0.3);    color: #fca5a5; font-weight: 900; }
+
+        .log-name { color: #6366f1; flex-shrink: 0; max-width: 140px; overflow: hidden;
+                    text-overflow: ellipsis; white-space: nowrap; }
+        .log-msg  { color: #cbd5e1; word-break: break-all; }
+        .log-msg.warn-text    { color: #fde68a; }
+        .log-msg.error-text   { color: #fca5a5; }
+        .log-msg.critical-text{ color: #fca5a5; font-weight: 700; }
+
+        .log-status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.6rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .log-dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin-right: 0.3rem;
+            animation: pulse 1.5s ease infinite;
+        }
+        .log-dot.paused { background: #475569; animation: none; }
+
         /* Loading Spinner */
         .spinner {
             border: 3px solid rgba(255, 255, 255, 0.1);
@@ -979,6 +1093,45 @@
                 </div>
 
             </div>
+
+            <!-- System Log Viewer (full-width, below the grid) -->
+            <div class="glass-card log-viewer-card">
+                <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
+                    <span style="font-size:1.2rem;">🖥️</span>
+                    <h3 data-i18n="logTitle" style="flex:1;">系统日志</h3>
+                    <span id="log-count-badge" style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);color:#a5b4fc;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:20px;">0 条</span>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="log-toolbar">
+                    <button class="log-filter-btn f-all active"  id="lf-all"   onclick="setLogFilter('ALL')"     data-i18n="logFilterAll">全部</button>
+                    <button class="log-filter-btn f-info"        id="lf-info"  onclick="setLogFilter('INFO')"    data-i18n="logFilterInfo">INFO</button>
+                    <button class="log-filter-btn f-warn"        id="lf-warn"  onclick="setLogFilter('WARNING')" data-i18n="logFilterWarn">WARNING</button>
+                    <button class="log-filter-btn f-error"       id="lf-error" onclick="setLogFilter('ERROR')"   data-i18n="logFilterError">ERROR</button>
+
+                    <div class="log-spacer"></div>
+
+                    <label class="log-auto-label" title="每3秒自动刷新">
+                        <input type="checkbox" id="log-auto-refresh" checked onchange="toggleLogAutoRefresh(this.checked)">
+                        <span data-i18n="logAutoRefresh">自动刷新</span>
+                    </label>
+
+                    <button class="btn btn-secondary" onclick="fetchAndRenderLogs()" style="padding:0.3rem 0.75rem;font-size:0.8rem;" data-i18n="logRefreshBtn">🔄 刷新</button>
+                    <button class="btn btn-secondary" onclick="clearLogDisplay()" style="padding:0.3rem 0.75rem;font-size:0.8rem;color:#f87171;border-color:rgba(239,68,68,0.3);" data-i18n="logClearBtn">🗑 清空</button>
+                </div>
+
+                <!-- Terminal -->
+                <div class="log-terminal" id="log-terminal">
+                    <div style="color:#334155;text-align:center;padding:2rem 0;" data-i18n="logEmpty">暂无日志...</div>
+                </div>
+
+                <!-- Status bar -->
+                <div class="log-status-bar">
+                    <span><span class="log-dot" id="log-dot"></span><span id="log-status-text" data-i18n="logAutoOn">自动刷新中</span></span>
+                    <span id="log-last-updated" style="color:#334155;">--</span>
+                </div>
+            </div>
+
         </section>
 
     </div>
@@ -1099,7 +1252,20 @@
                 trendingTitle: "🫒 地中海饮食每日推荐减脂餐",
                 trendingDesc: "每天精选 3 款地中海饮食减脂餐，低糖少油、富含膳食纤维与健康脂肪，助你烧脂又美味。",
                 kidsTrendingTitle: "👦 地中海小小美食家每日推荐",
-                kidsTrendingDesc: "地中海食材配合小学生口味，每天精选 3 款健康少油的儿童营养餐做法。"
+                kidsTrendingDesc: "地中海食材配合小学生口味，每天精选 3 款健康少油的儿童营养餐做法。",
+                // Log viewer
+                logTitle: "🖥️ 系统日志",
+                logFilterAll: "全部",
+                logFilterInfo: "INFO",
+                logFilterWarn: "WARNING",
+                logFilterError: "ERROR",
+                logAutoRefresh: "自动刷新",
+                logRefreshBtn: "🔄 刷新",
+                logClearBtn: "🗑 清空",
+                logEmpty: "暂无日志...",
+                logAutoOn: "自动刷新中",
+                logAutoPaused: "已暂停",
+                logCountUnit: "{n} 条"
             },
             en: {
                 title: "Slim Eating Time",
@@ -1195,7 +1361,20 @@
                 trendingTitle: "🫒 Daily Mediterranean Diet Recommendations",
                 trendingDesc: "3 curated Mediterranean fat-loss meals recommended daily — low sugar, high fiber, healthy fats.",
                 kidsTrendingTitle: "👦 Kids Mediterranean Meal Picks",
-                kidsTrendingDesc: "Healthy kid-friendly Mediterranean meals tailored to your child's preferences, recommended daily."
+                kidsTrendingDesc: "Healthy kid-friendly Mediterranean meals tailored to your child's preferences, recommended daily.",
+                // Log viewer
+                logTitle: "🖥️ System Logs",
+                logFilterAll: "All",
+                logFilterInfo: "INFO",
+                logFilterWarn: "WARNING",
+                logFilterError: "ERROR",
+                logAutoRefresh: "Auto-refresh",
+                logRefreshBtn: "🔄 Refresh",
+                logClearBtn: "🗑 Clear",
+                logEmpty: "No logs yet...",
+                logAutoOn: "Auto-refreshing",
+                logAutoPaused: "Paused",
+                logCountUnit: "{n} entries"
             },
             ja: {
                 title: "スリム食卓",
@@ -1291,7 +1470,20 @@
                 trendingTitle: "🫒 地中海食本日のおすすめレシピ",
                 trendingDesc: "毎日厚選３レシピの地中海食ダイエット献立をご紹介。低糖質・高繊維質・健康的な脂質で織り細た食事。",
                 kidsTrendingTitle: "👦 地中海食 キッズメニューおすすめ",
-                kidsTrendingDesc: "お子様の好みに合わせた地中海食のキッズ向けヘルシーレシピを毎日おすすめ。"
+                kidsTrendingDesc: "お子様の好みに合わせた地中海食のキッズ向けヘルシーレシピを毎日おすすめ。",
+                // Log viewer
+                logTitle: "🖥️ システムログ",
+                logFilterAll: "すべて",
+                logFilterInfo: "INFO",
+                logFilterWarn: "WARNING",
+                logFilterError: "ERROR",
+                logAutoRefresh: "自動更新",
+                logRefreshBtn: "🔄 更新",
+                logClearBtn: "🗑 クリア",
+                logEmpty: "ログはまだありません...",
+                logAutoOn: "自動更新中",
+                logAutoPaused: "一時停止",
+                logCountUnit: "{n} 件"
             }
         };
 
@@ -1412,6 +1604,16 @@
             // Find tab button that matches
             const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
             if (btn) btn.classList.add('active');
+
+            // Log viewer: start/stop auto-refresh based on active tab
+            if (tabId === 'settings') {
+                fetchAndRenderLogs();
+                const autoEl = document.getElementById('log-auto-refresh');
+                if (autoEl && autoEl.checked) _startLogTimer();
+            } else {
+                clearInterval(_logAutoTimer);
+                _logAutoTimer = null;
+            }
         }
 
         // --- Toast Notifications ---
@@ -2500,6 +2702,127 @@
         function closeModal() {
             document.getElementById('md-modal').style.display = 'none';
         }
+
+        // ─── System Log Viewer ──────────────────────────────────────────────────
+        let _allLogs       = [];          // full buffer from server
+        let _logFilter     = 'ALL';       // current level filter
+        let _logAutoTimer  = null;        // setInterval handle
+        const LOG_INTERVAL = 3000;        // ms
+
+        // Level → filter map
+        const _levelGroup = {
+            ALL:     null,
+            INFO:    ['INFO'],
+            WARNING: ['WARNING'],
+            ERROR:   ['ERROR', 'CRITICAL']
+        };
+
+        async function fetchAndRenderLogs() {
+            try {
+                const res = await fetch('/api/logs');
+                _allLogs = await res.json();
+                _renderLogs();
+                // update last-updated timestamp
+                const now = new Date();
+                document.getElementById('log-last-updated').textContent =
+                    `${now.getHours().toString().padStart(2,'0')}:` +
+                    `${now.getMinutes().toString().padStart(2,'0')}:` +
+                    `${now.getSeconds().toString().padStart(2,'0')}更新`;
+            } catch (e) {
+                console.warn('Log fetch failed', e);
+            }
+        }
+
+        function _renderLogs() {
+            const terminal = document.getElementById('log-terminal');
+            const groups   = _levelGroup[_logFilter];
+
+            // filter
+            const filtered = groups
+                ? _allLogs.filter(l => groups.includes(l.level))
+                : _allLogs;
+
+            // update count badge
+            const t  = i18n[currentLang];
+            const unit = (t.logCountUnit || '{n} 条').replace('{n}', filtered.length);
+            document.getElementById('log-count-badge').textContent = unit;
+
+            if (filtered.length === 0) {
+                terminal.innerHTML =
+                    `<div style="color:#334155;text-align:center;padding:2rem 0;">${t.logEmpty || '暂无日志...'}</div>`;
+                return;
+            }
+
+            // build HTML (newest on top)
+            const frag = document.createDocumentFragment();
+            const items = [...filtered].reverse();
+            items.forEach(log => {
+                const div      = document.createElement('div');
+                div.className  = 'log-entry';
+
+                const lvl      = log.level || 'INFO';
+                const msgClass = lvl === 'WARNING'  ? 'log-msg warn-text'
+                               : lvl === 'ERROR'    ? 'log-msg error-text'
+                               : lvl === 'CRITICAL' ? 'log-msg critical-text'
+                               : 'log-msg';
+
+                div.innerHTML  =
+                    `<span class="log-time">${_esc(log.time)}</span>` +
+                    `<span class="log-badge badge-${lvl}">${lvl}</span>` +
+                    `<span class="log-name" title="${_esc(log.name)}">${_esc(log.name)}</span>` +
+                    `<span class="${msgClass}">${_esc(log.msg)}</span>`;
+                frag.appendChild(div);
+            });
+
+            terminal.innerHTML = '';
+            terminal.appendChild(frag);
+        }
+
+        function _esc(str) {
+            return String(str || '')
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        function setLogFilter(level) {
+            _logFilter = level;
+            // update active button
+            document.querySelectorAll('.log-filter-btn').forEach(b => b.classList.remove('active'));
+            const map = { ALL:'lf-all', INFO:'lf-info', WARNING:'lf-warn', ERROR:'lf-error' };
+            const btn = document.getElementById(map[level]);
+            if (btn) btn.classList.add('active');
+            _renderLogs();
+        }
+
+        function toggleLogAutoRefresh(enabled) {
+            const dot    = document.getElementById('log-dot');
+            const status = document.getElementById('log-status-text');
+            const t      = i18n[currentLang];
+            if (enabled) {
+                dot.classList.remove('paused');
+                status.textContent = t.logAutoOn || '自动刷新中';
+                _startLogTimer();
+            } else {
+                dot.classList.add('paused');
+                status.textContent = t.logAutoPaused || '已暂停';
+                clearInterval(_logAutoTimer);
+                _logAutoTimer = null;
+            }
+        }
+
+        function _startLogTimer() {
+            clearInterval(_logAutoTimer);
+            _logAutoTimer = setInterval(fetchAndRenderLogs, LOG_INTERVAL);
+        }
+
+        async function clearLogDisplay() {
+            try { await fetch('/api/logs/clear', { method: 'POST' }); } catch(e) {}
+            _allLogs = [];
+            _renderLogs();
+            document.getElementById('log-count-badge').textContent = '0';
+        }
+
+        // ────────────────────────────────────────────────────────────────────────
+
     </script>
 </body>
 </html>

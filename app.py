@@ -1,10 +1,44 @@
 import os
+import logging
+import collections
+import threading
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import uvicorn
 from dotenv import load_dotenv
+
+# ── In-Memory Log Buffer ──────────────────────────────────────────────────────
+_LOG_BUFFER: collections.deque = collections.deque(maxlen=500)
+_LOG_LOCK = threading.Lock()
+
+class _MemoryLogHandler(logging.Handler):
+    """Captures log records into a thread-safe deque."""
+    def emit(self, record: logging.LogRecord) -> None:
+        from datetime import datetime
+        entry = {
+            "time":  datetime.now().strftime("%H:%M:%S"),
+            "level": record.levelname,
+            "name":  record.name,
+            "msg":   self.format(record),
+        }
+        with _LOG_LOCK:
+            _LOG_BUFFER.append(entry)
+
+def _setup_log_capture() -> None:
+    handler = _MemoryLogHandler()
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    handler.setLevel(logging.DEBUG)
+    for logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access",
+                        "fastapi", "apscheduler", ""):          # "" = root
+        lg = logging.getLogger(logger_name)
+        # Avoid duplicate handlers on hot-reload
+        if not any(isinstance(h, _MemoryLogHandler) for h in lg.handlers):
+            lg.addHandler(handler)
+
+_setup_log_capture()
+# ─────────────────────────────────────────────────────────────────────────────
 
 from manager.foods import load_foods, add_food, remove_food
 from manager.history import load_history, load_settings, save_settings, load_kids_history, load_trending_history
@@ -83,7 +117,7 @@ class FoodRequest(BaseModel):
 # --- HTML Page Routes ---
 @app.get("/", response_class=HTMLResponse)
 async def read_index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request, "index.html")
 
 # --- Food API Routes ---
 @app.get("/api/foods")
@@ -210,6 +244,18 @@ async def get_kids_trending_menu_api():
 @app.get("/api/trending-history")
 async def get_trending_history_api():
     return load_trending_history()
+
+# --- System Log API ---
+@app.get("/api/logs")
+async def get_logs_api():
+    with _LOG_LOCK:
+        return list(_LOG_BUFFER)
+
+@app.post("/api/logs/clear")
+async def clear_logs_api():
+    with _LOG_LOCK:
+        _LOG_BUFFER.clear()
+    return {"status": "cleared"}
 
 # --- Start Uvicorn Server ---
 if __name__ == '__main__':
