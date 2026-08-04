@@ -57,54 +57,59 @@ from apscheduler.schedulers.background import BackgroundScheduler
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
+logger = logging.getLogger("app.scheduler")
+
 def scheduled_menu_job():
     today_str = datetime.now().strftime('%Y-%m-%d')
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Checking daily menu schedule...")
+    logger.info("Background task: Checking daily menu schedule...")
     
     # 1. Generate Adult Diet Menu
     try:
         history = load_history()
         already_exists = any(item.get("date") == today_str for item in history)
         if not already_exists:
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Adult menu for today not found. Generating...")
+            logger.info("Adult menu for today not found. Generating...")
             generate_and_save_today_menu()
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily adult menu successfully generated.")
+            logger.info("Background task: Daily adult menu successfully generated.")
         else:
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Adult menu for today already exists. Skipping auto-generation.")
+            logger.info("Adult menu for today already exists. Skipping auto-generation.")
     except Exception as e:
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Adult Menu): {e}")
+        logger.error(f"Background task ERROR (Adult Menu): {e}")
 
     # 2. Generate Kids Nutrition Menu
     try:
         kids_history = load_kids_history()
         already_exists = any(item.get("date") == today_str for item in kids_history)
         if not already_exists:
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Kids menu for today not found. Generating...")
+            logger.info("Kids menu for today not found. Generating...")
             generate_and_save_kids_menu()
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily kids menu successfully generated.")
+            logger.info("Background task: Daily kids menu successfully generated.")
         else:
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Kids menu for today already exists. Skipping auto-generation.")
+            logger.info("Kids menu for today already exists. Skipping auto-generation.")
     except Exception as e:
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Kids Menu): {e}")
+        logger.error(f"Background task ERROR (Kids Menu): {e}")
 
     # 3. Save today's Mediterranean Trending Recipe selection to history
     try:
         trending_history = load_trending_history()
         already_exists = any(item.get('date') == today_str for item in trending_history)
         if not already_exists:
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Trending recipes for today not recorded. Saving...")
+            logger.info("Trending recipes for today not recorded. Saving...")
             generate_and_save_daily_trending(today_str)
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily trending recipes saved.")
+            logger.info("Background task: Daily trending recipes saved.")
         else:
-            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Trending recipes for today already recorded. Skipping.")
+            logger.info("Trending recipes for today already recorded. Skipping.")
     except Exception as e:
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Trending): {e}")
+        logger.error(f"Background task ERROR (Trending): {e}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: Start Background Scheduler
     scheduler = BackgroundScheduler()
+    # 1. Regular daily cron at 7:00 AM
     scheduler.add_job(scheduled_menu_job, 'cron', hour=7, minute=0, id='daily_menu_job')
+    # 2. Trigger once immediately on startup to catch up if server was down at 7:00 AM
+    scheduler.add_job(scheduled_menu_job, 'date', run_date=datetime.now(), id='startup_menu_job')
     scheduler.start()
     yield
     # Shutdown: Stop Scheduler
