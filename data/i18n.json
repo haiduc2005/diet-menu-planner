@@ -132,7 +132,17 @@
     "logEmpty": "暂无日志...",
     "logAutoOn": "自动刷新中",
     "logAutoPaused": "已暂停",
-    "logCountUnit": "{n} 条"
+    "logCountUnit": "{n} 条",
+    "wisdomTagNatural": "🌾 食材选择",
+    "wisdomTagCold": "❄️ 淀粉智慧",
+    "wisdomTagWater": "⚠️ 饮水细节",
+    "wisdomTagOrder": "🥢 膳食顺序",
+    "wisdomTagEatOut": "🍽️ 避坑指南",
+    "wisdomTagStarve": "🔬 代谢科学",
+    "wisdomStarveTitle": "一味少食并非最佳减脂之法",
+    "wisdomStarveSub": "身体会自动降低新陈代谢率来适应饥饿",
+    "wisdomStarveBody": "一味地不吃饭或过度少食，虽然短期内体重可能下降，但会导致身体启动保护机制：大幅降低基础代谢率。这不仅使得减脂的边际效应越来越低（即吃得更少却不瘦），而且一旦恢复正常饮食，由于代谢率已经处于低位，身体会极速囤积热量，从而大大增加反弹的风险。科学的减脂应该是创造合理的温和热量赤字，而不是极端的饥饿。",
+    "wisdomStarveHighlight": "💡 建议：切忌盲目长期节食。通过合理营养膳食维持基础代谢，结合适量运动，保持身体代谢引擎的活跃运转。"
   },
   "en": {
     "title": "Slim Eating Time",
@@ -267,7 +277,17 @@
     "logEmpty": "No logs yet...",
     "logAutoOn": "Auto-refreshing",
     "logAutoPaused": "Paused",
-    "logCountUnit": "{n} entries"
+    "logCountUnit": "{n} entries",
+    "wisdomTagNatural": "🌾 Food Selection",
+    "wisdomTagCold": "❄️ Starch Wisdom",
+    "wisdomTagWater": "⚠️ Hydration Detail",
+    "wisdomTagOrder": "🥢 Meal Sequence",
+    "wisdomTagEatOut": "🍽️ Pitfall Guide",
+    "wisdomTagStarve": "🔬 Metabolic Science",
+    "wisdomStarveTitle": "Starvation is Not the Best Way",
+    "wisdomStarveSub": "Your body lowers metabolism to adapt to hunger",
+    "wisdomStarveBody": "Simply skipping meals or eating excessively little may lead to short-term weight loss, but it triggers the body's self-preservation mechanism: a sharp drop in basal metabolic rate (BMR). This leads to a declining marginal effect (eating less but not losing fat) and exponentially increases rebound risk. When normal eating resumes, your body rapidly stores calories since BMR is low. True fat loss requires a moderate, healthy calorie deficit, not extreme starvation.",
+    "wisdomStarveHighlight": "💡 Tip: Avoid blind, prolonged fasting. Keep BMR active by maintaining balanced nutrition and regular physical activity."
   },
   "ja": {
     "title": "スリム食卓",
@@ -402,6 +422,16 @@
     "logEmpty": "ログはまだありません...",
     "logAutoOn": "自動更新中",
     "logAutoPaused": "一時停止",
-    "logCountUnit": "{n} 件"
+    "logCountUnit": "{n} 件",
+    "wisdomTagNatural": "🌾 食材選択",
+    "wisdomTagCold": "❄️ デンプンの知恵",
+    "wisdomTagWater": "⚠️ 水分の摂り方",
+    "wisdomTagOrder": "🥢 食べる順番",
+    "wisdomTagEatOut": "🍽️ 外食の罠",
+    "wisdomTagStarve": "🔬 代謝の科学",
+    "wisdomStarveTitle": "絶食・少食は最善の減量法ではない",
+    "wisdomStarveSub": "体は飢餓に適応するために代謝率を自動的に下げる",
+    "wisdomStarveBody": "単に食事を抜く、または極端に少食にすることは、短期的には体重が減るかもしれませんが、基礎代謝率の大幅な低下という体の自己防衛メカニズムを引き起こします。これにより、減量の限界効果が低くなり（食べる量を減らしても痩せない）、リバウンドのリスクが劇的に高まります。食事を元に戻すと、低下した代謝率のために脂肪が急速に蓄積されます。正しい減量は極端な飢餓ではなく、合理的で緩やかなカロリー赤字を作り出すことです。",
+    "wisdomStarveHighlight": "💡 アドバイス：盲目的で長期的な絶食は避けましょう。バランスの取れた栄養食事で基礎代謝を維持し、適度な運動で代謝エンジンを活発に保ちます。"
   }
 }
