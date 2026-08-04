@@ -49,7 +49,7 @@
 
         /* Container Layout */
         .container {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
         }
@@ -371,7 +371,7 @@
         /* FOODS PANTRY VIEW */
         .pantry-layout {
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 1fr 320px;
             gap: 1.5rem;
         }
 
@@ -467,14 +467,9 @@
 
         .pantry-tags-grid {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            align-content: flex-start;
+            flex-direction: column;
+            gap: 1.25rem;
             min-height: 200px;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 12px;
-            border: 1px dashed var(--border-color);
         }
 
         .food-tag {
@@ -592,6 +587,120 @@
             cursor: pointer;
         }
 
+        /* SYSTEM LOG VIEWER */
+        .log-viewer-card {
+            margin-top: 1.5rem;
+            grid-column: 1 / -1;
+        }
+
+        .log-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .log-filter-btn {
+            padding: 0.3rem 0.75rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font-sans);
+        }
+        .log-filter-btn:hover { background: rgba(255,255,255,0.09); color: #fff; }
+        .log-filter-btn.active { color: #fff; border-color: transparent; }
+        .log-filter-btn.f-all.active  { background: #4f46e5; }
+        .log-filter-btn.f-info.active { background: #059669; }
+        .log-filter-btn.f-warn.active { background: #d97706; }
+        .log-filter-btn.f-error.active{ background: #dc2626; }
+
+        .log-spacer { flex: 1; }
+
+        .log-auto-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+        .log-auto-label input { accent-color: var(--primary); cursor: pointer; }
+
+        .log-terminal {
+            background: #020817;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            height: 420px;
+            overflow-y: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.78rem;
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+        .log-terminal::-webkit-scrollbar { width: 5px; }
+        .log-terminal::-webkit-scrollbar-track { background: transparent; }
+        .log-terminal::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        .log-entry {
+            display: flex;
+            gap: 0.6rem;
+            padding: 0.05rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.025);
+            animation: logFade 0.25s ease;
+        }
+        @keyframes logFade { from { opacity:0; } to { opacity:1; } }
+
+        .log-entry:last-child { border-bottom: none; }
+
+        .log-time  { color: #334155; flex-shrink: 0; min-width: 60px; }
+        .log-badge {
+            flex-shrink: 0;
+            min-width: 62px;
+            font-weight: 700;
+            font-size: 0.72rem;
+            padding: 0.05rem 0.4rem;
+            border-radius: 3px;
+            text-align: center;
+        }
+        .badge-DEBUG    { background: rgba(100,116,139,0.15); color: #64748b; }
+        .badge-INFO     { background: rgba(5,150,105,0.15);   color: #34d399; }
+        .badge-WARNING  { background: rgba(217,119,6,0.15);   color: #fbbf24; }
+        .badge-ERROR    { background: rgba(220,38,38,0.15);   color: #f87171; }
+        .badge-CRITICAL { background: rgba(220,38,38,0.3);    color: #fca5a5; font-weight: 900; }
+
+        .log-name { color: #6366f1; flex-shrink: 0; max-width: 140px; overflow: hidden;
+                    text-overflow: ellipsis; white-space: nowrap; }
+        .log-msg  { color: #cbd5e1; word-break: break-all; }
+        .log-msg.warn-text    { color: #fde68a; }
+        .log-msg.error-text   { color: #fca5a5; }
+        .log-msg.critical-text{ color: #fca5a5; font-weight: 700; }
+
+        .log-status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.6rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .log-dot {
+            display: inline-block;
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin-right: 0.3rem;
+            animation: pulse 1.5s ease infinite;
+        }
+        .log-dot.paused { background: #475569; animation: none; }
+
         /* Loading Spinner */
         .spinner {
             border: 3px solid rgba(255, 255, 255, 0.1);
@@ -699,6 +808,8 @@
         <!-- Navigation Tabs -->
         <nav class="tabs">
             <button class="tab-btn active" onclick="switchTab('today-menu')" id="tab-btn-today" data-i18n="tabToday">🍳 今日食谱</button>
+            <button class="tab-btn" onclick="switchTab('kids-menu')" id="tab-btn-kids" data-i18n="tabKids">👦 儿童配餐</button>
+            <button class="tab-btn" onclick="switchTab('trending-menu')" id="tab-btn-trending" data-i18n="tabTrending">💡 每日推荐</button>
             <button class="tab-btn" onclick="switchTab('pantry')" id="tab-btn-pantry" data-i18n="tabPantry">🥕 食材库</button>
             <button class="tab-btn" onclick="switchTab('history')" id="tab-btn-history" data-i18n="tabHistory">📜 历史食谱</button>
             <button class="tab-btn" onclick="switchTab('settings')" id="tab-btn-settings" data-i18n="tabSettings">⚙️ 设置中心</button>
@@ -742,10 +853,102 @@
 
         </section>
 
+        <!-- Kids Menu TAB -->
+        <section id="kids-menu" class="tab-content">
+            <div class="pantry-layout">
+                <!-- Right panel: Kids Menu Display -->
+                <div class="pantry-tags-area">
+                    <div class="menu-header-bar">
+                        <div class="date-display" id="kids-menu-date-label">载入中...</div>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" onclick="viewKidsMarkdown()" id="btn-view-kids-md" data-i18n="kidsViewMd">查看原始 Markdown</button>
+                            <button class="btn btn-primary" id="btn-generate-kids" onclick="generateKidsMenu()">
+                                <span class="spinner" id="gen-kids-spinner"></span>
+                                <span id="gen-kids-btn-text" data-i18n="kidsGenBtn">🪄 生成儿童营养餐</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Health Summary -->
+                    <div class="banner info" id="kids-nutritional-banner" style="display: none;">
+                        <div>
+                            <strong data-i18n="kidsNutriHighlight">💡 儿童成长亮点：</strong> <span id="kids-nutritional-text"></span>
+                        </div>
+                    </div>
+
+                    <!-- Meals Grid -->
+                    <div class="meals-grid" id="kids-meals-container">
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);" data-i18n="menuNotGen">
+                            正在读取当前儿童食谱或请点击生成...
+                        </div>
+                    </div>
+
+                    <!-- Shopping List -->
+                    <div class="glass-card shopping-summary-card" id="kids-shopping-card" style="display: none;">
+                        <h3 class="section-title" data-i18n="shoppingTitle">🛒 建议采购清单 (按需购买)</h3>
+                        <div class="shopping-items-grid" id="kids-shopping-items-list">
+                            <!-- Items -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Left panel: Child's Preferences -->
+                <div class="glass-card" style="height: fit-content; display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 data-i18n="kidsPrefTitle">儿童偏好设置</h3>
+                    <p class="subtitle" data-i18n="kidsPrefDesc">你可以输入你孩子的饮食喜好，AI 会根据这些偏好为他量身定制营养餐。</p>
+                    <div class="input-group">
+                        <label for="kids-pref-input" data-i18n="kidsPrefLabel">孩子特点与饮食喜好</label>
+                        <textarea id="kids-pref-input" class="form-input" rows="6" data-i18n-placeholder="kidsPrefPlaceholder" style="resize: vertical; line-height: 1.5; font-family: var(--font-sans);"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveKidsPreferences()" data-i18n="kidsSavePref">💾 保存偏好设置</button>
+                </div>
+            </div>
+            
+            <!-- Kids Recommended Recipes Section -->
+            <div class="glass-card" style="margin-top: 2rem; margin-bottom: 1.5rem;">
+                <h3 data-i18n="kidsTrendingTitle" style="font-family: var(--font-display); margin-bottom: 0.5rem;">👦 儿童流行营养膳食推荐</h3>
+                <p class="subtitle" data-i18n="kidsTrendingDesc">每天根据高年级小学生的喜好精选 3 款健康的流行儿童餐做法。</p>
+            </div>
+            <div class="meals-grid" id="kids-trending-meals-container" style="margin-bottom: 2rem;">
+                <!-- Kids trending recipes will be loaded here dynamically -->
+            </div>
+        </section>
+
+        <!-- Trending Menu TAB -->
+        <section id="trending-menu" class="tab-content">
+            <div class="glass-card" style="margin-bottom: 2rem;">
+                <h2 data-i18n="trendingTitle" style="font-family: var(--font-display); margin-bottom: 0.5rem;">小红书 & 抖音 每日流行减脂餐推荐</h2>
+                <p class="subtitle" data-i18n="trendingDesc">每天从全网精选 3 款流行减脂餐做法，为你提供更多样化的瘦身选择。</p>
+            </div>
+            
+            <div class="meals-grid" id="trending-meals-container">
+                <!-- Trending cards will be dynamically loaded here -->
+            </div>
+        </section>
+
         <!-- 2. PANTRY TAB -->
         <section id="pantry" class="tab-content">
-            <div class="pantry-layout">
+            <div class="pantry-layout" style="grid-template-columns: 1fr 350px;">
                 
+                <!-- Main Tags area -->
+                <div class="glass-card pantry-tags-area">
+                    <div class="search-row">
+                        <input type="text" id="pantry-search" class="form-input" data-i18n-placeholder="pantrySearchPlaceholder" placeholder="🔍 搜索食材库..." oninput="renderPantryTags()">
+                    </div>
+                    
+                    <div>
+                        <h3 style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span data-i18n="myPantry">我的食材库</span>
+                            <span id="pantry-count" style="font-size: 0.9rem; color: var(--text-secondary); font-weight: normal;">共 0 种</span>
+                        </h3>
+                        <p class="subtitle" style="margin-bottom: 1rem;" data-i18n="pantryTip">点击食材卡片右上角的 × 即可将其移除</p>
+                        
+                        <div class="pantry-tags-grid" id="pantry-tags-container">
+                            <!-- Tags loaded here -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Quick add side-pane -->
                 <div class="glass-card" style="height: fit-content; display: flex; flex-direction: column; gap: 1.5rem;">
                     <h3 data-i18n="addFoodTitle">添加新食材</h3>
@@ -793,34 +996,31 @@
                                     <span class="quick-add-tag" onclick="quickAddFood('南瓜')">南瓜</span>
                                 </div>
                             </div>
+                            <div class="category-box">
+                                <div class="category-name" data-i18n="catRefinedStaple">🍚 普通主食 / 精制碳水</div>
+                                <div class="quick-tags">
+                                    <span class="quick-add-tag" onclick="quickAddFood('大米')">大米</span>
+                                    <span class="quick-add-tag" onclick="quickAddFood('面粉')">面粉</span>
+                                    <span class="quick-add-tag" onclick="quickAddFood('面条')">面条</span>
+                                    <span class="quick-add-tag" onclick="quickAddFood('饺子')">饺子</span>
+                                    <span class="quick-add-tag" onclick="quickAddFood('包子')">包子</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Main Tags area -->
-                <div class="glass-card pantry-tags-area">
-                    <div class="search-row">
-                        <input type="text" id="pantry-search" class="form-input" data-i18n-placeholder="pantrySearchPlaceholder" placeholder="🔍 搜索食材库..." oninput="renderPantryTags()">
-                    </div>
-                    
-                    <div>
-                        <h3 style="margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
-                            <span data-i18n="myPantry">我的食材库</span>
-                            <span id="pantry-count" style="font-size: 0.9rem; color: var(--text-secondary); font-weight: normal;">共 0 种</span>
-                        </h3>
-                        <p class="subtitle" style="margin-bottom: 1rem;" data-i18n="pantryTip">点击食材卡片右上角的 × 即可将其移除</p>
-                        
-                        <div class="pantry-tags-grid" id="pantry-tags-container">
-                            <!-- Tags loaded here -->
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </section>
 
         <!-- 3. HISTORY TAB -->
         <section id="history" class="tab-content">
+            <!-- Sub-tabs for Adult vs Kids History -->
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="btn-hist-adult" onclick="switchHistorySubTab('adult')" data-i18n="histTabAdult">👨 大人减脂餐历史</button>
+                <button class="btn btn-secondary" id="btn-hist-kids" onclick="switchHistorySubTab('kids')" data-i18n="histTabKids">👦 儿童营养餐历史</button>
+                <button class="btn btn-secondary" id="btn-hist-trending" onclick="switchHistorySubTab('trending')" data-i18n="histTabTrending">🫒 地中海饮食推荐历史</button>
+            </div>
+
             <div class="glass-card">
                 <h3 style="margin-bottom: 1.5rem;" data-i18n="historyTitle">📅 菜单历史记录 (近30次生成)</h3>
                 <div class="history-timeline" id="history-timeline-container">
@@ -893,6 +1093,33 @@
                 </div>
 
             </div>
+
+            <!-- System Log Viewer (full-width, below the grid) -->
+            <div class="glass-card log-viewer-card">
+                <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
+                    <span style="font-size:1.2rem;">🖥️</span>
+                    <h3 data-i18n="logTitle" style="flex:1;">系统日志</h3>
+                    <span id="log-count-badge" style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);color:#a5b4fc;font-size:0.75rem;padding:0.2rem 0.6rem;border-radius:20px;">0 条</span>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="log-toolbar">
+                    <button class="log-filter-btn f-all active"  id="lf-all"   onclick="setLogFilter('ALL')"     data-i18n="logFilterAll">全部</button>
+                    <button class="log-filter-btn f-warn"        id="lf-warn"  onclick="setLogFilter('WARNING')" data-i18n="logFilterWarn">WARNING</button>
+                    <button class="log-filter-btn f-error"       id="lf-error" onclick="setLogFilter('ERROR')"   data-i18n="logFilterError">ERROR</button>
+
+                    <div class="log-spacer"></div>
+
+                    <button class="btn btn-secondary" onclick="fetchAndRenderLogs()" style="padding:0.3rem 0.75rem;font-size:0.8rem;" data-i18n="logRefreshBtn">🔄 刷新</button>
+                    <button class="btn btn-secondary" onclick="clearLogDisplay()" style="padding:0.3rem 0.75rem;font-size:0.8rem;color:#f87171;border-color:rgba(239,68,68,0.3);" data-i18n="logClearBtn">🗑 清空</button>
+                </div>
+
+                <!-- Terminal -->
+                <div class="log-terminal" id="log-terminal">
+                    <div style="color:#334155;text-align:center;padding:2rem 0;" data-i18n="logEmpty">暂无错误日志</div>
+                </div>
+            </div>
+
         </section>
 
     </div>
@@ -911,6 +1138,9 @@
         let foodsList = [];
         let settingsData = {};
         let historyData = [];
+        let kidsHistoryData = [];
+        let trendingHistoryData = [];
+        let activeHistoryTab = 'adult';
         let currentMenu = null;
         let currentLang = 'zh';
 
@@ -940,6 +1170,7 @@
                 catMeat: "🥩 蛋白质",
                 catVeg: "🥦 蔬菜水果",
                 catStaple: "🍠 优质碳水",
+                catRefinedStaple: "🍚 普通主食 / 精制碳水",
                 pantrySearchPlaceholder: "🔍 搜索食材库...",
                 myPantry: "我的食材库",
                 pantryTip: "点击食材卡片右上角的 × 即可将其移除",
@@ -976,7 +1207,53 @@
                 errorModalTitle: "Gemini API 后台请求报错日志",
                 instructionsTitle: "烹饪步骤",
                 dislikedPlaceholder: "例如：香菜, 芹菜",
-                toastDislikedExist: "该食材已在忌口列表中"
+                toastDislikedExist: "该食材已在忌口列表中",
+                tabKids: "👦 儿童配餐",
+                kidsPrefTitle: "儿童偏好设置",
+                kidsPrefDesc: "您可以自定义高年级小学生的饮食偏好，AI 会据此量身定制营养餐。",
+                kidsPrefLabel: "孩子特点与饮食喜好",
+                kidsPrefPlaceholder: "例如：最喜欢吃汉堡肉饼，炸鸡，咖喱...",
+                kidsSavePref: "💾 保存偏好设置",
+                kidsViewMd: "查看原始 Markdown (kids_today.md)",
+                kidsGenBtn: "🪄 生成儿童营养餐",
+                kidsGenLoading: "AI 正在定制儿童营养餐...",
+                kidsNutriHighlight: "💡 儿童成长亮点：",
+                toastKidsSavePrefSuccess: "儿童饮食喜好已保存！",
+                toastKidsGenerateSuccess: "儿童营养餐生成成功！",
+                other: "🧂 其他 / 配料",
+                tabTrending: "💡 每日推荐",
+                trendingTitle: "小红书 & 抖音 每日流行减脂餐推荐",
+                trendingDesc: "每天为你精选 3 款全网爆火的网红瘦身食谱，可直接作为参考或一键导入食材。",
+                kidsTrendingTitle: "👦 儿童流行营养膳食推荐",
+                kidsTrendingDesc: "根据小学生的饮食特点（汉堡排、咖喱、寿司等）精选健康少油的流行营养餐做法。",
+                btnImportIngredients: "📥 一键导入食材",
+                toastImportSuccess: "成功将食材导入你的食材库！",
+                // History sub-tab labels
+                histTabAdult: "👨 大人减脂餐历史",
+                histTabKids: "👦 儿童营养餐历史",
+                histTabTrending: "🫒 地中海饮食推荐历史",
+                trendingHistoryEmpty: "暂无地中海饮食推荐历史记录，待每日7点自动入库",
+                trendingHistBadge: "地中海饮食推荐",
+                trendingHistAdultLabel: "👨 减脂推荐",
+                trendingHistKidsLabel: "👦 儿童推荐",
+                // Updated trending titles (Mediterranean)
+                trendingTitle: "🫒 地中海饮食每日推荐减脂餐",
+                trendingDesc: "每天精选 3 款地中海饮食减脂餐，低糖少油、富含膳食纤维与健康脂肪，助你烧脂又美味。",
+                kidsTrendingTitle: "👦 地中海小小美食家每日推荐",
+                kidsTrendingDesc: "地中海食材配合小学生口味，每天精选 3 款健康少油的儿童营养餐做法。",
+                // Log viewer
+                logTitle: "🖥️ 系统日志",
+                logFilterAll: "全部",
+                logFilterInfo: "INFO",
+                logFilterWarn: "WARNING",
+                logFilterError: "ERROR",
+                logAutoRefresh: "自动刷新",
+                logRefreshBtn: "🔄 刷新",
+                logClearBtn: "🗑 清空",
+                logEmpty: "暂无日志...",
+                logAutoOn: "自动刷新中",
+                logAutoPaused: "已暂停",
+                logCountUnit: "{n} 条"
             },
             en: {
                 title: "Slim Eating Time",
@@ -1002,6 +1279,7 @@
                 catMeat: "🥩 Protein",
                 catVeg: "🥦 Veg & Fruits",
                 catStaple: "🍠 Healthy Carbs",
+                catRefinedStaple: "🍚 Refined Carbs",
                 pantrySearchPlaceholder: "🔍 Search pantry...",
                 myPantry: "My Pantry",
                 pantryTip: "Click × on any ingredient card to remove it",
@@ -1038,7 +1316,53 @@
                 errorModalTitle: "Gemini API Error Logs",
                 instructionsTitle: "Cooking Steps",
                 dislikedPlaceholder: "e.g., Cilantro, Celery",
-                toastDislikedExist: "Ingredient already in excluded list"
+                toastDislikedExist: "Ingredient already in excluded list",
+                tabKids: "👦 Kids Menu",
+                kidsPrefTitle: "Kids Preferences",
+                kidsPrefDesc: "Customize your primary school child's food habits. AI will plan nutritious growth meals.",
+                kidsPrefLabel: "Child's Habits & Preferences",
+                kidsPrefPlaceholder: "e.g., Loves burger steak, curry...",
+                kidsSavePref: "💾 Save Preferences",
+                kidsViewMd: "View Raw Markdown (kids_today.md)",
+                kidsGenBtn: "🪄 Generate Kids Menu",
+                kidsGenLoading: "AI is planning kids meals...",
+                kidsNutriHighlight: "💡 Kids Growth Highlight: ",
+                toastKidsSavePrefSuccess: "Kids preferences saved successfully!",
+                toastKidsGenerateSuccess: "Kids menu generated successfully!",
+                other: "🧂 Others / Seasonings",
+                tabTrending: "💡 Daily Trending",
+                trendingTitle: "Xiaohongshu & Douyin Daily Trending Fat-loss Meals",
+                trendingDesc: "3 viral healthy slimming recipes recommended daily. Use as reference or import ingredients.",
+                kidsTrendingTitle: "👦 Kids Healthy Meal Recommendations",
+                kidsTrendingDesc: "Healthy kid-friendly recipes recommended daily, tailored to children's food habits.",
+                btnImportIngredients: "📥 Import All Ingredients",
+                toastImportSuccess: "Successfully imported ingredients to pantry!",
+                // History sub-tab labels
+                histTabAdult: "👨 Adult Fat-loss History",
+                histTabKids: "👦 Kids Menu History",
+                histTabTrending: "🫒 Mediterranean History",
+                trendingHistoryEmpty: "No Mediterranean recipe history yet. Auto-saved daily at 7am.",
+                trendingHistBadge: "Mediterranean Diet",
+                trendingHistAdultLabel: "👨 Fat-loss Picks",
+                trendingHistKidsLabel: "👦 Kids Picks",
+                // Updated trending titles (Mediterranean)
+                trendingTitle: "🫒 Daily Mediterranean Diet Recommendations",
+                trendingDesc: "3 curated Mediterranean fat-loss meals recommended daily — low sugar, high fiber, healthy fats.",
+                kidsTrendingTitle: "👦 Kids Mediterranean Meal Picks",
+                kidsTrendingDesc: "Healthy kid-friendly Mediterranean meals tailored to your child's preferences, recommended daily.",
+                // Log viewer
+                logTitle: "🖥️ System Logs",
+                logFilterAll: "All",
+                logFilterInfo: "INFO",
+                logFilterWarn: "WARNING",
+                logFilterError: "ERROR",
+                logAutoRefresh: "Auto-refresh",
+                logRefreshBtn: "🔄 Refresh",
+                logClearBtn: "🗑 Clear",
+                logEmpty: "No logs yet...",
+                logAutoOn: "Auto-refreshing",
+                logAutoPaused: "Paused",
+                logCountUnit: "{n} entries"
             },
             ja: {
                 title: "スリム食卓",
@@ -1064,6 +1388,7 @@
                 catMeat: "🥩 タンパク質",
                 catVeg: "🥦 野菜・果物",
                 catStaple: "🍠 良質な炭水化物",
+                catRefinedStaple: "🍚 精製炭水化物",
                 pantrySearchPlaceholder: "🔍 食材庫を検索...",
                 myPantry: "マイ食材庫",
                 pantryTip: "食材カードの右上にある × をクリックして削除します",
@@ -1100,7 +1425,53 @@
                 errorModalTitle: "Gemini API エラーログ",
                 instructionsTitle: "調理手順",
                 dislikedPlaceholder: "例：パクチー、セロリ",
-                toastDislikedExist: "すでにリストに含まれています"
+                toastDislikedExist: "すでにリストに含まれています",
+                tabKids: "👦 キッズ献立",
+                kidsPrefTitle: "お子様の好み設定",
+                kidsPrefDesc: "高学年小学生の食事の好みをカスタマイズしてください。AIがそれに基づいて栄養満点の成長メニューを提案します。",
+                kidsPrefLabel: "お子様の特徴・好み",
+                kidsPrefPlaceholder: "例：ハンバーグ、唐揚げ、カレーが大好き...",
+                kidsSavePref: "💾 設定を保存",
+                kidsViewMd: "生の Markdown を表示 (kids_today.md)",
+                kidsGenBtn: "🪄 キッズ献立を生成",
+                kidsGenLoading: "AIがお子様の献立を計画中...",
+                kidsNutriHighlight: "💡 キッズ栄養ポイント：",
+                toastKidsSavePrefSuccess: "お子様の好み設定が保存されました！",
+                toastKidsGenerateSuccess: "キッズ献立の生成に成功しました！",
+                other: "🧂 その他・調味料",
+                tabTrending: "💡 本日のおすすめ",
+                trendingTitle: "小紅書＆TikTok 本日のトレンド減量レシピ",
+                trendingDesc: "ネットで大人気のダイエットレシピを毎日3つ厳選してご紹介。食材のインポートも可能です。",
+                kidsTrendingTitle: "👦 お子様向けトレンド栄養レシピ",
+                kidsTrendingDesc: "ハンバーグやカレー、寿司など、お子様の好みに合わせたヘルシーなトレンドレシピを毎日厳選してご紹介。",
+                btnImportIngredients: "📥 食材を一括インポート",
+                toastImportSuccess: "食材を食材庫にインポートしました！",
+                // History sub-tab labels
+                histTabAdult: "👨 大人ダイエット履歴",
+                histTabKids: "👦 キッズ献立履歴",
+                histTabTrending: "🫒 地中海レシピ履歴",
+                trendingHistoryEmpty: "地中海レシピ履歴はまだありません。毎朝7時に自動保存されます。",
+                trendingHistBadge: "地中海食",
+                trendingHistAdultLabel: "👨 ダイエット推奨",
+                trendingHistKidsLabel: "👦 キッズ推奨",
+                // Updated trending titles (Mediterranean)
+                trendingTitle: "🫒 地中海食本日のおすすめレシピ",
+                trendingDesc: "毎日厚選３レシピの地中海食ダイエット献立をご紹介。低糖質・高繊維質・健康的な脂質で織り細た食事。",
+                kidsTrendingTitle: "👦 地中海食 キッズメニューおすすめ",
+                kidsTrendingDesc: "お子様の好みに合わせた地中海食のキッズ向けヘルシーレシピを毎日おすすめ。",
+                // Log viewer
+                logTitle: "🖥️ システムログ",
+                logFilterAll: "すべて",
+                logFilterInfo: "INFO",
+                logFilterWarn: "WARNING",
+                logFilterError: "ERROR",
+                logAutoRefresh: "自動更新",
+                logRefreshBtn: "🔄 更新",
+                logClearBtn: "🗑 クリア",
+                logEmpty: "ログはまだありません...",
+                logAutoOn: "自動更新中",
+                logAutoPaused: "一時停止",
+                logCountUnit: "{n} 件"
             }
         };
 
@@ -1123,7 +1494,12 @@
                 fetchSettings(),
                 fetchHistory()
             ]);
-            await loadTodayMenu();
+            await Promise.all([
+                loadTodayMenu(),
+                loadKidsMenu(),
+                loadTrendingRecipes(),
+                loadKidsTrendingRecipes()
+            ]);
         }
 
         // Apply translations to all DOM elements
@@ -1189,6 +1565,21 @@
             } else {
                 loadTodayMenu();
             }
+            if (currentKidsMenu) {
+                renderKidsMenu(currentKidsMenu);
+            } else {
+                loadKidsMenu();
+            }
+            if (trendingRecipesList.length > 0) {
+                renderTrendingRecipes(trendingRecipesList);
+            } else {
+                loadTrendingRecipes();
+            }
+            if (kidsTrendingRecipesList.length > 0) {
+                renderKidsTrendingRecipes(kidsTrendingRecipesList);
+            } else {
+                loadKidsTrendingRecipes();
+            }
         }
 
         // --- Navigation ---
@@ -1201,6 +1592,11 @@
             // Find tab button that matches
             const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
             if (btn) btn.classList.add('active');
+
+            // Log viewer: load once when Settings tab opens
+            if (tabId === 'settings') {
+                fetchAndRenderLogs();
+            }
         }
 
         // --- Toast Notifications ---
@@ -1327,6 +1723,9 @@
                 const langMapper = { zh: "中文", en: "English", ja: "日本語" };
                 document.getElementById('setting-language').value = settingsData.language || langMapper[savedUiLang];
                 
+                // Populate kids preferences field
+                document.getElementById('kids-pref-input').value = settingsData.kids_preferences || '';
+                
                 renderDislikedTags();
             } catch (err) {
                 console.error("Failed to load settings:", err);
@@ -1414,11 +1813,17 @@
         // GET History
         async function fetchHistory() {
             try {
-                const res = await fetch('/api/history');
-                historyData = await res.json();
+                const [adultRes, kidsRes, trendingRes] = await Promise.all([
+                    fetch('/api/history'),
+                    fetch('/api/kids-history'),
+                    fetch('/api/trending-history')
+                ]);
+                historyData = await adultRes.json();
+                kidsHistoryData = await kidsRes.json();
+                trendingHistoryData = await trendingRes.json();
                 renderHistoryTimeline();
             } catch (err) {
-                console.error("Failed to load history list:", err);
+                console.error("Failed to load history lists:", err);
             }
         }
 
@@ -1483,6 +1888,421 @@
             }
         }
 
+        let currentKidsMenu = null;
+
+        async function saveKidsPreferences() {
+            const val = document.getElementById('kids-pref-input').value.trim();
+            settingsData.kids_preferences = val;
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settingsData)
+                });
+                const data = await res.json();
+                if (data.status === "success") {
+                    const msg = i18n[currentLang].toastKidsSavePrefSuccess || "儿童偏好设置已保存！";
+                    showToast(msg);
+                } else {
+                    showToast("Error", true);
+                }
+            } catch (err) {
+                showToast("Error", true);
+            }
+        }
+
+        async function loadKidsMenu() {
+            try {
+                const res = await fetch('/api/menu/kids-json');
+                const data = await res.json();
+                if (data && data.breakfast) {
+                    currentKidsMenu = data;
+                    renderKidsMenu(data);
+                } else {
+                    const labelNotGen = i18n[currentLang].menuNotGen || "今日儿童食谱尚未生成";
+                    const noMenuText = i18n[currentLang].noMenuText || "今天还没有为孩子定制菜单。";
+                    const btnText = i18n[currentLang].kidsGenBtn || "🪄 生成儿童营养餐";
+                    
+                    document.getElementById('kids-menu-date-label').innerText = labelNotGen;
+                    document.getElementById('kids-meals-container').innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary);">
+                            <p style="font-size: 1.1rem; margin-bottom: 1rem;">${noMenuText}</p>
+                            <button class="btn btn-primary" onclick="generateKidsMenu()">${btnText}</button>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error("Failed to load kids menu:", err);
+            }
+        }
+
+        async function generateKidsMenu() {
+            const btn = document.getElementById('btn-generate-kids');
+            const spinner = document.getElementById('gen-kids-spinner');
+            
+            const btnTextLoading = i18n[currentLang].kidsGenLoading || "AI 正在定制儿童营养餐...";
+            const btnTextDefault = i18n[currentLang].kidsGenBtn || "🪄 生成儿童营养餐";
+
+            btn.disabled = true;
+            spinner.style.display = 'block';
+            document.getElementById('gen-kids-btn-text').innerText = btnTextLoading;
+
+            try {
+                const res = await fetch('/api/menu/generate/kids', { method: 'POST' });
+                const data = await res.json();
+                
+                if (data.status === "success") {
+                    currentKidsMenu = data.menu;
+                    renderKidsMenu(currentKidsMenu);
+                    await fetchHistory(); // Refresh history log immediately
+                    const msg = i18n[currentLang].toastKidsGenerateSuccess || "儿童营养餐生成成功！";
+                    showToast(msg);
+                } else {
+                    const msg = i18n[currentLang].toastGenerateFail || "生成失败: ";
+                    showToast(msg + (data.message || ""), true);
+                }
+            } catch (err) {
+                showToast("Request failed", true);
+            } finally {
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                document.getElementById('gen-kids-btn-text').innerText = btnTextDefault;
+            }
+        }
+
+        function renderKidsMenu(menu) {
+            const dateLabel = i18n[currentLang].menuDate || "食谱日期";
+            document.getElementById('kids-menu-date-label').innerText = `📅 ${dateLabel}: ${menu.date || new Date().toISOString().split('T')[0]}`;
+
+            const nutBanner = document.getElementById('kids-nutritional-banner');
+            if (menu.nutritional_summary) {
+                document.getElementById('kids-nutritional-text').innerText = menu.nutritional_summary;
+                nutBanner.style.display = 'flex';
+            } else {
+                nutBanner.style.display = 'none';
+            }
+
+            const mealsContainer = document.getElementById('kids-meals-container');
+            mealsContainer.innerHTML = '';
+
+            const mealTypes = [
+                { key: 'breakfast', name: i18n[currentLang].breakfast || '🍳 早餐', class: 'breakfast' },
+                { key: 'lunch', name: i18n[currentLang].lunch || '🍤 午餐', class: 'lunch' },
+                { key: 'dinner', name: i18n[currentLang].dinner || '🍲 晚餐', class: 'dinner' }
+            ];
+
+            const ingLabel = i18n[currentLang].foodLabel || "所需食材";
+            const stepLabel = i18n[currentLang].instructionsTitle || "烹饪步骤";
+
+            mealTypes.forEach(t => {
+                const meal = menu[t.key] || {};
+                const card = document.createElement('div');
+                card.className = `glass-card meal-card ${t.class}`;
+
+                const ingArr = meal.ingredients || [];
+                let ingHTML = '<div style="color: var(--text-secondary); font-size: 0.85rem;">-</div>';
+                if (ingArr.length > 0) {
+                    ingHTML = '<ul class="ingredients-list">';
+                    ingArr.forEach(i => {
+                        ingHTML += `<li><span>${i.name}</span><span class="qty">${i.amount || ''}</span></li>`;
+                    });
+                    ingHTML += '</ul>';
+                }
+
+                const stepArr = meal.instructions || [];
+                let stepHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem;">-</p>';
+                if (stepArr.length > 0) {
+                    stepHTML = '<ol class="steps-list">';
+                    stepArr.forEach(s => {
+                        stepHTML += `<li>${s}</li>`;
+                    });
+                    stepHTML += '</ol>';
+                }
+
+                const buyArr = meal.suggested_to_buy || [];
+                const filteredBuy = buyArr.filter(b => b);
+                let buyHTML = '';
+                if (filteredBuy.length > 0) {
+                    const buyLabel = i18n[currentLang].reqBuy || "建议购买";
+                    buyHTML = `<div class="buy-indicator">⚠️ ${buyLabel}: ${filteredBuy.join(', ')}</div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="meal-title-row">
+                        <span>${t.name}</span>
+                    </div>
+                    <div>
+                        <div class="dish-name">${meal.dish_name || '未定制'}</div>
+                    </div>
+                    <div>
+                        <h4 class="section-title">${ingLabel}</h4>
+                        ${ingHTML}
+                    </div>
+                    <div>
+                        <h4 class="section-title">${stepLabel}</h4>
+                        ${stepHTML}
+                    </div>
+                    ${buyHTML}
+                `;
+                mealsContainer.appendChild(card);
+            });
+
+            const shoppingCard = document.getElementById('kids-shopping-card');
+            const shoppingList = document.getElementById('kids-shopping-items-list');
+            shoppingList.innerHTML = '';
+            
+            const list = menu.shopping_list || [];
+            const filteredList = list.filter(item => item);
+            if (filteredList.length > 0) {
+                shoppingCard.style.display = 'block';
+                filteredList.forEach(item => {
+                    const badge = document.createElement('label');
+                    badge.className = 'shopping-badge';
+                    badge.innerHTML = `<input type="checkbox"> <span>${item}</span>`;
+                    shoppingList.appendChild(badge);
+                });
+            } else {
+                shoppingCard.style.display = 'none';
+            }
+        }
+
+        async function viewKidsMarkdown() {
+            try {
+                const res = await fetch('/api/menu/kids-md');
+                const text = await res.text();
+                
+                const titleLabel = i18n[currentLang].modalMdTitle || "原始 Markdown 文件";
+                document.getElementById('modal-title').innerText = `${titleLabel} (kids_today.md)`;
+                document.getElementById('modal-body').innerText = text;
+                document.getElementById('md-modal').style.display = 'flex';
+            } catch (err) {
+                showToast("Error", true);
+            }
+        }
+
+
+        let trendingRecipesList = [];
+
+        async function loadTrendingRecipes() {
+            try {
+                const res = await fetch('/api/menu/trending');
+                trendingRecipesList = await res.json();
+                renderTrendingRecipes(trendingRecipesList);
+            } catch (err) {
+                console.error("Failed to load trending recipes:", err);
+            }
+        }
+
+        function renderTrendingRecipes(recipes) {
+            const container = document.getElementById('trending-meals-container');
+            container.innerHTML = '';
+            
+            if (recipes.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);">No recipes found</div>`;
+                return;
+            }
+            
+            const ingLabel = i18n[currentLang].foodLabel || "所需食材";
+            const stepLabel = i18n[currentLang].instructionsTitle || "烹饪步骤";
+            const importBtnLabel = i18n[currentLang].btnImportIngredients || "一键导入食材";
+
+            recipes.forEach((r, idx) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card meal-card';
+                card.style.borderTop = '4px solid var(--accent)';
+                
+                // Tags HTML
+                const tagsHTML = (r.tags || []).map(t => `<span class="quick-add-tag" style="background: var(--accent-glow); color: var(--accent); border-color: rgba(99,102,241,0.2); pointer-events: none;">${t}</span>`).join(' ');
+                
+                // Ingredients HTML
+                const ingArr = r.ingredients || [];
+                let ingHTML = '';
+                if (ingArr.length > 0) {
+                    ingHTML = '<ul class="ingredients-list">';
+                    ingArr.forEach(i => {
+                        ingHTML += `<li><span>${i.name}</span><span class="qty">${i.amount || ''}</span></li>`;
+                    });
+                    ingHTML += '</ul>';
+                }
+                
+                // Steps HTML
+                const stepArr = r.instructions || [];
+                let stepHTML = '';
+                if (stepArr.length > 0) {
+                    stepHTML = '<ol class="steps-list">';
+                    stepArr.forEach(s => {
+                        stepHTML += `<li>${s}</li>`;
+                    });
+                    stepHTML += '</ol>';
+                }
+
+                card.innerHTML = `
+                    <div class="meal-title-row" style="justify-content: space-between;">
+                        <span style="font-weight: 700; color: white;">${r.title}</span>
+                        <span style="font-size: 0.8rem; background: rgba(99,102,241,0.15); padding: 0.2rem 0.6rem; border-radius: 4px; color: var(--accent); font-weight: 600;">🫒 ${r.source}</span>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                        ${tagsHTML}
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">${r.description}</p>
+                    <div>
+                        <h4 class="section-title">${ingLabel}</h4>
+                        ${ingHTML}
+                    </div>
+                    <div>
+                        <h4 class="section-title">${stepLabel}</h4>
+                        ${stepHTML}
+                    </div>
+                    <button class="btn btn-secondary" onclick="importRecipeIngredients(${idx})" style="width: 100%; margin-top: auto; font-size: 0.85rem;">
+                        ${importBtnLabel}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function importRecipeIngredients(idx) {
+            const recipe = trendingRecipesList[idx];
+            if (!recipe || !recipe.ingredients) return;
+            
+            const importBtn = document.querySelectorAll('#trending-meals-container .meal-card')[idx].querySelector('button');
+            const originalText = importBtn.innerText;
+            importBtn.disabled = true;
+            importBtn.innerText = "Importing...";
+            
+            try {
+                // Add all ingredients sequentially
+                for (const ing of recipe.ingredients) {
+                    if (ing.name) {
+                        await fetch('/api/foods/add', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ food: ing.name })
+                        });
+                    }
+                }
+                
+                await fetchFoods(); // Reload pantry view
+                
+                const successMsg = i18n[currentLang].toastImportSuccess || "成功将食材导入你的食材库！";
+                showToast(successMsg);
+            } catch (err) {
+                showToast("Import failed", true);
+            } finally {
+                importBtn.disabled = false;
+                importBtn.innerText = originalText;
+            }
+        }
+
+        let kidsTrendingRecipesList = [];
+
+        async function loadKidsTrendingRecipes() {
+            try {
+                const res = await fetch('/api/menu/kids-trending');
+                kidsTrendingRecipesList = await res.json();
+                renderKidsTrendingRecipes(kidsTrendingRecipesList);
+            } catch (err) {
+                console.error("Failed to load kids trending recipes:", err);
+            }
+        }
+
+        function renderKidsTrendingRecipes(recipes) {
+            const container = document.getElementById('kids-trending-meals-container');
+            container.innerHTML = '';
+            
+            if (recipes.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);">No recipes found</div>`;
+                return;
+            }
+            
+            const ingLabel = i18n[currentLang].foodLabel || "所需食材";
+            const stepLabel = i18n[currentLang].instructionsTitle || "烹饪步骤";
+            const importBtnLabel = i18n[currentLang].btnImportIngredients || "一键导入食材";
+
+            recipes.forEach((r, idx) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card meal-card';
+                card.style.borderTop = '4px solid var(--primary)';
+                
+                const tagsHTML = (r.tags || []).map(t => `<span class="quick-add-tag" style="background: var(--primary-glow); color: var(--primary); border-color: rgba(16,185,129,0.2); pointer-events: none;">${t}</span>`).join(' ');
+                
+                const ingArr = r.ingredients || [];
+                let ingHTML = '';
+                if (ingArr.length > 0) {
+                    ingHTML = '<ul class="ingredients-list">';
+                    ingArr.forEach(i => {
+                        ingHTML += `<li><span>${i.name}</span><span class="qty">${i.amount || ''}</span></li>`;
+                    });
+                    ingHTML += '</ul>';
+                }
+                
+                const stepArr = r.instructions || [];
+                let stepHTML = '';
+                if (stepArr.length > 0) {
+                    stepHTML = '<ol class="steps-list">';
+                    stepArr.forEach(s => {
+                        stepHTML += `<li>${s}</li>`;
+                    });
+                    stepHTML += '</ol>';
+                }
+
+                card.innerHTML = `
+                    <div class="meal-title-row" style="justify-content: space-between;">
+                        <span style="font-weight: 700; color: white;">${r.title}</span>
+                        <span style="font-size: 0.8rem; background: rgba(16,185,129,0.15); padding: 0.2rem 0.6rem; border-radius: 4px; color: var(--primary); font-weight: 600;">🫒 ${r.source}</span>
+                    </div>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                        ${tagsHTML}
+                    </div>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary); line-height: 1.5;">${r.description}</p>
+                    <div>
+                        <h4 class="section-title">${ingLabel}</h4>
+                        ${ingHTML}
+                    </div>
+                    <div>
+                        <h4 class="section-title">${stepLabel}</h4>
+                        ${stepHTML}
+                    </div>
+                    <button class="btn btn-secondary" onclick="importKidsRecipeIngredients(${idx})" style="width: 100%; margin-top: auto; font-size: 0.85rem;">
+                        ${importBtnLabel}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function importKidsRecipeIngredients(idx) {
+            const recipe = kidsTrendingRecipesList[idx];
+            if (!recipe || !recipe.ingredients) return;
+            
+            const importBtn = document.querySelectorAll('#kids-trending-meals-container .meal-card')[idx].querySelector('button');
+            const originalText = importBtn.innerText;
+            importBtn.disabled = true;
+            importBtn.innerText = "Importing...";
+            
+            try {
+                for (const ing of recipe.ingredients) {
+                    if (ing.name) {
+                        await fetch('/api/foods/add', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ food: ing.name })
+                        });
+                    }
+                }
+                
+                await fetchFoods();
+                
+                const successMsg = i18n[currentLang].toastImportSuccess || "成功将食材导入你的食材库！";
+                showToast(successMsg);
+            } catch (err) {
+                showToast("Import failed", true);
+            } finally {
+                importBtn.disabled = false;
+                importBtn.innerText = originalText;
+            }
+        }
+
 
         // --- Render Helpers ---
 
@@ -1496,21 +2316,114 @@
             
             const filtered = foodsList.filter(food => food.toLowerCase().includes(searchVal));
             
-            if (filtered.length === 0) {
-                container.innerHTML = `<div style="color: var(--text-secondary); width: 100%; text-align: center; padding: 2rem 0;">No matching items</div>`;
-            } else {
-                filtered.forEach(food => {
-                    const tag = document.createElement('span');
-                    tag.className = 'food-tag';
-                    tag.innerHTML = `
-                        <span>${food}</span>
-                        <span class="remove-btn" onclick="deleteFood('${food}')">&times;</span>
+            const lang = currentLang;
+            const categoryNames = {
+                meat: i18n[lang].catMeat || "🥩 蛋白质",
+                veg: i18n[lang].catVeg || "🥦 蔬菜水果",
+                staple: i18n[lang].catStaple || "🍠 优质碳水",
+                refinedStaple: i18n[lang].catRefinedStaple || "🍚 普通主食 / 精制碳水",
+                other: i18n[lang].other || "🧂 其他 / 配料"
+            };
+
+            const categorized = {
+                meat: [],
+                veg: [],
+                staple: [],
+                refinedStaple: [],
+                other: []
+            };
+
+            // Categorization lists
+            const stapleKeywords = ["红薯", "紫薯", "南瓜", "燕麦", "糙米", "藜麦", "全麦", "荞麦", "魔芋", "玉米", "芋头", "山药", "sweet potato", "pumpkin", "oat", "brown rice", "quinoa", "buckwheat", "shirataki", "konjac", "corn", "taro", "yam", "さつまいも", "かぼちゃ", "オートミール", "玄米", "キヌア", "そば", "トウモロコシ", "芋"];
+            const refinedKeywords = ["大米", "米饭", "面粉", "饺子", "包子", "馒头", "面条", "面片", "意面", "通心粉", "白面包", "面包", "粉丝", "米粉", "粉条", "土豆", "洋芋", "薯条", "薯片", "rice", "flour", "dumpling", "bun", "noodle", "pasta", "bread", "vermicelli", "potato", "米", "ライス", "小麦粉", "餃子", "パン", "麺", "うどん", "ラーメン", "パスタ", "ポテト", "じゃがいも"];
+            const meatKeywords = ["鸡", "肉", "蛋", "牛", "猪", "羊", "鱼", "虾", "豆腐", "蟹", "贝", "蛤", "蚝", "蚌", "螺", "鲑", "卵", "鮭", "いくら", "salmon", "chicken", "beef", "pork", "mutton", "fish", "shrimp", "egg", "tofu", "tuna", "turkey", "鶏", "豚", "牛", "羊", "魚", "エビ", "卵", "サーモン"];
+            const vegKeywords = ["西兰花", "西蓝花", "黄瓜", "生菜", "番茄", "西红柿", "茄子", "胡萝卜", "白菜", "油麦菜", "菠菜", "芹菜", "洋葱", "大蒜", "生姜", "辣椒", "甜椒", "苹果", "香蕉", "橙子", "草莓", "葡萄", "柠檬", "蓝莓", "牛油果", "梨", "桃", "瓜", "菇", "木耳", "笋", "葱", "蒜", "姜", "broccoli", "cucumber", "lettuce", "tomato", "eggplant", "carrot", "cabbage", "spinach", "celery", "onion", "garlic", "ginger", "pepper", "apple", "banana", "orange", "strawberry", "grape", "lemon", "blueberry", "avocado", "pear", "peach", "melon", "mushroom", "ブロッコリー", "きゅうり", "レタス", "トマト", "なす", "キャベツ", "にんじん", "ほうれん草", "セロリ", "玉ねぎ", "ニンニク", "生姜", "ピーマン", "リンゴ", "バナナ", "オレンジ", "イチゴ", "ブドウ", "レモン", "ブルーベリー", "アボカド", "ナシ", "モモ", "メロン", "マッシュルーム", "野菜", "果物"];
+
+            filtered.forEach(food => {
+                const lowerFood = food.toLowerCase();
+                
+                // Refined check first
+                const isRefined = refinedKeywords.some(kw => lowerFood.includes(kw));
+                if (isRefined) {
+                    categorized.refinedStaple.push(food);
+                    return;
+                }
+
+                // Staple check
+                const isStaple = stapleKeywords.some(kw => lowerFood.includes(kw));
+                if (isStaple) {
+                    categorized.staple.push(food);
+                    return;
+                }
+
+                // Meat/Protein check
+                const isMeat = meatKeywords.some(kw => lowerFood.includes(kw));
+                if (isMeat) {
+                    categorized.meat.push(food);
+                    return;
+                }
+
+                // Veg/Fruit check
+                const isVeg = vegKeywords.some(kw => lowerFood.includes(kw));
+                if (isVeg) {
+                    categorized.veg.push(food);
+                    return;
+                }
+
+                // Default
+                categorized.other.push(food);
+            });
+
+            // Render categories
+            let totalRendered = 0;
+            const categoriesToRender = ['meat', 'veg', 'staple', 'refinedStaple', 'other'];
+            
+            categoriesToRender.forEach(catKey => {
+                const list = categorized[catKey];
+                if (list.length > 0) {
+                    totalRendered += list.length;
+                    
+                    const catBox = document.createElement('div');
+                    catBox.className = 'category-box';
+                    catBox.style.width = '100%';
+                    catBox.style.background = 'rgba(0, 0, 0, 0.15)';
+                    catBox.style.border = '1px solid var(--border-color)';
+                    catBox.style.padding = '1.25rem';
+                    catBox.style.borderRadius = '12px';
+                    catBox.style.marginBottom = '1rem';
+                    
+                    const countLabel = i18n[lang].countUnit || "共 {count} 种";
+                    const formattedCount = countLabel.replace('{count}', list.length);
+                    
+                    catBox.innerHTML = `
+                        <div class="category-name" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>${categoryNames[catKey]}</span>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;">${formattedCount}</span>
+                        </div>
+                        <div class="quick-tags" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                        </div>
                     `;
-                    container.appendChild(tag);
-                });
+                    
+                    const tagsContainer = catBox.querySelector('.quick-tags');
+                    list.forEach(food => {
+                        const tag = document.createElement('span');
+                        tag.className = 'food-tag';
+                        tag.innerHTML = `
+                            <span>${food}</span>
+                            <span class="remove-btn" onclick="deleteFood('${food}')">&times;</span>
+                        `;
+                        tagsContainer.appendChild(tag);
+                    });
+                    
+                    container.appendChild(catBox);
+                }
+            });
+
+            if (totalRendered === 0) {
+                container.innerHTML = `<div style="color: var(--text-secondary); width: 100%; text-align: center; padding: 3rem 0;">No matching items</div>`;
             }
             
-            const countLabel = i18n[currentLang].countUnit || "共 {count} 种";
+            const countLabel = i18n[lang].countUnit || "共 {count} 种";
             countEl.innerText = countLabel.replace('{count}', foodsList.length);
         }
 
@@ -1537,12 +2450,55 @@
             });
         }
 
+        function switchHistorySubTab(type) {
+            activeHistoryTab = type;
+            const btnAdult = document.getElementById('btn-hist-adult');
+            const btnKids = document.getElementById('btn-hist-kids');
+            const btnTrending = document.getElementById('btn-hist-trending');
+
+            btnAdult.className = type === 'adult' ? 'btn btn-primary' : 'btn btn-secondary';
+            btnKids.className = type === 'kids' ? 'btn btn-primary' : 'btn btn-secondary';
+            btnTrending.className = type === 'trending' ? 'btn btn-primary' : 'btn btn-secondary';
+
+            renderHistoryTimeline();
+        }
+
         // Render History Timeline list
         function renderHistoryTimeline() {
             const container = document.getElementById('history-timeline-container');
             container.innerHTML = '';
 
-            if (historyData.length === 0) {
+            // --- Trending History Tab ---
+            if (activeHistoryTab === 'trending') {
+                const t = i18n[currentLang];
+                if (trendingHistoryData.length === 0) {
+                    container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 3rem;">${t.trendingHistoryEmpty || '暂无地中海饮食推荐历史记录'}</div>`;
+                    return;
+                }
+                trendingHistoryData.forEach(entry => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-card history-card';
+                    const adultNames = (entry.adult || []).map(r => r.title).join('、') || '—';
+                    const kidsNames = (entry.kids || []).map(r => r.title).join('、') || '—';
+                    card.innerHTML = `
+                        <div class="history-card-header">
+                            <span class="history-date">🫒 ${entry.date}</span>
+                            <span style="font-size:0.8rem; background:rgba(99,102,241,0.15); padding:0.2rem 0.6rem; border-radius:4px; color:var(--accent); font-weight:600;">${t.trendingHistBadge || '地中海饮食推荐'}</span>
+                        </div>
+                        <div class="history-meals-preview">
+                            <span class="history-meal-preview-item">${t.trendingHistAdultLabel || '👨 减脂推荐'}: <strong>${adultNames}</strong></span>
+                            <span class="history-meal-preview-item">${t.trendingHistKidsLabel || '👦 儿童推荐'}: <strong>${kidsNames}</strong></span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                return;
+            }
+
+            // --- Adult / Kids Menu History Tabs ---
+            const data = activeHistoryTab === 'adult' ? historyData : kidsHistoryData;
+
+            if (data.length === 0) {
                 const emptyLabel = i18n[currentLang].historyEmpty || "暂无历史记录";
                 container.innerHTML = `
                     <div style="text-align: center; color: var(--text-secondary); padding: 3rem;">
@@ -1557,11 +2513,11 @@
             const lLabel = i18n[currentLang].lunch || "昼食";
             const dLabel = i18n[currentLang].dinner || "夕食";
 
-            historyData.forEach(item => {
+            data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'glass-card history-card';
-                card.onclick = () => showHistoryDetail(item.date);
-                
+                card.onclick = () => showHistoryDetail(item.date, activeHistoryTab);
+
                 // Extract dishes
                 const b_name = item.breakfast?.dish_name || '...';
                 const l_name = item.lunch?.dish_name || '...';
@@ -1703,13 +2659,15 @@
             }
         }
 
-        async function showHistoryDetail(date) {
+        async function showHistoryDetail(date, type = 'adult') {
             try {
-                const res = await fetch(`/api/menu/history-md/${date}`);
+                const endpoint = type === 'kids' ? `/api/menu/kids-history-md/${date}` : `/api/menu/history-md/${date}`;
+                const res = await fetch(endpoint);
                 const text = await res.text();
                 
                 const titleLabel = i18n[currentLang].modalMdTitle || "原始 Markdown 文件";
-                document.getElementById('modal-title').innerText = `${titleLabel} (${date}.md)`;
+                const filename = type === 'kids' ? `kids_${date}.md` : `${date}.md`;
+                document.getElementById('modal-title').innerText = `${titleLabel} (${filename})`;
                 document.getElementById('modal-body').innerText = text;
                 document.getElementById('md-modal').style.display = 'flex';
             } catch (err) {
@@ -1727,6 +2685,84 @@
         function closeModal() {
             document.getElementById('md-modal').style.display = 'none';
         }
+
+        // ─── System Log Viewer ──────────────────────────────────────────────────
+        let _allLogs   = [];
+        let _logFilter = 'ALL';
+
+        const _levelGroup = {
+            ALL:     null,
+            WARNING: ['WARNING'],
+            ERROR:   ['ERROR', 'CRITICAL']
+        };
+
+        async function fetchAndRenderLogs() {
+            try {
+                const res = await fetch('/api/logs');
+                _allLogs = await res.json();
+                _renderLogs();
+            } catch (e) {
+                console.warn('Log fetch failed', e);
+            }
+        }
+
+        function _renderLogs() {
+            const terminal = document.getElementById('log-terminal');
+            const groups   = _levelGroup[_logFilter];
+            const filtered = groups ? _allLogs.filter(l => groups.includes(l.level)) : _allLogs;
+
+            const t    = i18n[currentLang];
+            const unit = (t.logCountUnit || '{n} 条').replace('{n}', filtered.length);
+            document.getElementById('log-count-badge').textContent = unit;
+
+            if (filtered.length === 0) {
+                terminal.innerHTML =
+                    `<div style="color:#334155;text-align:center;padding:2rem 0;">${t.logEmpty || '暂无错误日志'}</div>`;
+                return;
+            }
+
+            const frag  = document.createDocumentFragment();
+            [...filtered].reverse().forEach(log => {
+                const div     = document.createElement('div');
+                div.className = 'log-entry';
+                const lvl     = log.level || 'WARNING';
+                const msgClass = lvl === 'WARNING'  ? 'log-msg warn-text'
+                               : lvl === 'ERROR'    ? 'log-msg error-text'
+                               : lvl === 'CRITICAL' ? 'log-msg critical-text'
+                               : 'log-msg';
+                div.innerHTML =
+                    `<span class="log-time">${_esc(log.time)}</span>` +
+                    `<span class="log-badge badge-${lvl}">${lvl}</span>` +
+                    `<span class="log-name" title="${_esc(log.name)}">${_esc(log.name)}</span>` +
+                    `<span class="${msgClass}">${_esc(log.msg)}</span>`;
+                frag.appendChild(div);
+            });
+            terminal.innerHTML = '';
+            terminal.appendChild(frag);
+        }
+
+        function _esc(str) {
+            return String(str || '')
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        function setLogFilter(level) {
+            _logFilter = level;
+            document.querySelectorAll('.log-filter-btn').forEach(b => b.classList.remove('active'));
+            const map = { ALL:'lf-all', WARNING:'lf-warn', ERROR:'lf-error' };
+            const btn = document.getElementById(map[level]);
+            if (btn) btn.classList.add('active');
+            _renderLogs();
+        }
+
+        async function clearLogDisplay() {
+            try { await fetch('/api/logs/clear', { method: 'POST' }); } catch(e) {}
+            _allLogs = [];
+            _renderLogs();
+            document.getElementById('log-count-badge').textContent = '0';
+        }
+        // ────────────────────────────────────────────────────────────────────────
+
     </script>
 </body>
 </html>

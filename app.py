@@ -1,4 +1,7 @@
 import os
+import logging
+import collections
+import threading
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
@@ -6,9 +9,44 @@ from pydantic import BaseModel
 import uvicorn
 from dotenv import load_dotenv
 
+# ── In-Memory Log Buffer ──────────────────────────────────────────────────────
+_LOG_BUFFER: collections.deque = collections.deque(maxlen=500)
+_LOG_LOCK = threading.Lock()
+
+class _MemoryLogHandler(logging.Handler):
+    """Captures log records into a thread-safe deque."""
+    def emit(self, record: logging.LogRecord) -> None:
+        from datetime import datetime
+        msg = self.format(record)
+        # Skip self-referential log-viewer polling requests to keep the buffer clean
+        if "/api/logs" in msg:
+            return
+        entry = {
+            "time":  datetime.now().strftime("%H:%M:%S"),
+            "level": record.levelname,
+            "name":  record.name,
+            "msg":   msg,
+        }
+        with _LOG_LOCK:
+            _LOG_BUFFER.append(entry)
+
+def _setup_log_capture() -> None:
+    handler = _MemoryLogHandler()
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    handler.setLevel(logging.WARNING)   # Only WARNING / ERROR / CRITICAL
+    for logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access",
+                        "fastapi", "apscheduler", ""):          # "" = root
+        lg = logging.getLogger(logger_name)
+        # Avoid duplicate handlers on hot-reload
+        if not any(isinstance(h, _MemoryLogHandler) for h in lg.handlers):
+            lg.addHandler(handler)
+
+_setup_log_capture()
+# ─────────────────────────────────────────────────────────────────────────────
+
 from manager.foods import load_foods, add_food, remove_food
-from manager.history import load_history, load_settings, save_settings
-from manager.planner import generate_and_save_today_menu, get_today_markdown
+from manager.history import load_history, load_settings, save_settings, load_kids_history, load_trending_history
+from manager.planner import generate_and_save_today_menu, get_today_markdown, generate_and_save_kids_menu, get_kids_markdown, get_daily_trending_recipes, get_daily_kids_trending_recipes, generate_and_save_daily_trending
 
 from datetime import datetime
 from contextlib import asynccontextmanager
@@ -19,12 +57,47 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 def scheduled_menu_job():
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Triggering daily menu generation...")
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Checking daily menu schedule...")
+    
+    # 1. Generate Adult Diet Menu
     try:
-        generate_and_save_today_menu()
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily menu successfully generated.")
+        history = load_history()
+        already_exists = any(item.get("date") == today_str for item in history)
+        if not already_exists:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Adult menu for today not found. Generating...")
+            generate_and_save_today_menu()
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily adult menu successfully generated.")
+        else:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Adult menu for today already exists. Skipping auto-generation.")
     except Exception as e:
-        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR: {e}")
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Adult Menu): {e}")
+
+    # 2. Generate Kids Nutrition Menu
+    try:
+        kids_history = load_kids_history()
+        already_exists = any(item.get("date") == today_str for item in kids_history)
+        if not already_exists:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Kids menu for today not found. Generating...")
+            generate_and_save_kids_menu()
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily kids menu successfully generated.")
+        else:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Kids menu for today already exists. Skipping auto-generation.")
+    except Exception as e:
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Kids Menu): {e}")
+
+    # 3. Save today's Mediterranean Trending Recipe selection to history
+    try:
+        trending_history = load_trending_history()
+        already_exists = any(item.get('date') == today_str for item in trending_history)
+        if not already_exists:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Trending recipes for today not recorded. Saving...")
+            generate_and_save_daily_trending(today_str)
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task: Daily trending recipes saved.")
+        else:
+            print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Trending recipes for today already recorded. Skipping.")
+    except Exception as e:
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Background task ERROR (Trending): {e}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -48,7 +121,7 @@ class FoodRequest(BaseModel):
 # --- HTML Page Routes ---
 @app.get("/", response_class=HTMLResponse)
 async def read_index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request, "index.html")
 
 # --- Food API Routes ---
 @app.get("/api/foods")
@@ -124,6 +197,69 @@ async def generate_menu_api():
         return {"status": "success", "menu": menu}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+# --- Kids Menu API Routes ---
+@app.get("/api/kids-history")
+async def get_kids_history_api():
+    return load_kids_history()
+
+@app.get("/api/menu/kids-json")
+async def get_kids_menu_json():
+    import datetime
+    today_str = datetime.datetime.now().strftime('%Y-%m-%d')
+    history = load_kids_history()
+    for item in history:
+        if item.get("date") == today_str:
+            return item
+    return None
+
+@app.get("/api/menu/kids-md", response_class=PlainTextResponse)
+async def get_kids_menu_md():
+    return get_kids_markdown()
+
+@app.get("/api/menu/kids-history-md/{date_str}", response_class=PlainTextResponse)
+async def get_kids_history_menu_md(date_str: str):
+    history_md_path = os.path.join(BASE_DIR, 'output', 'history', f"kids_{date_str}.md")
+    if os.path.exists(history_md_path):
+        try:
+            with open(history_md_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"无法读取历史儿童 Markdown: {e}")
+    raise HTTPException(status_code=404, detail="未找到该日期的历史儿童食谱")
+
+@app.post("/api/menu/generate/kids")
+async def generate_kids_menu_api():
+    try:
+        menu = generate_and_save_kids_menu()
+        return {"status": "success", "menu": menu}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+# --- Trending Menu API Routes ---
+@app.get("/api/menu/trending")
+async def get_trending_menu_api():
+    return get_daily_trending_recipes()
+
+@app.get("/api/menu/kids-trending")
+async def get_kids_trending_menu_api():
+    return get_daily_kids_trending_recipes()
+
+@app.get("/api/trending-history")
+async def get_trending_history_api():
+    return load_trending_history()
+
+# --- System Log API ---
+@app.get("/api/logs")
+async def get_logs_api():
+    with _LOG_LOCK:
+        return list(_LOG_BUFFER)
+
+@app.post("/api/logs/clear")
+async def clear_logs_api():
+    with _LOG_LOCK:
+        _LOG_BUFFER.clear()
+    return {"status": "cleared"}
 
 # --- Start Uvicorn Server ---
 if __name__ == '__main__':

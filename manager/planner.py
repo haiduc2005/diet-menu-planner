@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from manager.foods import load_foods
-from manager.history import load_history, add_to_history, load_settings
+from manager.history import load_history, add_to_history, load_settings, load_kids_history, add_to_kids_history, load_trending_history, add_to_trending_history
 from ai.gemini import GeminiClient
 from ai.parser import parse_menu_to_markdown
 
@@ -63,3 +63,128 @@ def get_today_markdown() -> str:
         except Exception as e:
             return f"读取今天菜单失败: {e}"
     return "今日菜单尚未生成。请点击生成按钮！"
+
+def generate_and_save_kids_menu(date_str: str = None) -> dict:
+    """Coordinate the kids menu planning lifecycle."""
+    if not date_str:
+        date_str = datetime.now().strftime('%Y-%m-%d')
+        
+    # Load inputs
+    foods = load_foods()
+    settings = load_settings()
+    
+    # Generate using Gemini Client
+    client = GeminiClient()
+    menu_data = client.generate_kids_menu(foods, settings)
+    
+    # Ensure date is recorded
+    menu_data['date'] = date_str
+    
+    # Save to kids history (updates kids_history.json)
+    add_to_kids_history(menu_data)
+    
+    # Format to markdown
+    markdown_content = parse_menu_to_markdown(menu_data, date_str)
+    
+    # Ensure output directories exist
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(HISTORY_OUTPUT_DIR, exist_ok=True)
+    
+    # Save to output/kids_today.md
+    kids_today_md_path = os.path.join(OUTPUT_DIR, 'kids_today.md')
+    try:
+        with open(kids_today_md_path, 'w', encoding='utf-8') as f:
+            f.write(markdown_content)
+    except Exception as e:
+        print(f"Error writing kids_today.md: {e}")
+        
+    # Save to output/history/kids_{date}.md
+    history_md_path = os.path.join(HISTORY_OUTPUT_DIR, f"kids_{date_str}.md")
+    try:
+        with open(history_md_path, 'w', encoding='utf-8') as f:
+            f.write(markdown_content)
+    except Exception as e:
+        print(f"Error writing kids history markdown: {e}")
+        
+    return menu_data
+
+def get_kids_markdown() -> str:
+    """Read the current kids_today.md markdown content."""
+    kids_today_md_path = os.path.join(OUTPUT_DIR, 'kids_today.md')
+    if os.path.exists(kids_today_md_path):
+        try:
+            with open(kids_today_md_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            return f"读取今天儿童菜单失败: {e}"
+    return "今日儿童菜单尚未生成。请点击生成按钮！"
+
+def get_daily_trending_recipes() -> list:
+    """Load, seed by date, and pick 3 trending recipes from data/trending_recipes.json."""
+    import json
+    import random
+    trending_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'trending_recipes.json')
+    if not os.path.exists(trending_file):
+        return []
+    try:
+        with open(trending_file, 'r', encoding='utf-8') as f:
+            all_recipes = json.load(f)
+        if not all_recipes:
+            return []
+        
+        # Use date string to seed random so it stays the same throughout today
+        date_str = datetime.now().strftime('%Y-%m-%d')
+        seed_val = sum(ord(c) for c in date_str)
+        
+        local_random = random.Random(seed_val)
+        num_to_pick = min(3, len(all_recipes))
+        picked = local_random.sample(all_recipes, num_to_pick)
+        return picked
+    except Exception as e:
+        print(f"Error loading trending recipes: {e}")
+        return []
+
+def get_daily_kids_trending_recipes() -> list:
+    """Load, seed by date, and pick 3 kids trending recipes from data/kids_trending_recipes.json."""
+    import json
+    import random
+    trending_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'kids_trending_recipes.json')
+    if not os.path.exists(trending_file):
+        return []
+    try:
+        with open(trending_file, 'r', encoding='utf-8') as f:
+            all_recipes = json.load(f)
+        if not all_recipes:
+            return []
+        
+        # Use date string to seed random so it stays the same throughout today
+        date_str = datetime.now().strftime('%Y-%m-%d')
+        seed_val = sum(ord(c) for c in date_str)
+        
+        local_random = random.Random(seed_val)
+        num_to_pick = min(3, len(all_recipes))
+        picked = local_random.sample(all_recipes, num_to_pick)
+        return picked
+    except Exception as e:
+        print(f"Error loading kids trending recipes: {e}")
+        return []
+
+def generate_and_save_daily_trending(date_str: str = None) -> dict:
+    """Pick today's trending recipes (if not already done) and persist them to trending history."""
+    if not date_str:
+        date_str = datetime.now().strftime('%Y-%m-%d')
+
+    # Check if today's entry already exists
+    history = load_trending_history()
+    already_exists = any(item.get('date') == date_str for item in history)
+    if already_exists:
+        existing = next(item for item in history if item.get('date') == date_str)
+        return existing
+
+    # Pick today's adult & kids recipes
+    adult_recipes = get_daily_trending_recipes()
+    kids_recipes = get_daily_kids_trending_recipes()
+
+    # Save to history
+    add_to_trending_history(date_str, adult_recipes, kids_recipes)
+    return {"date": date_str, "adult": adult_recipes, "kids": kids_recipes}
