@@ -138,7 +138,15 @@
     "wisdomStarveBody": "一味地不吃饭或过度少食，虽然短期内体重可能下降，但会导致身体启动保护机制：大幅降低基础代谢率。这不仅使得减脂的边际效应越来越低（即吃得更少却不瘦），而且一旦恢复正常饮食，由于代谢率已经处于低位，身体会极速囤积热量，从而大大增加反弹的风险。科学的减脂应该是创造合理的温和热量赤字，而不是极端的饥饿。",
     "wisdomStarveHighlight": "💡 建议：切忌盲目长期节食。通过合理营养膳食维持基础代谢，结合适量运动，保持身体代谢引擎的活跃运转。",
     "wisdomBadgeScience": "🔬 科学原理",
-    "wisdomBadgeStrategy": "🌱 饮食策略"
+    "wisdomBadgeStrategy": "🌱 饮食策略",
+    "wisdomInsulinTitle": "警惕少食多餐的『胰岛素陷阱』",
+    "wisdomInsulinSub": "频繁吃零食会让你的身体无法进入燃脂状态",
+    "wisdomInsulinBody": "陈旧观念认为『少食多餐』能加速代谢，但现代内分泌科学证实，每当我们吃进任何食物（即使是一小片水果），血糖都会波动，促使身体分泌胰岛素。胰岛素是『储能荷尔蒙』，只要它在血液中维持高水平，身体就会被锁死在『脂肪储存模式』，此时脂肪根本无法被分解燃烧。相反，保持两餐之间不吃零食，能让胰岛素水平彻底回落，开启高效燃脂通路。",
+    "wisdomInsulinHighlight": "💡 建议：保证三餐规律，在两餐之间保持完全空腹（除水、茶、无热量黑咖啡外），给身体留下胰岛素处于低水平、开启燃脂的『空白期』。",
+    "wisdomCalorieTitle": "打破迷思：卡路里并不等同于卡路里",
+    "wisdomCalorieSub": "不同食物在体内引发的荷尔蒙反应和消化消耗天差地别",
+    "wisdomCalorieBody": "很多人遵循『只要卡路里不超标吃什么都行』。但在体内，100 大卡的优质蛋白质/膳食纤维与 100 大卡的精制软糖完全不同。蛋白质拥有极高的食物热效应（TEF），身体需要消耗自身 20-30% 的能量去消化它，且它能激发强烈的饱腹感荷尔蒙。而精制糖则极速吸收并刺激胰岛素，不仅不消耗热量，还会让你快速感到饥饿。减脂的核心是吃能稳定血糖和饱腹感的高营养密度食物，而不是单纯抠数字。",
+    "wisdomCalorieHighlight": "💡 建议：优先关注食物质量，摄入充足的蛋白质（鱼、肉、豆）和膳食纤维（蔬菜），利用高热效应和天然饱腹感实现健康热量赤字。"
   },
   "en": {
     "title": "Slim Eating Time",
@@ -279,7 +287,15 @@
     "wisdomStarveBody": "Simply skipping meals or eating excessively little may lead to short-term weight loss, but it triggers the body's self-preservation mechanism: a sharp drop in basal metabolic rate (BMR). This leads to a declining marginal effect (eating less but not losing fat) and exponentially increases rebound risk. When normal eating resumes, your body rapidly stores calories since BMR is low. True fat loss requires a moderate, healthy calorie deficit, not extreme starvation.",
     "wisdomStarveHighlight": "💡 Tip: Avoid blind, prolonged fasting. Keep BMR active by maintaining balanced nutrition and regular physical activity.",
     "wisdomBadgeScience": "🔬 Scientific Principle",
-    "wisdomBadgeStrategy": "🌱 Diet Strategy"
+    "wisdomBadgeStrategy": "🌱 Diet Strategy",
+    "wisdomInsulinTitle": "Beware the 'Insulin Trap' of Frequent Eating",
+    "wisdomInsulinSub": "Constant snacking blocks your body from entering fat-burning mode",
+    "wisdomInsulinBody": "Old diet advice suggested that eating 'small, frequent meals' boosts BMR. However, modern endocrinology shows that whenever we eat (even a small snack), blood sugar rises, triggering insulin release. Insulin is a storage hormone; as long as its levels are high in the blood, the body is locked in 'fat storage mode' and fat burning is blocked. Keeping clean fasting windows between meals allows insulin to drop to baseline, opening the path for fat loss.",
+    "wisdomInsulinHighlight": "💡 Tip: Eat regular meals and avoid snacking in between. Let water, unsweetened tea, or black coffee be your only intake to keep insulin low.",
+    "wisdomCalorieTitle": "The Myth of 'A Calorie is a Calorie'",
+    "wisdomCalorieSub": "Different foods spark vastly different hormonal responses and energy expenditures",
+    "wisdomCalorieBody": "Many believe they can eat anything as long as they stay under their calorie limit. In the body, 100 kcal of lean protein/fiber functions entirely differently from 100 kcal of sugary gummy candy. Protein has a very high Thermic Effect of Food (TEF)—the body burns 20-30% of its energy just digesting it, while triggering satiety. Refined sugar is absorbed instantly, causes blood sugar spikes, stimulates insulin, and makes you hungry again. Focus on nutrient-dense foods, not just the math.",
+    "wisdomCalorieHighlight": "💡 Tip: Prioritize food quality. Eat adequate protein (fish, poultry, beans) and dietary fiber (veggies) to harness high TEF and natural satiety."
   },
   "ja": {
     "title": "スリム食卓",
@@ -420,6 +436,14 @@
     "wisdomStarveBody": "単に食事を抜く、または極端に少食にすることは、短期的には体重が減るかもしれませんが、基礎代謝率の大幅な低下という体の自己防衛メカニズムを引き起こします。これにより、減量の限界効果が低くなり（食べる量を減らしても痩せない）、リバウンドのリスクが劇的に高まります。食事を元に戻すと、低下した代謝率のために脂肪が急速に蓄積されます。正しい減量は極端な飢餓ではなく、合理的で緩やかなカロリー赤字を作り出すことです。",
     "wisdomStarveHighlight": "💡 アドバイス：盲目的で長期的な絶食は避けましょう。バランスの取れた栄養食事で基礎代謝を維持し、適度な運動で代謝エンジンを活発に保ちます。",
     "wisdomBadgeScience": "🔬 科学原理",
-    "wisdomBadgeStrategy": "🌱 食事戦略"
+    "wisdomBadgeStrategy": "🌱 食事戦略",
+    "wisdomInsulinTitle": "「少しずつ何度も食べる」インスリンの罠に注意",
+    "wisdomInsulinSub": "頻繁な間食は体内の脂肪燃焼モードへの切り替えをブロックする",
+    "wisdomInsulinBody": "かつては「小まめに分けて食べる」ことが代謝を上げると言われていましたが、現代の分泌科学では、何かを食べるたびに（たとえ小さな果物であっても）血糖値が変動し、インスリンが分泌されることが実証されています。インスリンは「エネルギー蓄積ホルモン」であり、血中濃度が高い間は体は「脂肪貯蔵モード」にロックされ、脂肪の分解（燃焼）は行われません。間食を控え、食事と食事の間をしっかりと空けることでインスリンを低下させ、脂肪燃焼を活性化させます。",
+    "wisdomInsulinHighlight": "💡 アドバイス：3食の時間を規則正しくし、食事の間は完全な空腹（水、お茶、ブラックコーヒーのみ）を維持して、インスリンレベルを下げる時間を確保しましょう。",
+    "wisdomCalorieTitle": "「カロリーはすべて同じ」という迷信を壊す",
+    "wisdomCalorieSub": "食品によって体内のホルモン反応や消化に必要なエネルギー（DIT）は全く異なる",
+    "wisdomCalorieBody": "「カロリー制限内なら何を食べてもいい」と誤解されがちですが、100kcalの良質なタンパク質/食物繊維と、100kcalの砂糖のグミは体内で全く異なる働きをします。タンパク質は非常に高い食事誘発性熱産生（DIT/TEF）を持ち、摂取したエネルギーの20〜30%を消化自体に消費し、満腹ホルモンを分泌させます。一方、精製糖は一瞬で吸収され、熱を消費しないだけでなく、血糖を急上昇させてインスリンを刺激し、すぐに空腹感を引き起こします。単なる数字ではなく、栄養密度的の高い食品を選びましょう。",
+    "wisdomCalorieHighlight": "💡 アドバイス：食品の質を優先しましょう。十分なタンパク質（魚、肉、大豆）と食物繊維（野菜）を摂取し、高い熱産生効果と満腹感を活用して健康的なアンダーカロリーを実現します。"
   }
 }
