@@ -17,11 +17,15 @@ class _MemoryLogHandler(logging.Handler):
     """Captures log records into a thread-safe deque."""
     def emit(self, record: logging.LogRecord) -> None:
         from datetime import datetime
+        msg = self.format(record)
+        # Skip self-referential log-viewer polling requests to keep the buffer clean
+        if "/api/logs" in msg:
+            return
         entry = {
             "time":  datetime.now().strftime("%H:%M:%S"),
             "level": record.levelname,
             "name":  record.name,
-            "msg":   self.format(record),
+            "msg":   msg,
         }
         with _LOG_LOCK:
             _LOG_BUFFER.append(entry)
@@ -29,7 +33,7 @@ class _MemoryLogHandler(logging.Handler):
 def _setup_log_capture() -> None:
     handler = _MemoryLogHandler()
     handler.setFormatter(logging.Formatter("%(message)s"))
-    handler.setLevel(logging.DEBUG)
+    handler.setLevel(logging.WARNING)   # Only WARNING / ERROR / CRITICAL
     for logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access",
                         "fastapi", "apscheduler", ""):          # "" = root
         lg = logging.getLogger(logger_name)

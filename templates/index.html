@@ -1105,16 +1105,10 @@
                 <!-- Toolbar -->
                 <div class="log-toolbar">
                     <button class="log-filter-btn f-all active"  id="lf-all"   onclick="setLogFilter('ALL')"     data-i18n="logFilterAll">全部</button>
-                    <button class="log-filter-btn f-info"        id="lf-info"  onclick="setLogFilter('INFO')"    data-i18n="logFilterInfo">INFO</button>
                     <button class="log-filter-btn f-warn"        id="lf-warn"  onclick="setLogFilter('WARNING')" data-i18n="logFilterWarn">WARNING</button>
                     <button class="log-filter-btn f-error"       id="lf-error" onclick="setLogFilter('ERROR')"   data-i18n="logFilterError">ERROR</button>
 
                     <div class="log-spacer"></div>
-
-                    <label class="log-auto-label" title="每3秒自动刷新">
-                        <input type="checkbox" id="log-auto-refresh" checked onchange="toggleLogAutoRefresh(this.checked)">
-                        <span data-i18n="logAutoRefresh">自动刷新</span>
-                    </label>
 
                     <button class="btn btn-secondary" onclick="fetchAndRenderLogs()" style="padding:0.3rem 0.75rem;font-size:0.8rem;" data-i18n="logRefreshBtn">🔄 刷新</button>
                     <button class="btn btn-secondary" onclick="clearLogDisplay()" style="padding:0.3rem 0.75rem;font-size:0.8rem;color:#f87171;border-color:rgba(239,68,68,0.3);" data-i18n="logClearBtn">🗑 清空</button>
@@ -1122,13 +1116,7 @@
 
                 <!-- Terminal -->
                 <div class="log-terminal" id="log-terminal">
-                    <div style="color:#334155;text-align:center;padding:2rem 0;" data-i18n="logEmpty">暂无日志...</div>
-                </div>
-
-                <!-- Status bar -->
-                <div class="log-status-bar">
-                    <span><span class="log-dot" id="log-dot"></span><span id="log-status-text" data-i18n="logAutoOn">自动刷新中</span></span>
-                    <span id="log-last-updated" style="color:#334155;">--</span>
+                    <div style="color:#334155;text-align:center;padding:2rem 0;" data-i18n="logEmpty">暂无错误日志</div>
                 </div>
             </div>
 
@@ -1605,14 +1593,9 @@
             const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
             if (btn) btn.classList.add('active');
 
-            // Log viewer: start/stop auto-refresh based on active tab
+            // Log viewer: load once when Settings tab opens
             if (tabId === 'settings') {
                 fetchAndRenderLogs();
-                const autoEl = document.getElementById('log-auto-refresh');
-                if (autoEl && autoEl.checked) _startLogTimer();
-            } else {
-                clearInterval(_logAutoTimer);
-                _logAutoTimer = null;
             }
         }
 
@@ -2704,15 +2687,11 @@
         }
 
         // ─── System Log Viewer ──────────────────────────────────────────────────
-        let _allLogs       = [];          // full buffer from server
-        let _logFilter     = 'ALL';       // current level filter
-        let _logAutoTimer  = null;        // setInterval handle
-        const LOG_INTERVAL = 3000;        // ms
+        let _allLogs   = [];
+        let _logFilter = 'ALL';
 
-        // Level → filter map
         const _levelGroup = {
             ALL:     null,
-            INFO:    ['INFO'],
             WARNING: ['WARNING'],
             ERROR:   ['ERROR', 'CRITICAL']
         };
@@ -2722,12 +2701,6 @@
                 const res = await fetch('/api/logs');
                 _allLogs = await res.json();
                 _renderLogs();
-                // update last-updated timestamp
-                const now = new Date();
-                document.getElementById('log-last-updated').textContent =
-                    `${now.getHours().toString().padStart(2,'0')}:` +
-                    `${now.getMinutes().toString().padStart(2,'0')}:` +
-                    `${now.getSeconds().toString().padStart(2,'0')}更新`;
             } catch (e) {
                 console.warn('Log fetch failed', e);
             }
@@ -2736,44 +2709,34 @@
         function _renderLogs() {
             const terminal = document.getElementById('log-terminal');
             const groups   = _levelGroup[_logFilter];
+            const filtered = groups ? _allLogs.filter(l => groups.includes(l.level)) : _allLogs;
 
-            // filter
-            const filtered = groups
-                ? _allLogs.filter(l => groups.includes(l.level))
-                : _allLogs;
-
-            // update count badge
-            const t  = i18n[currentLang];
+            const t    = i18n[currentLang];
             const unit = (t.logCountUnit || '{n} 条').replace('{n}', filtered.length);
             document.getElementById('log-count-badge').textContent = unit;
 
             if (filtered.length === 0) {
                 terminal.innerHTML =
-                    `<div style="color:#334155;text-align:center;padding:2rem 0;">${t.logEmpty || '暂无日志...'}</div>`;
+                    `<div style="color:#334155;text-align:center;padding:2rem 0;">${t.logEmpty || '暂无错误日志'}</div>`;
                 return;
             }
 
-            // build HTML (newest on top)
-            const frag = document.createDocumentFragment();
-            const items = [...filtered].reverse();
-            items.forEach(log => {
-                const div      = document.createElement('div');
-                div.className  = 'log-entry';
-
-                const lvl      = log.level || 'INFO';
+            const frag  = document.createDocumentFragment();
+            [...filtered].reverse().forEach(log => {
+                const div     = document.createElement('div');
+                div.className = 'log-entry';
+                const lvl     = log.level || 'WARNING';
                 const msgClass = lvl === 'WARNING'  ? 'log-msg warn-text'
                                : lvl === 'ERROR'    ? 'log-msg error-text'
                                : lvl === 'CRITICAL' ? 'log-msg critical-text'
                                : 'log-msg';
-
-                div.innerHTML  =
+                div.innerHTML =
                     `<span class="log-time">${_esc(log.time)}</span>` +
                     `<span class="log-badge badge-${lvl}">${lvl}</span>` +
                     `<span class="log-name" title="${_esc(log.name)}">${_esc(log.name)}</span>` +
                     `<span class="${msgClass}">${_esc(log.msg)}</span>`;
                 frag.appendChild(div);
             });
-
             terminal.innerHTML = '';
             terminal.appendChild(frag);
         }
@@ -2785,33 +2748,11 @@
 
         function setLogFilter(level) {
             _logFilter = level;
-            // update active button
             document.querySelectorAll('.log-filter-btn').forEach(b => b.classList.remove('active'));
-            const map = { ALL:'lf-all', INFO:'lf-info', WARNING:'lf-warn', ERROR:'lf-error' };
+            const map = { ALL:'lf-all', WARNING:'lf-warn', ERROR:'lf-error' };
             const btn = document.getElementById(map[level]);
             if (btn) btn.classList.add('active');
             _renderLogs();
-        }
-
-        function toggleLogAutoRefresh(enabled) {
-            const dot    = document.getElementById('log-dot');
-            const status = document.getElementById('log-status-text');
-            const t      = i18n[currentLang];
-            if (enabled) {
-                dot.classList.remove('paused');
-                status.textContent = t.logAutoOn || '自动刷新中';
-                _startLogTimer();
-            } else {
-                dot.classList.add('paused');
-                status.textContent = t.logAutoPaused || '已暂停';
-                clearInterval(_logAutoTimer);
-                _logAutoTimer = null;
-            }
-        }
-
-        function _startLogTimer() {
-            clearInterval(_logAutoTimer);
-            _logAutoTimer = setInterval(fetchAndRenderLogs, LOG_INTERVAL);
         }
 
         async function clearLogDisplay() {
@@ -2820,7 +2761,6 @@
             _renderLogs();
             document.getElementById('log-count-badge').textContent = '0';
         }
-
         // ────────────────────────────────────────────────────────────────────────
 
     </script>
