@@ -191,6 +191,33 @@ async def get_today_menu_json():
     for item in history:
         if item.get("date") == today_str:
             return item
+            
+    # 如果今天还没生成，尝试按需自动生成一次并保存（补偿定时任务未触发的情况）
+    try:
+        logger.info(f"Auto-generating today's menu on-demand for {today_str}...")
+        generate_and_save_today_menu()
+        
+        # 顺便把儿童餐和地中海推荐一起生成
+        try:
+            kids_hist = load_kids_history()
+            if not any(k.get("date") == today_str for k in kids_hist):
+                generate_and_save_kids_menu()
+        except Exception:
+            pass
+        try:
+            trend_hist = load_trending_history()
+            if not any(t.get("date") == today_str for t in trend_hist):
+                generate_and_save_daily_trending(today_str)
+        except Exception:
+            pass
+            
+        # 重新读取一次
+        history = load_history()
+        for item in history:
+            if item.get("date") == today_str:
+                return item
+    except Exception as e:
+        logger.error(f"Failed to auto-generate today's menu on-demand: {e}")
     return None
 
 @app.get("/api/menu/today-md", response_class=PlainTextResponse)
@@ -229,6 +256,18 @@ async def get_kids_menu_json():
     for item in history:
         if item.get("date") == today_str:
             return item
+            
+    # 如果今天还没生成，尝试按需自动生成一次并保存（补偿定时任务未触发的情况）
+    try:
+        logger.info(f"Auto-generating kids menu on-demand for {today_str}...")
+        generate_and_save_kids_menu()
+        # 重新读取一次
+        history = load_kids_history()
+        for item in history:
+            if item.get("date") == today_str:
+                return item
+    except Exception as e:
+        logger.error(f"Failed to auto-generate kids menu on-demand: {e}")
     return None
 
 @app.get("/api/menu/kids-md", response_class=PlainTextResponse)
