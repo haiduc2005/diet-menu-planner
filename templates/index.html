@@ -1338,6 +1338,7 @@
                         <h3 id="photoResultTitle" style="font-size:1.3rem; margin:0;"></h3>
                         <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
                             <button class="btn btn-secondary" id="photoEditBtn" onclick="openEditModal()" style="padding:0.5rem 1rem;">✏️ 编辑</button>
+                            <button class="vault-delete-btn" id="photoDeleteBtn" onclick="deleteCurrentVaultRecipe()" style="padding:0.5rem 1rem; border-radius:8px; font-size:0.9rem; display:none;">🗑️ 删除</button>
                             <button class="btn btn-primary" id="photoSaveBtn" onclick="savePhotoRecipe()" data-i18n="photoSaveBtn">💾 保存至食谱仓库</button>
                         </div>
                     </div>
@@ -3118,7 +3119,9 @@
             // Fix: always restore button visibility, adjusting based on context
             const saveBtn = document.getElementById('photoSaveBtn');
             const editBtn = document.getElementById('photoEditBtn');
+            const deleteBtn = document.getElementById('photoDeleteBtn');
             saveBtn.style.display = isFromVault ? 'none' : '';
+            deleteBtn.style.display = isFromVault ? '' : 'none';
             editBtn.style.display = '';
 
             document.getElementById('photoResultCard').style.display = 'block';
@@ -3178,14 +3181,14 @@
                 const card = document.createElement('div');
                 card.className = 'vault-card';
                 card.innerHTML = `
-                    <div class="vault-card-title">${recipe.title || '未命名食谱'}</div>
+                    <div class="vault-card-title">
+                        <a href="#" style="color:var(--text-primary); text-decoration:none; border-bottom:1px dashed rgba(255,255,255,0.25); padding-bottom:1px;"
+                           onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-primary)'"
+                           onclick="showVaultDetail('${recipe.id}'); return false;">${recipe.title || '未命名食谱'}</a>
+                    </div>
                     <div class="vault-card-desc">${recipe.description || ''}</div>
                     <div class="vault-card-footer">
                         <span class="vault-card-date">📅 ${recipe.saved_at || ''}</span>
-                        <div style="display:flex;gap:0.5rem;">
-                            <button class="vault-expand-btn" onclick="showVaultDetail('${recipe.id}')">查看</button>
-                            <button class="vault-delete-btn" onclick="deleteVaultRecipe('${recipe.id}')" data-i18n="vaultDeleteBtn">${t.vaultDeleteBtn || '删除'}</button>
-                        </div>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -3211,7 +3214,17 @@
                 showToast('❌ ' + e.message);
             }
         }
+
+        async function deleteCurrentVaultRecipe() {
+            if (!_currentAnalyzedRecipe?.id) return;
+            await deleteVaultRecipe(_currentAnalyzedRecipe.id);
+            // Hide result card and clear state after deletion
+            document.getElementById('photoResultCard').style.display = 'none';
+            _currentAnalyzedRecipe = null;
+        }
+
         // ─── Edit Recipe Modal ────────────────────────────────────────────────────
+
         function openEditModal() {
             if (!_currentAnalyzedRecipe) return;
             const r = _currentAnalyzedRecipe;
