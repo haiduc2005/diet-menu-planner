@@ -1336,7 +1336,10 @@
                 <div id="photoResultCard" class="glass-card photo-result-card" style="display:none; margin-top:1.5rem;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
                         <h3 id="photoResultTitle" style="font-size:1.3rem; margin:0;"></h3>
-                        <button class="btn btn-primary" id="photoSaveBtn" onclick="savePhotoRecipe()" data-i18n="photoSaveBtn">💾 保存至食谱仓库</button>
+                        <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+                            <button class="btn btn-secondary" id="photoEditBtn" onclick="openEditModal()" style="padding:0.5rem 1rem;">✏️ 编辑</button>
+                            <button class="btn btn-primary" id="photoSaveBtn" onclick="savePhotoRecipe()" data-i18n="photoSaveBtn">💾 保存至食谱仓库</button>
+                        </div>
                     </div>
                     <p id="photoResultDesc" style="color:var(--text-secondary); margin-bottom:1.5rem; font-style:italic;"></p>
 
@@ -1365,6 +1368,51 @@
             </div>
         </section>
 
+        <!-- Edit Recipe Modal -->
+        <div id="editRecipeModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.65); backdrop-filter:blur(6px); overflow-y:auto; padding:2rem 1rem;">
+            <div style="max-width:680px; margin:0 auto; background:var(--bg-card); border:1px solid var(--border-color); border-radius:20px; padding:2rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h3 style="margin:0; font-size:1.2rem;">✏️ 编辑食谱</h3>
+                    <button onclick="closeEditModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--text-secondary); line-height:1;">✕</button>
+                </div>
+
+                <div class="input-group" style="margin-bottom:1.25rem;">
+                    <label style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.4rem; display:block;">菜品名称</label>
+                    <input type="text" id="editTitle" class="form-input" placeholder="食谱名称">
+                </div>
+
+                <div class="input-group" style="margin-bottom:1.25rem;">
+                    <label style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.4rem; display:block;">简短描述</label>
+                    <textarea id="editDesc" class="form-input" rows="2" style="resize:vertical;" placeholder="口感、健康亮点等"></textarea>
+                </div>
+
+                <div style="margin-bottom:1.25rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                        <label style="font-size:0.85rem; color:var(--text-secondary);">食材列表</label>
+                        <button class="vault-expand-btn" onclick="addEditIngredient()">+ 添加食材</button>
+                    </div>
+                    <div id="editIngredientsList" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+                </div>
+
+                <div style="margin-bottom:1.25rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                        <label style="font-size:0.85rem; color:var(--text-secondary);">烹饪步骤</label>
+                        <button class="vault-expand-btn" onclick="addEditStep()">+ 添加步骤</button>
+                    </div>
+                    <div id="editStepsList" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
+                </div>
+
+                <div class="input-group" style="margin-bottom:1.75rem;">
+                    <label style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.4rem; display:block;">营养简析</label>
+                    <textarea id="editNutrition" class="form-input" rows="2" style="resize:vertical;"></textarea>
+                </div>
+
+                <div style="display:flex; gap:0.75rem; justify-content:flex-end;">
+                    <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+                    <button class="btn btn-primary" onclick="submitEditRecipe()">✅ 保存编辑</button>
+                </div>
+            </div>
+        </div>
 
         <!-- 4. SETTINGS TAB -->
         <section id="settings" class="tab-content">
@@ -3045,7 +3093,7 @@
         }
 
 
-        function renderPhotoRecipeResult(recipe) {
+        function renderPhotoRecipeResult(recipe, isFromVault = false) {
             document.getElementById('photoResultTitle').textContent = recipe.title || '食谱';
             document.getElementById('photoResultDesc').textContent = recipe.description || '';
             document.getElementById('photoResultNutrition').textContent = recipe.nutritional_summary || '';
@@ -3066,6 +3114,12 @@
                 li.style.marginBottom = '0.4rem';
                 stepList.appendChild(li);
             });
+
+            // Fix: always restore button visibility, adjusting based on context
+            const saveBtn = document.getElementById('photoSaveBtn');
+            const editBtn = document.getElementById('photoEditBtn');
+            saveBtn.style.display = isFromVault ? 'none' : '';
+            editBtn.style.display = '';
 
             document.getElementById('photoResultCard').style.display = 'block';
             document.getElementById('photoResultCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -3142,9 +3196,8 @@
             const recipe = _vaultData.find(r => r.id === recipeId);
             if (!recipe) return;
             _currentAnalyzedRecipe = recipe;
-            renderPhotoRecipeResult(recipe);
-            document.getElementById('photoSaveBtn').style.display = 'none';
-            document.getElementById('photoResultCard').scrollIntoView({ behavior: 'smooth' });
+            renderPhotoRecipeResult(recipe, true);  // isFromVault=true → hides save, shows edit
+            switchHubTab('hub-photo');
         }
 
         async function deleteVaultRecipe(recipeId) {
@@ -3157,6 +3210,99 @@
             } catch(e) {
                 showToast('❌ ' + e.message);
             }
+        }
+        // ─── Edit Recipe Modal ────────────────────────────────────────────────────
+        function openEditModal() {
+            if (!_currentAnalyzedRecipe) return;
+            const r = _currentAnalyzedRecipe;
+            document.getElementById('editTitle').value = r.title || '';
+            document.getElementById('editDesc').value = r.description || '';
+            document.getElementById('editNutrition').value = r.nutritional_summary || '';
+
+            // Render ingredient rows
+            const ingContainer = document.getElementById('editIngredientsList');
+            ingContainer.innerHTML = '';
+            (r.ingredients || []).forEach(ing => appendIngredientRow(ing.name, ing.amount));
+
+            // Render step rows
+            const stepContainer = document.getElementById('editStepsList');
+            stepContainer.innerHTML = '';
+            (r.instructions || []).forEach((step, i) => appendStepRow(step, i + 1));
+
+            document.getElementById('editRecipeModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editRecipeModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function appendIngredientRow(name = '', amount = '') {
+            const container = document.getElementById('editIngredientsList');
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex; gap:0.5rem; align-items:center;';
+            row.innerHTML = `
+                <input type="text" class="form-input edit-ing-name" value="${name}" placeholder="食材名" style="flex:1; padding:0.45rem 0.75rem;">
+                <input type="text" class="form-input edit-ing-amount" value="${amount}" placeholder="用量（如 100克）" style="flex:1.4; padding:0.45rem 0.75rem;">
+                <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#f87171;padding:0 0.3rem;">✕</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function addEditIngredient() { appendIngredientRow(); }
+
+        function appendStepRow(text = '', num = '') {
+            const container = document.getElementById('editStepsList');
+            const idx = container.children.length + 1;
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex; gap:0.5rem; align-items:flex-start;';
+            row.innerHTML = `
+                <span style="min-width:1.4rem; color:var(--text-secondary); padding-top:0.55rem; font-size:0.85rem;">${idx}.</span>
+                <textarea class="form-input edit-step-text" rows="2" style="flex:1; resize:vertical; padding:0.45rem 0.75rem;">${text}</textarea>
+                <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#f87171;padding:0.4rem 0.2rem;">✕</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function addEditStep() { appendStepRow(); }
+
+        async function submitEditRecipe() {
+            const updated = {
+                title: document.getElementById('editTitle').value.trim(),
+                description: document.getElementById('editDesc').value.trim(),
+                nutritional_summary: document.getElementById('editNutrition').value.trim(),
+                ingredients: Array.from(document.querySelectorAll('#editIngredientsList > div')).map(row => ({
+                    name: row.querySelector('.edit-ing-name').value.trim(),
+                    amount: row.querySelector('.edit-ing-amount').value.trim()
+                })).filter(ing => ing.name),
+                instructions: Array.from(document.querySelectorAll('#editStepsList .edit-step-text'))
+                    .map(el => el.value.trim()).filter(Boolean)
+            };
+
+            // Merge into current recipe
+            Object.assign(_currentAnalyzedRecipe, updated);
+
+            // If this recipe is already in vault (has an id), update it server-side
+            if (_currentAnalyzedRecipe.id) {
+                try {
+                    const res = await fetch(`/api/recipe-vault/${_currentAnalyzedRecipe.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ recipe: updated })
+                    });
+                    if (!res.ok) throw new Error('更新失败');
+                    showToast('✅ 食谱已更新！');
+                    await loadRecipeVault();
+                } catch(e) {
+                    showToast('❌ ' + e.message);
+                }
+            } else {
+                showToast('✅ 编辑已应用（保存前）');
+            }
+
+            closeEditModal();
+            renderPhotoRecipeResult(_currentAnalyzedRecipe, !!_currentAnalyzedRecipe.id);
         }
         // ─────────────────────────────────────────────────────────────────────────
 

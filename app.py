@@ -387,7 +387,32 @@ async def delete_recipe_from_vault(recipe_id: str):
     except Exception as e:
         logger.error(f"Recipe vault delete failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+class RecipeUpdateRequest(BaseModel):
+    recipe: dict
+
+@app.put("/api/recipe-vault/{recipe_id}")
+async def update_recipe_in_vault(recipe_id: str, req: RecipeUpdateRequest):
+    try:
+        vault = _load_vault()
+        idx = next((i for i, r in enumerate(vault) if r.get("id") == recipe_id), None)
+        if idx is None:
+            raise HTTPException(status_code=404, detail="未找到该食谱")
+        updated = vault[idx].copy()
+        # Only allow updating content fields, preserve id and saved_at
+        for field in ("title", "description", "ingredients", "instructions", "nutritional_summary"):
+            if field in req.recipe:
+                updated[field] = req.recipe[field]
+        vault[idx] = updated
+        _save_vault(vault)
+        return {"status": "success", "recipe": updated}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Recipe vault update failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 # ──────────────────────────────────────────────────────────────────────────────
+
 
 # --- Start Uvicorn Server ---
 if __name__ == '__main__':
