@@ -969,8 +969,91 @@
         .wisdom-full-card {
             grid-column: 1 / -1;
         }
+
+        /* ─── Recipe Hub ─────────────────────────────────────────────────────── */
+        .hub-tab-content { animation: fadeIn 0.3s ease; }
+
+        /* Photo upload drop zone */
+        .photo-recipe-card { display: flex; flex-direction: column; gap: 1.25rem; }
+        .photo-recipe-title { font-size: 1.15rem; margin: 0; }
+
+        .photo-drop-zone {
+            border: 2px dashed rgba(99,102,241,0.45);
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.25s, background 0.25s;
+            background: rgba(99,102,241,0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+        .photo-drop-zone:hover, .photo-drop-zone.drag-over {
+            border-color: rgba(99,102,241,0.8);
+            background: rgba(99,102,241,0.09);
+        }
+        .photo-drop-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+        .photo-drop-hint { font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.3rem; }
+
+        .photo-analyze-btn {
+            align-self: flex-start;
+            padding: 0.65rem 1.75rem;
+            font-size: 1rem;
+        }
+        .photo-analyze-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* Result card */
+        .photo-result-card { border: 1px solid rgba(99,241,140,0.18); }
+
+        /* Vault grid */
+        .vault-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+        .vault-card {
+            background: rgba(15,23,42,0.55);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: fadeIn 0.35s ease;
+        }
+        .vault-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+        .vault-card-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+        .vault-card-desc { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.5; }
+        .vault-card-date { font-size: 0.75rem; color: rgba(139,148,158,0.7); margin-top: auto; }
+        .vault-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+        .vault-delete-btn {
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #f87171;
+            border-radius: 8px;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .vault-delete-btn:hover { background: rgba(239,68,68,0.25); }
+        .vault-expand-btn {
+            background: rgba(99,102,241,0.12);
+            border: 1px solid rgba(99,102,241,0.25);
+            color: #a5b4fc;
+            border-radius: 8px;
+            padding: 0.3rem 0.75rem;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .vault-expand-btn:hover { background: rgba(99,102,241,0.25); }
         /* ─────────────────────────────────────────────────────────────────── */
     </style>
+
 </head>
 <body>
 
@@ -1002,7 +1085,7 @@
             <button class="tab-btn" onclick="switchTab('kids-menu')" id="tab-btn-kids" data-i18n="tabKids">👦 儿童配餐</button>
             <button class="tab-btn" onclick="switchTab('trending-menu')" id="tab-btn-trending" data-i18n="tabTrending">💡 每日推荐</button>
             <button class="tab-btn" onclick="switchTab('pantry')" id="tab-btn-pantry" data-i18n="tabPantry">🥕 食材库</button>
-            <button class="tab-btn" onclick="switchTab('history')" id="tab-btn-history" data-i18n="tabHistory">📜 历史食谱</button>
+            <button class="tab-btn" onclick="switchTab('history')" id="tab-btn-history" data-i18n="tabHistory">📚 食谱中心</button>
             <button class="tab-btn" onclick="switchTab('wisdom')" id="tab-btn-wisdom" data-i18n="tabWisdom">🧠 饮食智慧</button>
             <button class="tab-btn" onclick="switchTab('settings')" id="tab-btn-settings" data-i18n="tabSettings">⚙️ 设置中心</button>
         </nav>
@@ -1199,25 +1282,89 @@
             </div>
         </section>
 
-        <!-- 3. HISTORY TAB -->
+        <!-- 3. RECIPE HUB TAB -->
         <section id="history" class="tab-content">
-            <!-- Sub-tabs for Adult vs Kids History -->
-            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-                <button class="btn btn-primary" id="btn-hist-adult" onclick="switchHistorySubTab('adult')" data-i18n="histTabAdult">👨 大人减脂餐历史</button>
-                <button class="btn btn-secondary" id="btn-hist-kids" onclick="switchHistorySubTab('kids')" data-i18n="histTabKids">👦 儿童营养餐历史</button>
-                <button class="btn btn-secondary" id="btn-hist-trending" onclick="switchHistorySubTab('trending')" data-i18n="histTabTrending">🫒 地中海饮食推荐历史</button>
+
+            <!-- Top-level Hub sub-tab switcher -->
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.75rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="hub-btn-history" onclick="switchHubTab('hub-history')" data-i18n="hubTabHistory">📅 菜单历史</button>
+                <button class="btn btn-secondary" id="hub-btn-photo" onclick="switchHubTab('hub-photo')" data-i18n="hubTabPhotoRecipe">📸 以图生谱</button>
             </div>
 
-            <div class="glass-card">
-                <h3 style="margin-bottom: 1.5rem;" data-i18n="historyTitle">📅 菜单历史记录 (近30次生成)</h3>
-                <div class="history-timeline" id="history-timeline-container">
-                    <!-- Loaded dynamically -->
-                    <div style="text-align: center; color: var(--text-secondary); padding: 3rem;" data-i18n="historyEmpty">
-                        暂无历史记录
+            <!-- ===== SUB-TAB: 菜单历史 ===== -->
+            <div id="hub-history" class="hub-tab-content">
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" id="btn-hist-adult" onclick="switchHistorySubTab('adult')" data-i18n="histTabAdult">👨 大人减脂餐历史</button>
+                    <button class="btn btn-secondary" id="btn-hist-kids" onclick="switchHistorySubTab('kids')" data-i18n="histTabKids">👦 儿童营养餐历史</button>
+                    <button class="btn btn-secondary" id="btn-hist-trending" onclick="switchHistorySubTab('trending')" data-i18n="histTabTrending">🫒 地中海饮食推荐历史</button>
+                </div>
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 1.5rem;" data-i18n="historyTitle">📅 菜单历史记录 (近30次生成)</h3>
+                    <div class="history-timeline" id="history-timeline-container">
+                        <div style="text-align: center; color: var(--text-secondary); padding: 3rem;" data-i18n="historyEmpty">
+                            暂无历史记录
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SUB-TAB: 以图生谱 ===== -->
+            <div id="hub-photo" class="hub-tab-content" style="display:none;">
+
+                <!-- Upload Card -->
+                <div class="glass-card photo-recipe-card">
+                    <h3 class="photo-recipe-title" data-i18n="photoUploadTitle">📸 上传菜品照片，AI 自动识别生成食谱</h3>
+
+                    <!-- Drop Zone -->
+                    <div class="photo-drop-zone" id="photoDropZone" onclick="document.getElementById('photoFileInput').click()">
+                        <div id="photoDropPlaceholder">
+                            <div class="photo-drop-icon">🖼️</div>
+                            <p data-i18n="photoDropHere">点击或拖拽菜品照片到此处</p>
+                            <p class="photo-drop-hint" data-i18n="photoUploadHint">支持 JPG / PNG / WebP，拖拽或点击上传</p>
+                        </div>
+                        <div id="photoPreviewContainer" style="display:none; flex-direction:column; align-items:center; gap:1rem;">
+                            <img id="photoPreview" src="" alt="preview" style="max-height:260px; border-radius:12px; object-fit:contain;">
+                            <button class="btn btn-secondary" style="font-size:0.8rem; padding:0.35rem 1rem;" onclick="resetPhotoUpload(event)" data-i18n="photoChangeBtn">重新选择图片</button>
+                        </div>
+                    </div>
+                    <input type="file" id="photoFileInput" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="onPhotoSelected(event)">
+
+                    <button class="btn btn-primary photo-analyze-btn" id="photoAnalyzeBtn" onclick="analyzePhoto()" disabled data-i18n="photoAnalyzeBtn">🔍 识别并生成食谱</button>
+                </div>
+
+                <!-- Result Card (hidden until analysis done) -->
+                <div id="photoResultCard" class="glass-card photo-result-card" style="display:none; margin-top:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+                        <h3 id="photoResultTitle" style="font-size:1.3rem; margin:0;"></h3>
+                        <button class="btn btn-primary" id="photoSaveBtn" onclick="savePhotoRecipe()" data-i18n="photoSaveBtn">💾 保存至食谱仓库</button>
+                    </div>
+                    <p id="photoResultDesc" style="color:var(--text-secondary); margin-bottom:1.5rem; font-style:italic;"></p>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                        <div>
+                            <h4 style="color:var(--accent-green); margin-bottom:0.75rem;">🧀 食材</h4>
+                            <ul id="photoResultIngredients" class="ingredients-list"></ul>
+                        </div>
+                        <div>
+                            <h4 style="color:var(--accent-orange); margin-bottom:0.75rem;">👨‍🍳 烹饪步骤</h4>
+                            <ol id="photoResultSteps" style="padding-left:1.25rem; color:var(--text-primary); line-height:1.8;"></ol>
+                        </div>
+                    </div>
+                    <div id="photoResultNutrition" style="background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); border-radius:10px; padding:0.9rem 1.1rem; font-size:0.9rem; color:var(--text-secondary);"></div>
+                </div>
+
+                <!-- Vault Gallery -->
+                <div class="glass-card" style="margin-top:2rem;">
+                    <h3 style="margin-bottom:1.5rem;" data-i18n="vaultTitle">📦 我的食谱仓库</h3>
+                    <div id="recipeVaultGrid" class="vault-grid">
+                        <div id="vaultEmptyMsg" style="text-align:center; color:var(--text-secondary); padding:3rem;" data-i18n="vaultEmpty">
+                            仓库暂无食谱，快去上传第一张菜品照片吧！
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
+
 
         <!-- 4. SETTINGS TAB -->
         <section id="settings" class="tab-content">
@@ -1541,6 +1688,7 @@
             document.getElementById('ui-language-select').value = savedUiLang;
             
             await initApp();
+            initDropZone();   // set up drag-and-drop for photo upload
         });
 
         async function initApp() {
@@ -1556,7 +1704,8 @@
                 loadTodayMenu(),
                 loadKidsMenu(),
                 loadTrendingRecipes(),
-                loadKidsTrendingRecipes()
+                loadKidsTrendingRecipes(),
+                loadRecipeVault()
             ]);
         }
 
@@ -2807,6 +2956,211 @@
         }
         // ────────────────────────────────────────────────────────────────────────
 
+        // ─── Recipe Hub ──────────────────────────────────────────────────────────
+        let _currentAnalyzedRecipe = null;
+        let _selectedPhotoFile = null;   // stores the actual File object
+
+        function switchHubTab(tabId) {
+            document.querySelectorAll('.hub-tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            const isHistory = tabId === 'hub-history';
+            document.getElementById('hub-btn-history').className = isHistory ? 'btn btn-primary' : 'btn btn-secondary';
+            document.getElementById('hub-btn-photo').className = !isHistory ? 'btn btn-primary' : 'btn btn-secondary';
+        }
+
+        // Drag and drop support — set up after DOM is ready (this script runs at end of body)
+        function initDropZone() {
+            const zone = document.getElementById('photoDropZone');
+            if (!zone) return;
+            zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+            zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (file) handlePhotoFile(file);
+            });
+        }
+
+        function onPhotoSelected(event) {
+            const file = event.target.files[0];
+            if (file) handlePhotoFile(file);
+        }
+
+        function handlePhotoFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showToast('请选择图片文件！');
+                return;
+            }
+            _selectedPhotoFile = file;   // ← cache the File object here
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('photoPreview').src = e.target.result;
+                document.getElementById('photoDropPlaceholder').style.display = 'none';
+                document.getElementById('photoPreviewContainer').style.display = 'flex';
+                document.getElementById('photoAnalyzeBtn').disabled = false;
+                document.getElementById('photoResultCard').style.display = 'none';
+                _currentAnalyzedRecipe = null;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetPhotoUpload(event) {
+            event.stopPropagation();
+            _selectedPhotoFile = null;
+            document.getElementById('photoFileInput').value = '';
+            document.getElementById('photoDropPlaceholder').style.display = 'block';
+            document.getElementById('photoPreviewContainer').style.display = 'none';
+            document.getElementById('photoAnalyzeBtn').disabled = true;
+            document.getElementById('photoResultCard').style.display = 'none';
+            _currentAnalyzedRecipe = null;
+        }
+
+        async function analyzePhoto() {
+            // Use the cached File object — works for both file-picker and drag-and-drop
+            if (!_selectedPhotoFile) { showToast('请先在上方选择一张菜品照片！'); return; }
+
+            const btn = document.getElementById('photoAnalyzeBtn');
+            const t = i18n[currentLang] || {};
+            btn.disabled = true;
+            btn.textContent = t.photoAnalyzingBtn || '🔍 识别中...';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', _selectedPhotoFile);
+                const res = await fetch('/api/recipe-vault/analyze', { method: 'POST', body: formData });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.detail || '识别失败');
+                }
+                const data = await res.json();
+                _currentAnalyzedRecipe = data.recipe;
+                renderPhotoRecipeResult(data.recipe);
+            } catch (e) {
+                showToast('❌ 识别失败：' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = t.photoAnalyzeBtn || '🔍 识别并生成食谱';
+            }
+        }
+
+
+        function renderPhotoRecipeResult(recipe) {
+            document.getElementById('photoResultTitle').textContent = recipe.title || '食谱';
+            document.getElementById('photoResultDesc').textContent = recipe.description || '';
+            document.getElementById('photoResultNutrition').textContent = recipe.nutritional_summary || '';
+
+            const ingList = document.getElementById('photoResultIngredients');
+            ingList.innerHTML = '';
+            (recipe.ingredients || []).forEach(ing => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${ing.name}</span><span class="qty">${ing.amount}</span>`;
+                ingList.appendChild(li);
+            });
+
+            const stepList = document.getElementById('photoResultSteps');
+            stepList.innerHTML = '';
+            (recipe.instructions || []).forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                li.style.marginBottom = '0.4rem';
+                stepList.appendChild(li);
+            });
+
+            document.getElementById('photoResultCard').style.display = 'block';
+            document.getElementById('photoResultCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        async function savePhotoRecipe() {
+            if (!_currentAnalyzedRecipe) { showToast('没有可保存的食谱'); return; }
+            const saveBtn = document.getElementById('photoSaveBtn');
+            const t = i18n[currentLang] || {};
+            saveBtn.disabled = true;
+            try {
+                const res = await fetch('/api/recipe-vault/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recipe: _currentAnalyzedRecipe })
+                });
+                if (!res.ok) throw new Error('保存失败');
+                showToast(t.photoSavedSuccess || '✅ 食谱已保存至仓库！');
+                await loadRecipeVault();
+            } catch(e) {
+                showToast('❌ ' + e.message);
+            } finally {
+                saveBtn.disabled = false;
+            }
+        }
+
+        let _vaultData = [];
+
+        async function loadRecipeVault() {
+            try {
+                const res = await fetch('/api/recipe-vault');
+                _vaultData = await res.json();
+                renderVaultGrid();
+            } catch(e) {
+                console.error('Failed to load recipe vault:', e);
+            }
+        }
+
+        function renderVaultGrid() {
+            const grid = document.getElementById('recipeVaultGrid');
+            const emptyMsg = document.getElementById('vaultEmptyMsg');
+            const t = i18n[currentLang] || {};
+
+            // Clear existing vault cards (not the empty msg)
+            Array.from(grid.children).forEach(child => {
+                if (child.id !== 'vaultEmptyMsg') child.remove();
+            });
+
+            if (_vaultData.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+            emptyMsg.style.display = 'none';
+
+            _vaultData.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'vault-card';
+                card.innerHTML = `
+                    <div class="vault-card-title">${recipe.title || '未命名食谱'}</div>
+                    <div class="vault-card-desc">${recipe.description || ''}</div>
+                    <div class="vault-card-footer">
+                        <span class="vault-card-date">📅 ${recipe.saved_at || ''}</span>
+                        <div style="display:flex;gap:0.5rem;">
+                            <button class="vault-expand-btn" onclick="showVaultDetail('${recipe.id}')">查看</button>
+                            <button class="vault-delete-btn" onclick="deleteVaultRecipe('${recipe.id}')" data-i18n="vaultDeleteBtn">${t.vaultDeleteBtn || '删除'}</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showVaultDetail(recipeId) {
+            const recipe = _vaultData.find(r => r.id === recipeId);
+            if (!recipe) return;
+            _currentAnalyzedRecipe = recipe;
+            renderPhotoRecipeResult(recipe);
+            document.getElementById('photoSaveBtn').style.display = 'none';
+            document.getElementById('photoResultCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function deleteVaultRecipe(recipeId) {
+            if (!confirm('确定要删除这条食谱吗？')) return;
+            try {
+                const res = await fetch(`/api/recipe-vault/${recipeId}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('删除失败');
+                showToast('🗑️ 食谱已删除');
+                await loadRecipeVault();
+            } catch(e) {
+                showToast('❌ ' + e.message);
+            }
+        }
+        // ─────────────────────────────────────────────────────────────────────────
+
     </script>
+
 </body>
 </html>
