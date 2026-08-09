@@ -146,7 +146,8 @@
     "wisdomCalorieTitle": "打破迷思：卡路里并不等同于卡路里",
     "wisdomCalorieSub": "不同食物在体内引发的荷尔蒙反应和消化消耗天差地别",
     "wisdomCalorieBody": "很多人遵循『只要卡路里不超标吃什么都行』。但在体内，100 大卡的优质蛋白质/膳食纤维与 100 大卡的精制软糖完全不同。蛋白质拥有极高的食物热效应（TEF），身体需要消耗自身 20-30% 的能量去消化它，且它能激发强烈的饱腹感荷尔蒙。而精制糖则极速吸收并刺激胰岛素，不仅不消耗热量，还会让你快速感到饥饿。减脂的核心是吃能稳定血糖和饱腹感的高营养密度食物，而不是单纯抠数字。",
-    "wisdomCalorieHighlight": "💡 建议：优先关注食物质量，摄入充足的蛋白质（鱼、肉、豆）和膳食纤维（蔬菜），利用高热效应和天然饱腹感实现健康热量赤字。"
+    "wisdomCalorieHighlight": "💡 建议：优先关注食物质量，摄入充足的蛋白质（鱼、肉、豆）和膳食纤维（蔬菜），利用高热效应和天然饱腹感实现健康热量赤字。",
+    "catCarbs": "🍚 碳水类"
   },
   "en": {
     "title": "Slim Eating Time",
@@ -295,7 +296,8 @@
     "wisdomCalorieTitle": "The Myth of 'A Calorie is a Calorie'",
     "wisdomCalorieSub": "Different foods spark vastly different hormonal responses and energy expenditures",
     "wisdomCalorieBody": "Many believe they can eat anything as long as they stay under their calorie limit. In the body, 100 kcal of lean protein/fiber functions entirely differently from 100 kcal of sugary gummy candy. Protein has a very high Thermic Effect of Food (TEF)—the body burns 20-30% of its energy just digesting it, while triggering satiety. Refined sugar is absorbed instantly, causes blood sugar spikes, stimulates insulin, and makes you hungry again. Focus on nutrient-dense foods, not just the math.",
-    "wisdomCalorieHighlight": "💡 Tip: Prioritize food quality. Eat adequate protein (fish, poultry, beans) and dietary fiber (veggies) to harness high TEF and natural satiety."
+    "wisdomCalorieHighlight": "💡 Tip: Prioritize food quality. Eat adequate protein (fish, poultry, beans) and dietary fiber (veggies) to harness high TEF and natural satiety.",
+    "catCarbs": "🍚 Carbs"
   },
   "ja": {
     "title": "スリム食卓",
@@ -444,6 +446,7 @@
     "wisdomCalorieTitle": "「カロリーはすべて同じ」という迷信を壊す",
     "wisdomCalorieSub": "食品によって体内のホルモン反応や消化に必要なエネルギー（DIT）は全く異なる",
     "wisdomCalorieBody": "「カロリー制限内なら何を食べてもいい」と誤解されがちですが、100kcalの良質なタンパク質/食物繊維と、100kcalの砂糖のグミは体内で全く異なる働きをします。タンパク質は非常に高い食事誘発性熱産生（DIT/TEF）を持ち、摂取したエネルギーの20〜30%を消化自体に消費し、満腹ホルモンを分泌させます。一方、精製糖は一瞬で吸収され、熱を消費しないだけでなく、血糖を急上昇させてインスリンを刺激し、すぐに空腹感を引き起こします。単なる数字ではなく、栄養密度的の高い食品を選びましょう。",
-    "wisdomCalorieHighlight": "💡 アドバイス：食品の質を優先しましょう。十分なタンパク質（魚、肉、大豆）と食物繊維（野菜）を摂取し、高い熱産生効果と満腹感を活用して健康的なアンダーカロリーを実現します。"
+    "wisdomCalorieHighlight": "💡 アドバイス：食品の質を優先しましょう。十分なタンパク質（魚、肉、大豆）と食物繊維（野菜）を摂取し、高い熱産生効果と満腹感を活用して健康的なアンダーカロリーを実現します。",
+    "catCarbs": "🍚 炭水化物"
   }
 }
