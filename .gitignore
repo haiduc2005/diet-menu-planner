@@ -23,3 +23,5 @@ data/settings.json
 .DS_Store
 Thumbs.db
 data/kids_history.json
+data/trending_history.json
+data/trending_history.json

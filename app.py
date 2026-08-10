@@ -1,9 +1,10 @@
 import os
+import uuid
 import logging
 import collections
 import threading
 import json
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, UploadFile, File
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -317,6 +318,101 @@ async def clear_logs_api():
     with _LOG_LOCK:
         _LOG_BUFFER.clear()
     return {"status": "cleared"}
+
+
+# ─── Recipe Vault ─────────────────────────────────────────────────────────────
+VAULT_FILE = os.path.join(BASE_DIR, "data", "recipe_vault.json")
+
+def _load_vault() -> list:
+    if os.path.exists(VAULT_FILE):
+        try:
+            with open(VAULT_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+def _save_vault(recipes: list) -> None:
+    with open(VAULT_FILE, "w", encoding="utf-8") as f:
+        json.dump(recipes, f, ensure_ascii=False, indent=2)
+
+@app.get("/api/recipe-vault")
+async def get_recipe_vault():
+    return _load_vault()
+
+@app.post("/api/recipe-vault/analyze")
+async def analyze_recipe_photo(file: UploadFile = File(...)):
+    from ai.gemini import GeminiClient
+    allowed_types = {"image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"}
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail=f"不支持的文件类型: {file.content_type}。请上传 JPG / PNG / WebP 图片。")
+    try:
+        image_bytes = await file.read()
+        settings = load_settings()
+        client = GeminiClient()
+        recipe = client.analyze_photo_recipe(image_bytes, file.content_type, settings)
+        return {"status": "success", "recipe": recipe}
+    except Exception as e:
+        logger.error(f"Recipe photo analysis failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+class RecipeSaveRequest(BaseModel):
+    recipe: dict
+
+@app.post("/api/recipe-vault/save")
+async def save_recipe_to_vault(req: RecipeSaveRequest):
+    try:
+        vault = _load_vault()
+        entry = req.recipe.copy()
+        entry["id"] = str(uuid.uuid4())
+        entry["saved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+        vault.insert(0, entry)   # newest first
+        _save_vault(vault)
+        return {"status": "success", "id": entry["id"]}
+    except Exception as e:
+        logger.error(f"Recipe vault save failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/recipe-vault/{recipe_id}")
+async def delete_recipe_from_vault(recipe_id: str):
+    try:
+        vault = _load_vault()
+        new_vault = [r for r in vault if r.get("id") != recipe_id]
+        if len(new_vault) == len(vault):
+            raise HTTPException(status_code=404, detail="未找到该食谱")
+        _save_vault(new_vault)
+        return {"status": "success"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Recipe vault delete failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+class RecipeUpdateRequest(BaseModel):
+    recipe: dict
+
+@app.put("/api/recipe-vault/{recipe_id}")
+async def update_recipe_in_vault(recipe_id: str, req: RecipeUpdateRequest):
+    try:
+        vault = _load_vault()
+        idx = next((i for i, r in enumerate(vault) if r.get("id") == recipe_id), None)
+        if idx is None:
+            raise HTTPException(status_code=404, detail="未找到该食谱")
+        updated = vault[idx].copy()
+        # Only allow updating content fields, preserve id and saved_at
+        for field in ("title", "description", "ingredients", "instructions", "nutritional_summary"):
+            if field in req.recipe:
+                updated[field] = req.recipe[field]
+        vault[idx] = updated
+        _save_vault(vault)
+        return {"status": "success", "recipe": updated}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Recipe vault update failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+# ──────────────────────────────────────────────────────────────────────────────
+
 
 # --- Start Uvicorn Server ---
 if __name__ == '__main__':
