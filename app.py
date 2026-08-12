@@ -411,6 +411,68 @@ async def update_recipe_in_vault(recipe_id: str, req: RecipeUpdateRequest):
     except Exception as e:
         logger.error(f"Recipe vault update failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─── Recipe Favorites ─────────────────────────────────────────────────────────
+FAVORITES_FILE = os.path.join(BASE_DIR, "data", "favorites.json")
+
+def _load_favorites() -> list:
+    if os.path.exists(FAVORITES_FILE):
+        try:
+            with open(FAVORITES_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+def _save_favorites(recipes: list) -> None:
+    with open(FAVORITES_FILE, "w", encoding="utf-8") as f:
+        json.dump(recipes, f, ensure_ascii=False, indent=2)
+
+@app.get("/api/favorites")
+async def get_favorites():
+    return _load_favorites()
+
+class FavoriteSaveRequest(BaseModel):
+    recipe: dict
+
+@app.post("/api/favorites/save")
+async def save_recipe_to_favorites(req: FavoriteSaveRequest):
+    try:
+        favorites = _load_favorites()
+        entry = req.recipe.copy()
+        
+        # Check if already favorited by checking title and meal tags to prevent duplication
+        title = entry.get("title")
+        tags = entry.get("tags", [])
+        
+        exists = any(f.get("title") == title and sorted(f.get("tags", [])) == sorted(tags) for f in favorites)
+        if exists:
+            return {"status": "already_exists", "message": "该食谱已在收藏中"}
+            
+        entry["id"] = str(uuid.uuid4())
+        entry["saved_at"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+        favorites.insert(0, entry)   # newest first
+        _save_favorites(favorites)
+        return {"status": "success", "id": entry["id"]}
+    except Exception as e:
+        logger.error(f"Recipe favorites save failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/favorites/{recipe_id}")
+async def delete_recipe_from_favorites(recipe_id: str):
+    try:
+        favorites = _load_favorites()
+        new_favorites = [r for r in favorites if r.get("id") != recipe_id]
+        if len(new_favorites) == len(favorites):
+            raise HTTPException(status_code=404, detail="未找到该食谱")
+        _save_favorites(new_favorites)
+        return {"status": "success"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Recipe favorites delete failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 # ──────────────────────────────────────────────────────────────────────────────
 
 

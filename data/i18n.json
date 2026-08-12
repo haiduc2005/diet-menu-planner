@@ -172,7 +172,14 @@
     "vaultEmpty": "仓库暂无食谱，快去上传第一张菜品照片吧！",
     "vaultDeleteBtn": "删除",
     "photoDropHere": "点击或拖拽菜品照片到此处",
-    "photoChangeBtn": "重新选择图片"
+    "photoChangeBtn": "重新选择图片",
+    "hubTabFavorites": "⭐ 我的收藏",
+    "favoritesTitle": "⭐ 我的收藏",
+    "favoritesEmpty": "暂无收藏，快去今日食谱中收藏吧！",
+    "btnFavorite": "收藏",
+    "btnFavorited": "已收藏",
+    "adultMeal": "大人餐",
+    "kidsMeal": "儿童餐"
   },
   "en": {
     "title": "Slim Eating Time",
@@ -347,7 +354,14 @@
     "vaultEmpty": "No recipes yet. Upload your first food photo!",
     "vaultDeleteBtn": "Delete",
     "photoDropHere": "Click or drag a food photo here",
-    "photoChangeBtn": "Change Photo"
+    "photoChangeBtn": "Change Photo",
+    "hubTabFavorites": "⭐ My Favorites",
+    "favoritesTitle": "⭐ My Favorites",
+    "favoritesEmpty": "No favorites yet. Go add some from today's menu!",
+    "btnFavorite": "Favorite",
+    "btnFavorited": "Favorited",
+    "adultMeal": "Adult Meal",
+    "kidsMeal": "Kids Meal"
   },
   "ja": {
     "title": "スリム食卓",
@@ -645,6 +659,13 @@
     "wisdomOrderBody": "野菜を先に食べることで食物繊維が腸にバリアを張り、その後タンパク質を摂取し、最後に主食を食べる頃には炭水化物の吸収速度が大幅にスローダウンします。研究では食後血糖のピークが<strong style=\"color:#34d399;\">40%以上</strong>低下することが示されています。",
     "wisdomOrderStep1": "まず野菜・和え物を食べる",
     "wisdomOrderStep2": "次に肉・豆腐などタンパク質を食べる",
-    "wisdomOrderStep3": "最後にご飯・麺などの主食を食べる"
+    "wisdomOrderStep3": "最後にご飯・麺などの主食を食べる",
+    "hubTabFavorites": "⭐ お気に入り",
+    "favoritesTitle": "⭐ お気に入りレシピ",
+    "favoritesEmpty": "お気に入りはまだありません。今日の献立から追加してみましょう！",
+    "btnFavorite": "お気に入り",
+    "btnFavorited": "追加済み",
+    "adultMeal": "大人向け",
+    "kidsMeal": "子供向け"
   }
 }
