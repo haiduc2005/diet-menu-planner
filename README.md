@@ -40,9 +40,8 @@ pip install -r requirements.txt
 ### 3. 環境変数の設定
 プロジェクトのルートディレクトリに `.env` ファイルを作成します：
 ```env
-# Google Gemini API キーを以下に入力してください
+# API キーを以下に入力してください。Geminiの例：
 GEMINI_API_KEY=AIzaSy...
-
 GEMINI_MODEL=gemini-3.5-flash-lite
 PORT=8000
 HOST=0.0.0.0
