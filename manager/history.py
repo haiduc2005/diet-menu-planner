@@ -201,6 +201,6 @@ def add_to_trending_history(date_str: str, adult_recipes: list, kids_recipes: li
         history.sort(key=lambda x: x.get('date', ''), reverse=True)
     except Exception:
         pass
-    if len(history) > 30:
-        history = history[:30]
+    if len(history) > 6:
+        history = history[:6]
     return save_trending_history(history)
